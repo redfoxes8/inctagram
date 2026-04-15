@@ -1,25 +1,13 @@
-import Image from "next/image"
 import styles from "./page.module.css"
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image className={styles.logo} src="/next.svg" alt="Next.js logo" width={100} height={20} priority />
-        <div className={styles.intro}>
-          <h1>New project inctagram</h1>
-          <p>
-            New project inctagram
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-          </p>
-        </div>
-      </main>
+    <div className={styles.container}>
+      <h1 className="h1">h1</h1>
+      <p className="large">large</p>
+      <p className="regular_text_16">regular_text_16</p>
+      <p className={`medium_text_14 ${styles.mediumText}`}>medium_text_14 with accent 500</p>
+      <a className="regular_link">Regular-Link</a>
     </div>
   )
 }
