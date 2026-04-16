@@ -1,0 +1,72 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.root {
+  all: unset;
+  box-sizing: border-box;
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--light-500);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: transparent;
+  transition: all 0.2s ease;
+  z-index: 1;
+}
+
+.root::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 36px;
+  height: 36px;
+  background-color: rgb(255 255 255 / 20%);
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  z-index: -1;
+}
+
+.root:focus::before {
+  transform: translate(-50%, -50%) scale(1);
+  background-color: rgb(255 255 255 / 8%);
+}
+
+.root:hover::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.root:active::before,
+.root:focus-visible::before {
+  background-color: rgb(255 255 255 / 30%);
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.root[data-state="checked"] {
+  background-color: var(--light-100);
+  border-color: var(--light-100);
+}
+
+.indicator {
+  color: inherit;
+  display: flex;
+}
+
+.root[data-disabled] {
+  border-color: var(--dark-100);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.root[data-disabled][data-state="checked"] {
+  background-color: var(--dark-100);
+  border-color: var(--dark-100);
+}
