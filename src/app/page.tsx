@@ -1,6 +1,7 @@
 import { Icon } from "@/shared/ui/Icon"
 import styles from "./page.module.css"
 import Image from "next/image"
+import { Checkbox } from "@/shared/ui/Checkbox"
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
       можно конечно на каждую создать отдельный компонент в shared/ui/Icons/... но не вижу в этом смысла(пока что),
       но если кому нечем будет заняться пожалуйста создавайте таску в Jira через PM и делайте */}
       <Image src="/icons/facebook-svgrepo-com.svg" alt="Russian" width={24} height={16} />
+      <Checkbox id={"1"} />
     </div>
   )
 }
