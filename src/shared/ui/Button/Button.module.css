@@ -1,0 +1,112 @@
+/* button */
+.button {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 6px 24px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+  border: none;
+  outline: none;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+}
+
+/* primary */
+.primary {
+  color: var(--light-100);
+  background: var(--accent-500);
+}
+
+.primary:not(:disabled):hover {
+  background: var(--accent-100);
+}
+
+.primary:not(:disabled):active {
+  background: var(--accent-700);
+}
+
+.primary:not(:disabled):focus-visible {
+  outline: 2px solid var(--accent-700);
+}
+
+.primary:disabled {
+  color: var(--light-900);
+  background: var(--accent-900);
+}
+
+/* secondary */
+.secondary {
+  color: var(--light-100);
+  background: var(--dark-300);
+}
+
+.secondary:not(:disabled):hover {
+  background: var(--dark-100);
+}
+
+.secondary:not(:disabled):active {
+  background: var(--dark-400);
+}
+
+.secondary:not(:disabled):focus-visible {
+  outline: 2px solid var(--accent-300);
+}
+
+.secondary:disabled {
+  color: var(--light-900);
+  background: var(--dark-500);
+}
+
+/* outlined */
+.outlined {
+  color: var(--accent-500);
+  border: 1px solid var(--accent-500);
+  background: transparent;
+}
+
+.outlined:not(:disabled):hover {
+  color: var(--accent-100);
+  border: 1px solid var(--accent-100);
+}
+
+.outlined:not(:disabled):active {
+  color: var(--accent-700);
+  border: 1px solid var(--accent-700);
+}
+
+.outlined:not(:disabled):focus-visible {
+  outline: 2px solid var(--accent-700);
+}
+
+.outlined:disabled {
+  color: var(--accent-900);
+  border: 1px solid var(--accent-900);
+  background: transparent;
+}
+
+/* ghost */
+.ghost {
+  color: var(--accent-500);
+  background: transparent;
+}
+
+.ghost:not(:disabled):hover {
+  color: var(--accent-100);
+}
+
+.ghost:not(:disabled):active {
+  color: var(--accent-700);
+}
+
+.ghost:not(:disabled):focus-visible {
+  outline: 2px solid var(--accent-700);
+}
+
+.ghost:disabled {
+  color: var(--accent-900);
+}

@@ -1,7 +1,9 @@
+"use client"
 import { Icon } from "@/shared/ui/Icon"
 import styles from "./page.module.css"
 import Image from "next/image"
 import { Checkbox } from "@/shared/ui/Checkbox"
+import { Button } from "@/shared/ui/Button"
 
 export default function Home() {
   return (
@@ -22,6 +24,11 @@ export default function Home() {
       но если кому нечем будет заняться пожалуйста создавайте таску в Jira через PM и делайте */}
       <Image src="/icons/facebook-svgrepo-com.svg" alt="Russian" width={24} height={16} />
       <Checkbox id={"1"} />
+
+      {/*Если эта страница или компонент должны быть интерактивными, добавь сверху: "use client" потом нужно будет убрать*/}
+      <Button variant={"primary"} type={"button"} onClick={() => console.log("click")}>
+        Click
+      </Button>
     </div>
   )
 }
