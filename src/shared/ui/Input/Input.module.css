@@ -1,0 +1,122 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.container.disabledContainer .label {
+  color: var(--dark-100);
+  cursor: default;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 24px;
+  color: var(--light-900);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  background-color: var(--dark-500);
+  border: 1px solid var(--dark-300);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.inputWrapper:hover {
+  background-color: var(--dark-400);
+  border-color: var(--dark-100);
+}
+
+/* Focus – когда инпут в фокусе */
+.inputWrapper:focus-within {
+  border-color: var(--accent-500);
+  box-shadow: 0 0 0 2px rgb(57 125 246 / 30%);
+  background-color: var(--dark-500);
+}
+
+.inputWrapper.error {
+  border-color: var(--danger-500);
+}
+
+.inputWrapper.error:focus-within {
+  border-color: var(--danger-500);
+  box-shadow: 0 0 0 2px rgb(204 20 57 / 30%);
+}
+
+.inputWrapper.disabled {
+  background-color: var(--dark-700);
+  border-color: var(--dark-300);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.inputWrapper.disabled:hover {
+  background-color: var(--dark-700);
+  border-color: var(--dark-300);
+}
+
+.input {
+  flex: 1;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--light-100);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  font-family: inherit;
+}
+
+.input::placeholder {
+  color: var(--light-900);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.iconLeft,
+.iconRight {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  margin: 0 4px;
+  color: var(--light-700);
+  transition: color 0.2s ease;
+  border-radius: 4px;
+}
+
+.iconLeft:focus-visible,
+.iconRight:focus-visible {
+  outline: 2px solid var(--accent-500);
+  outline-offset: 2px;
+}
+
+.iconLeft:hover:not(:disabled),
+.iconRight:hover:not(:disabled) {
+  color: var(--accent-500);
+}
+
+.iconLeft:disabled,
+.iconRight:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.errorMessage {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--danger-500);
+  margin-top: 4px;
+}
