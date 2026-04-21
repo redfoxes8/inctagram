@@ -1,7 +1,7 @@
 "use client"
 
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
-import s from "./s.module.css"
+import s from "./Checkbox.module.css"
 import { Icon } from "../Icon"
 
 interface CheckboxProps {
