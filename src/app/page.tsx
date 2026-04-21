@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Checkbox } from "@/shared/ui/Checkbox"
 import { Button } from "@/shared/ui/Button"
 import { Input } from "@/shared/ui/Input"
+import { Tabs } from "@/shared/ui/Tabs"
 
 export default function Home() {
   return (
@@ -57,6 +58,18 @@ export default function Home() {
       <div>
         <Input label="Поиск" leftIcon={<Icon name="search-outline" />} placeholder="Input search" />
       </div>
+      {/*Tabs*/}
+      <div style={{ display: "flex", flexDirection: "column", gap: "2rem", marginTop: "2rem" }}>
+        <div>
+          <p style={{ color: "#666", marginBottom: "0.5rem" }}></p>
+          <Tabs defaultValue="tab1" items={[{ label: "Tabs", value: "tab" }]} />
+        </div>
+        <div>
+          <p style={{ color: "#ccc", marginBottom: "0.5rem" }}>Disabled</p>
+          <Tabs items={[{ label: "Tabs", value: "tab", disabled: true }]} />
+        </div>
+      </div>
+      {/**/}
     </div>
   )
 }
