@@ -1,18 +1,16 @@
 # Устанавливаем зависимости
-FROM node:20.11-alpine as dependencies
+FROM node:20.11-alpine AS dependencies
 WORKDIR /app
 
-# Устанавливаем pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --frozen-lockfile
 
 # Билдим приложение
-FROM node:20.11-alpine as builder
+FROM node:20.11-alpine AS builder
 WORKDIR /app
 
-# Устанавливаем pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 COPY . .
@@ -20,15 +18,24 @@ COPY --from=dependencies /app/node_modules ./node_modules
 RUN pnpm run build:production
 
 # Стейдж запуска
-FROM node:20.11-alpine as runner
-USER node
+FROM node:20.11-alpine AS runner
 WORKDIR /app
-ENV NODE_ENV production
 
-# Устанавливаем pnpm для запуска
+#  Устанавливаем pnpm ДО переключения пользователя
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-COPY --from=builder --chown=node:node /app/ ./
+# Копируем необходимые файлы
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/pnpm-lock.yaml* ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+
+#  переключаемся на непривилегированного пользователя
+USER node
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 EXPOSE 3000
 CMD ["pnpm", "start"]
