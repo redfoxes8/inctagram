@@ -6,6 +6,7 @@ import { Checkbox } from "@/shared/ui/Checkbox"
 import { Button } from "@/shared/ui/Button"
 import { Input } from "@/shared/ui/Input"
 import { Recaptcha, RecaptchaStatus } from "@/shared/ui/Recaptcha"
+import { Tabs } from "@/shared/ui/Tabs"
 import { useState } from "react"
 
 const mockFetch = () => {
@@ -97,6 +98,18 @@ export default function Home() {
       </div>
 
       <Recaptcha status={recaptchaStatus} onCheckedChange={handleChange} />
+      {/*Tabs*/}
+      <div style={{ display: "flex", flexDirection: "column", gap: "2rem", marginTop: "2rem" }}>
+        <div>
+          <p style={{ color: "#666", marginBottom: "0.5rem" }}></p>
+          <Tabs defaultValue="tab1" items={[{ label: "Tabs", value: "tab" }]} />
+        </div>
+        <div>
+          <p style={{ color: "#ccc", marginBottom: "0.5rem" }}>Disabled</p>
+          <Tabs items={[{ label: "Tabs", value: "tab", disabled: true }]} />
+        </div>
+      </div>
+      {/**/}
     </div>
   )
 }
