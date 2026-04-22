@@ -5,9 +5,47 @@ import Image from "next/image"
 import { Checkbox } from "@/shared/ui/Checkbox"
 import { Button } from "@/shared/ui/Button"
 import { Input } from "@/shared/ui/Input"
+import { Recaptcha, RecaptchaStatus } from "@/shared/ui/Recaptcha"
 import { Tabs } from "@/shared/ui/Tabs"
+import { useState } from "react"
+
+const mockFetch = () => {
+  return new Promise((resolve, reject) => {
+    console.log("Запрос отправлен...")
+
+    setTimeout(() => {
+      const isSuccess = Math.random() > 0.5
+
+      if (isSuccess) {
+        resolve({ status: 200, data: "Успешные данные" })
+      } else {
+        reject({ status: 500, message: "Ошибка сервера" })
+      }
+    }, 1000)
+  })
+}
 
 export default function Home() {
+  const [recaptchaStatus, setRecaptchaStatus] = useState<RecaptchaStatus>("default")
+
+  const handleChange = async () => {
+    if (recaptchaStatus === "loading" || recaptchaStatus === "checked") return
+
+    setRecaptchaStatus("loading")
+
+    try {
+      await mockFetch()
+      setRecaptchaStatus("checked")
+
+      setTimeout(() => {
+        setRecaptchaStatus("expired")
+      }, 120000)
+    } catch (err) {
+      setRecaptchaStatus("error")
+    }
+  }
+  console.log("Component Render", recaptchaStatus)
+
   return (
     <div className={styles.container}>
       <h1 className="h1">h1</h1>
@@ -58,6 +96,8 @@ export default function Home() {
       <div>
         <Input label="Поиск" leftIcon={<Icon name="search-outline" />} placeholder="Input search" />
       </div>
+
+      <Recaptcha status={recaptchaStatus} onCheckedChange={handleChange} />
       {/*Tabs*/}
       <div style={{ display: "flex", flexDirection: "column", gap: "2rem", marginTop: "2rem" }}>
         <div>

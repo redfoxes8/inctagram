@@ -41,7 +41,7 @@
   --light-500: #edf3fa;
   --light-700: #d5dae0;
   --light-900: #8d9094;
-  --background: var(--dark-900);
+  --background: var(--light-100);
   --foreground: var(--dark-900);
 }
 
