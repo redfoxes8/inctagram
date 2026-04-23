@@ -8,6 +8,8 @@ import { Input } from "@/shared/ui/Input"
 import { Recaptcha, RecaptchaStatus } from "@/shared/ui/Recaptcha"
 import { Tabs } from "@/shared/ui/Tabs"
 import { useState } from "react"
+import { SelectOption } from "@/shared/ui/SelectBox/SelectBox.types"
+import { SelectBox } from "@/shared/ui/SelectBox"
 
 const mockFetch = () => {
   return new Promise((resolve, reject) => {
@@ -26,6 +28,15 @@ const mockFetch = () => {
 }
 
 export default function Home() {
+  const [selectValue, setSelectValue] = useState("1")
+
+  const options: SelectOption[] = [
+    { value: "1", label: "Option 1", icon: "search-outline" },
+    { value: "2", label: "Option 2", icon: "settings-outline" },
+    { value: "3", label: "Option 3", icon: "person-outline" },
+    { value: "4", label: "Option 4", icon: "home" },
+  ]
+
   const [recaptchaStatus, setRecaptchaStatus] = useState<RecaptchaStatus>("default")
 
   const handleChange = async () => {
@@ -110,6 +121,15 @@ export default function Home() {
         </div>
       </div>
       {/**/}
+
+      {/* SelectBox */}
+      <SelectBox
+        label="Select"
+        value={selectValue}
+        onChange={setSelectValue}
+        options={options}
+        placeholder="Choose option"
+      />
     </div>
   )
 }
