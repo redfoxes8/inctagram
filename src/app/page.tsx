@@ -7,6 +7,7 @@ import { Button } from "@/shared/ui/Button"
 import { Input } from "@/shared/ui/Input"
 import { Recaptcha, RecaptchaStatus } from "@/shared/ui/Recaptcha"
 import { Tabs } from "@/shared/ui/Tabs"
+import { TextArea } from "@/shared/ui/TextArea"
 import { useState } from "react"
 import { SelectOption } from "@/shared/ui/SelectBox/SelectBox.types"
 import { SelectBox } from "@/shared/ui/SelectBox"
@@ -113,14 +114,27 @@ export default function Home() {
       <div style={{ display: "flex", flexDirection: "column", gap: "2rem", marginTop: "2rem" }}>
         <div>
           <p style={{ color: "#666", marginBottom: "0.5rem" }}></p>
-          <Tabs defaultValue="tab1" items={[{ label: "Tabs", value: "tab" }]} />
+          <Tabs defaultValue="tab" items={[{ label: "Tabs", value: "tab" }]} />
         </div>
         <div>
           <p style={{ color: "#ccc", marginBottom: "0.5rem" }}>Disabled</p>
           <Tabs items={[{ label: "Tabs", value: "tab", disabled: true }]} />
         </div>
       </div>
-      {/**/}
+
+      {/* Text-area */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+        <div>
+          <TextArea label="Text-area" placeholder="Tell your story..." autoFocus />
+        </div>
+        <div>
+          <TextArea label="Text-area" error="Error text" placeholder="Tell your story..." />
+        </div>
+        <div>
+          <p style={{ color: "#ccc", marginBottom: "0.5rem" }}>Disabled</p>
+          <TextArea label="Text-area" disabled placeholder="Tell your story..." />
+        </div>
+      </div>
 
       {/* SelectBox */}
       <SelectBox
