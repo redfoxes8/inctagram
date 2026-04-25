@@ -1,0 +1,21 @@
+.container {
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding-left: 15px;
+  padding-right: 15px;
+  background-color: inherit;
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+@media (width >= 1200px) {
+  .container {
+    max-width: 1280px;
+    padding-left: 60px;
+    padding-right: 60px;
+  }
+}
