@@ -21,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable}`}>
       <body>
+        <div>HEADER</div>
         <StoreProvider>{children}</StoreProvider>
       </body>
     </html>

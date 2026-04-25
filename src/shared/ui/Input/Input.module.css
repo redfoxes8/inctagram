@@ -1,7 +1,6 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 6px;
   width: 100%;
 }
 
@@ -24,7 +23,7 @@
   align-items: center;
   background-color: var(--dark-500);
   border: 1px solid var(--dark-300);
-  border-radius: 8px;
+  border-radius: 2px;
   transition: all 0.2s ease;
 }
 
@@ -62,7 +61,7 @@
 
 .input {
   flex: 1;
-  padding: 10px 16px;
+  padding: 6px 12px;
   background: transparent;
   border: none;
   outline: none;
