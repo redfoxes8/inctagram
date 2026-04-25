@@ -1,6 +1,6 @@
 import { SVGProps } from "react"
 
-type IconName =
+export type IconName =
   | "arrow-back-outline"
   | "arrow-forward-outline"
   | "arrow-ios-back-outline"

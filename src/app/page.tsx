@@ -5,9 +5,59 @@ import Image from "next/image"
 import { Checkbox } from "@/shared/ui/Checkbox"
 import { Button } from "@/shared/ui/Button"
 import { Input } from "@/shared/ui/Input"
+import { Recaptcha, RecaptchaStatus } from "@/shared/ui/Recaptcha"
 import { Tabs } from "@/shared/ui/Tabs"
+import { TextArea } from "@/shared/ui/TextArea"
+import { useState } from "react"
+import { SelectOption } from "@/shared/ui/SelectBox/SelectBox.types"
+import { SelectBox } from "@/shared/ui/SelectBox"
+
+const mockFetch = () => {
+  return new Promise((resolve, reject) => {
+    console.log("Запрос отправлен...")
+
+    setTimeout(() => {
+      const isSuccess = Math.random() > 0.5
+
+      if (isSuccess) {
+        resolve({ status: 200, data: "Успешные данные" })
+      } else {
+        reject({ status: 500, message: "Ошибка сервера" })
+      }
+    }, 1000)
+  })
+}
 
 export default function Home() {
+  const [selectValue, setSelectValue] = useState("1")
+
+  const options: SelectOption[] = [
+    { value: "1", label: "Option 1", icon: "search-outline" },
+    { value: "2", label: "Option 2", icon: "settings-outline" },
+    { value: "3", label: "Option 3", icon: "person-outline" },
+    { value: "4", label: "Option 4", icon: "home" },
+  ]
+
+  const [recaptchaStatus, setRecaptchaStatus] = useState<RecaptchaStatus>("default")
+
+  const handleChange = async () => {
+    if (recaptchaStatus === "loading" || recaptchaStatus === "checked") return
+
+    setRecaptchaStatus("loading")
+
+    try {
+      await mockFetch()
+      setRecaptchaStatus("checked")
+
+      setTimeout(() => {
+        setRecaptchaStatus("expired")
+      }, 120000)
+    } catch (err) {
+      setRecaptchaStatus("error")
+    }
+  }
+  console.log("Component Render", recaptchaStatus)
+
   return (
     <div className={styles.container}>
       <h1 className="h1">h1</h1>
@@ -58,18 +108,42 @@ export default function Home() {
       <div>
         <Input label="Поиск" leftIcon={<Icon name="search-outline" />} placeholder="Input search" />
       </div>
+
+      <Recaptcha status={recaptchaStatus} onCheckedChange={handleChange} />
       {/*Tabs*/}
       <div style={{ display: "flex", flexDirection: "column", gap: "2rem", marginTop: "2rem" }}>
         <div>
           <p style={{ color: "#666", marginBottom: "0.5rem" }}></p>
-          <Tabs defaultValue="tab1" items={[{ label: "Tabs", value: "tab" }]} />
+          <Tabs defaultValue="tab" items={[{ label: "Tabs", value: "tab" }]} />
         </div>
         <div>
           <p style={{ color: "#ccc", marginBottom: "0.5rem" }}>Disabled</p>
           <Tabs items={[{ label: "Tabs", value: "tab", disabled: true }]} />
         </div>
       </div>
-      {/**/}
+
+      {/* Text-area */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+        <div>
+          <TextArea label="Text-area" placeholder="Tell your story..." autoFocus />
+        </div>
+        <div>
+          <TextArea label="Text-area" error="Error text" placeholder="Tell your story..." />
+        </div>
+        <div>
+          <p style={{ color: "#ccc", marginBottom: "0.5rem" }}>Disabled</p>
+          <TextArea label="Text-area" disabled placeholder="Tell your story..." />
+        </div>
+      </div>
+
+      {/* SelectBox */}
+      <SelectBox
+        label="Select"
+        value={selectValue}
+        onChange={setSelectValue}
+        options={options}
+        placeholder="Choose option"
+      />
     </div>
   )
 }
