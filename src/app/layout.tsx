@@ -1,5 +1,7 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import { Header } from "@/widgets/header"
+
 import "./globals.css"
 import { StoreProvider } from "./providers/StoreProvider"
 
@@ -21,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable}`}>
       <body>
-        <div>HEADER</div>
+        <Header />
         <StoreProvider>{children}</StoreProvider>
       </body>
     </html>
