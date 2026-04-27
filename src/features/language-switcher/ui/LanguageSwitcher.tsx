@@ -18,7 +18,8 @@ const languageOptions = [
 ] as const
 
 export const LanguageSwitcher = () => {
-  const [language, setLanguage] = useState<string>("ru")
+  const [language, setLanguage] = useState<string>("en")
+  const selectedLanguage = languageOptions.find((option) => option.value === language)
 
   return (
     <SelectBox
@@ -30,7 +31,7 @@ export const LanguageSwitcher = () => {
       iconClassName={s.icon}
       optionVisualClassName={s.optionVisual}
       imageClassName={s.image}
-      renderValue={() => null}
+      renderValue={() => <span className={s.value}>{selectedLanguage?.label}</span>}
       aria-label="Select language"
     />
   )

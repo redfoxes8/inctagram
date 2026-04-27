@@ -1,10 +1,10 @@
 import { Icon } from "@/shared/ui/Icon"
 import { LanguageSwitcher } from "@/features/language-switcher"
-
-import s from "./Header.module.css"
-import { Container } from "@/shared/ui/Container/Container"
+import { Container } from "@/shared/ui/Container"
 import { FlexWrapper } from "@/shared/ui/FlexWrapper"
 import { Logo } from "@/shared/ui/Logo"
+
+import s from "./Header.module.css"
 
 export const Header = () => {
   return (

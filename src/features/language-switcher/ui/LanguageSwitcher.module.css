@@ -38,6 +38,13 @@
   height: 24px;
 }
 
+.value {
+  display: none;
+  color: var(--light-100);
+  font-size: 16px;
+  line-height: 24px;
+}
+
 .icon {
   right: 0;
   width: 16px;
@@ -48,4 +55,52 @@
 .icon svg {
   width: 16px;
   height: 16px;
+}
+
+@media screen and (width >= 769px) {
+  .trigger {
+    min-width: 163px;
+    width: 163px;
+    height: 36px;
+    padding: 0 36px 0 12px;
+    border: 1px solid var(--dark-100);
+    border-radius: 2px;
+    background: var(--dark-700);
+  }
+
+  .trigger:not([data-disabled]):hover {
+    background: var(--dark-500);
+    border-color: var(--dark-100);
+  }
+
+  .trigger[data-state="open"] {
+    background: var(--dark-700);
+    border-color: var(--light-100);
+  }
+
+  .optionVisual {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+  }
+
+  .image {
+    width: 20px;
+    height: 20px;
+  }
+
+  .value {
+    display: inline;
+  }
+
+  .icon {
+    right: 6px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .icon svg {
+    width: 24px;
+    height: 24px;
+  }
 }
