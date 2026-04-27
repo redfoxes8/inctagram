@@ -1,4 +1,5 @@
 import { Icon } from "@/shared/ui/Icon"
+import { LanguageSwitcher } from "@/features/language-switcher"
 
 import s from "./Header.module.css"
 import { Container } from "@/shared/ui/Container/Container"
@@ -12,14 +13,11 @@ export const Header = () => {
         <FlexWrapper justify={"space-between"} align={"center"}>
           <Logo />
           <div className={s.controls}>
-            <div className={s.language} aria-label="Selected language">
-              <span className={s.flag} aria-hidden="true" />
-              <Icon className={s.chevron} name="arrow-ios-Down-outline" />
-            </div>
+            <LanguageSwitcher />
 
-            <span className={s.menuIcon} aria-hidden="true">
-              <Icon className={s.menuSvg} name="more-horizontal-outline" />
-            </span>
+            {/*<span className={s.menuIcon} aria-hidden="true">*/}
+            {/*  <Icon className={s.menuSvg} name="more-horizontal-outline" />*/}
+            {/*</span>*/}
           </div>
         </FlexWrapper>
       </Container>
