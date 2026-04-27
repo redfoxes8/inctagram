@@ -3,12 +3,29 @@
 import Image from "next/image"
 import * as Select from "@radix-ui/react-select"
 import { useId, type CSSProperties } from "react"
+import clsx from "clsx"
 import s from "./SelectBox.module.css"
 import { Props, SelectOption } from "./SelectBox.types"
 import { Icon } from "@/shared/ui/Icon"
 
 export const SelectBox = (props: Props) => {
-  const { value, label, options, disabled, placeholder, onChange, width, height, ...rest } = props
+  const {
+    value,
+    label,
+    options,
+    disabled,
+    placeholder,
+    onChange,
+    width,
+    height,
+    className,
+    triggerClassName,
+    iconClassName,
+    optionVisualClassName,
+    imageClassName,
+    renderValue,
+    ...rest
+  } = props
   const selected = options.find((o) => o.value === value)
   const id = useId()
 
@@ -17,15 +34,22 @@ export const SelectBox = (props: Props) => {
 
     if (option.imageSrc) {
       return (
-        <span className={s.iconLeft}>
-          <Image src={option.imageSrc} alt="" width={20} height={20} className={s.imageIcon} aria-hidden="true" />
+        <span className={clsx(s.iconLeft, optionVisualClassName)}>
+          <Image
+            src={option.imageSrc}
+            alt=""
+            width={20}
+            height={20}
+            className={clsx(s.imageIcon, imageClassName)}
+            aria-hidden="true"
+          />
         </span>
       )
     }
 
     if (option.icon) {
       return (
-        <span className={s.iconLeft}>
+        <span className={clsx(s.iconLeft, optionVisualClassName)}>
           <Icon name={option.icon} width={20} height={20} />
         </span>
       )
@@ -35,7 +59,7 @@ export const SelectBox = (props: Props) => {
   }
 
   return (
-    <div className={s.wrapper}>
+    <div className={clsx(s.wrapper, className)}>
       {label && (
         <label htmlFor={id} className={s.label}>
           {label}
@@ -45,7 +69,7 @@ export const SelectBox = (props: Props) => {
       <Select.Root {...rest} value={value} onValueChange={onChange} disabled={disabled}>
         <Select.Trigger
           id={id}
-          className={s.trigger}
+          className={clsx(s.trigger, triggerClassName)}
           style={
             {
               "--select-width": width,
@@ -56,9 +80,9 @@ export const SelectBox = (props: Props) => {
         >
           {renderOptionVisual(selected)}
 
-          <Select.Value placeholder={placeholder} />
+          {renderValue ? renderValue(selected) : <Select.Value placeholder={placeholder} />}
 
-          <Select.Icon className={s.icon}>
+          <Select.Icon className={clsx(s.icon, iconClassName)}>
             <Icon name="arrow-ios-Down-outline" />
           </Select.Icon>
         </Select.Trigger>

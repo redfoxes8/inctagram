@@ -22,6 +22,14 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".next/dev/types/**/*.ts", "**/*.mts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts",
+    "node_modules/.pnpm/storybook@10.3.5_@testing-library+dom@10.4.1_prettier@3.8.2_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/storybook/dist/manager/runtime.js"
+  ],
   "exclude": ["node_modules"]
 }

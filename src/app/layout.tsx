@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import { SidebarWrapper } from "@/shared/ui/Sidebar"
+import { Header } from "@/widgets/header"
+
 import "./globals.css"
 import { StoreProvider } from "./providers/StoreProvider"
 
@@ -22,12 +23,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable}`}>
       <body>
-        <div>
-          <SidebarWrapper />
-          <main>
-            <StoreProvider>{children}</StoreProvider>
-          </main>
-        </div>
+        <Header />
+        <StoreProvider>{children}</StoreProvider>
       </body>
     </html>
   )

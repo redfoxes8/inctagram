@@ -41,6 +41,11 @@
   --light-500: #edf3fa;
   --light-700: #d5dae0;
   --light-900: #8d9094;
+
+  /* Semantic Colors */
   --background: var(--dark-700);
   --foreground: var(--light-100);
+
+  /* Animations */
+  --transition: 0.2s ease-in-out;
 }

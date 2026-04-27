@@ -1,21 +1,14 @@
 .container {
+  max-width: 360px;
   width: 100%;
+  min-height: 100%;
+  padding: 0 15px;
   margin: 0 auto;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  padding-left: 15px;
-  padding-right: 15px;
-  background-color: inherit;
-  word-break: break-all;
-  overflow-wrap: break-word;
 }
 
-@media (width >= 1200px) {
+@media screen and (width >= 769px) {
   .container {
     max-width: 1280px;
-    padding-left: 60px;
-    padding-right: 60px;
+    padding: 0 60px;
   }
 }

@@ -1,0 +1,50 @@
+.header {
+  background-color: var(--dark-700);
+  padding: 12px 0 11px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--dark-300);
+}
+
+/* .controls { */
+
+/*  display: flex; */
+
+/*  align-items: center; */
+
+/*  gap: 24px; */
+
+/* } */
+
+/* .menuIcon { */
+
+/*  width: 24px; */
+
+/*  height: 24px; */
+
+/*  display: inline-flex; */
+
+/*  align-items: center; */
+
+/*  justify-content: center; */
+
+/* } */
+
+/* .menuSvg { */
+
+/*  width: 24px; */
+
+/*  height: 24px; */
+
+/*  color: var(--light-100); */
+
+/* } */
+
+@media screen and (width >= 769px) {
+  .menuIcon {
+    display: none;
+  }
+}
