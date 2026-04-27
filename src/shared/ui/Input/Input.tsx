@@ -31,7 +31,7 @@ export const Input = ({
   return (
     <div className={clsx(s.container, { [s.disabledContainer]: disabled }, className)}>
       {label && (
-        <Label.Root htmlFor={inputId} className={s.label}>
+        <Label.Root htmlFor={inputId} className={clsx(s.label, "regular_text_14")}>
           {label}
         </Label.Root>
       )}
@@ -49,7 +49,7 @@ export const Input = ({
         )}
         <input
           id={inputId}
-          className={s.input}
+          className={clsx(s.input, "regular_text_16")}
           disabled={disabled}
           aria-invalid={!!error}
           aria-describedby={error ? `${inputId}-error` : undefined}
@@ -68,7 +68,7 @@ export const Input = ({
         )}
       </div>
       {error && (
-        <div id={`${inputId}-error`} className={s.errorMessage}>
+        <div id={`${inputId}-error`} className={clsx(s.errorMessage, "regular_text_14")}>
           {error}
         </div>
       )}
