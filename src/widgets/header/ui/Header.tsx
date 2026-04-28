@@ -1,4 +1,3 @@
-import { Icon } from "@/shared/ui/Icon"
 import { LanguageSwitcher } from "@/features/language-switcher"
 import { Container } from "@/shared/ui/Container"
 import { FlexWrapper } from "@/shared/ui/FlexWrapper"

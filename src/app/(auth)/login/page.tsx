@@ -32,7 +32,7 @@ export default function SignIn() {
                 label="Password"
                 placeholder="************"
                 className={s.input_conf}
-                rightIcon={<Icon name={"eye-outline"} />}
+                rightIcon={<Icon name={"eye-off-outline"} />}
               />
               <span className={clsx("regular_text_14", s.forgot_password)}>Forgot Password</span>
             </div>
