@@ -5,7 +5,7 @@ import s from "./Checkbox.module.css"
 import { Icon } from "../Icon"
 
 interface CheckboxProps {
-  label?: string
+  label?: React.ReactNode
   id: string
   disabled?: boolean
   checked?: boolean
@@ -23,7 +23,7 @@ export const Checkbox = ({ label, id, disabled, checked, onCheckedChange }: Chec
         onCheckedChange={onCheckedChange}
       >
         <CheckboxPrimitive.Indicator className={s.indicator}>
-          <Icon name={"checkmark-outline"} />
+          <Icon name={"checkmark-outline"} color="black" />
         </CheckboxPrimitive.Indicator>
       </CheckboxPrimitive.Root>
 

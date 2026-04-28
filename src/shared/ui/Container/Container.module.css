@@ -1,12 +1,11 @@
 .container {
-  max-width: 360px;
   width: 100%;
   min-height: 100%;
   padding: 0 15px;
   margin: 0 auto;
 }
 
-@media screen and (width >= 769px) {
+@media (width >= 769px) {
   .container {
     max-width: 1280px;
     padding: 0 60px;
