@@ -11,6 +11,7 @@ import { TextArea } from "@/shared/ui/TextArea"
 import { useState } from "react"
 import { SelectOption } from "@/shared/ui/SelectBox/SelectBox.types"
 import { SelectBox } from "@/shared/ui/SelectBox"
+import { RadioGroup } from "@/shared/ui/RadioGroup"
 
 const mockFetch = () => {
   return new Promise((resolve, reject) => {
@@ -76,12 +77,16 @@ export default function Home() {
       но если кому нечем будет заняться пожалуйста создавайте таску в Jira через PM и делайте */}
       <Image src="/icons/facebook-svgrepo-com.svg" alt="Russian" width={24} height={16} />
       <Checkbox id={"1"} />
-
+      <RadioGroup
+        options={[
+          { label: "2", value: "2" },
+          { label: "3", value: "3" },
+        ]}
+      />
       {/*Если эта страница или компонент должны быть интерактивными, добавь сверху: "use client" потом нужно будет убрать*/}
       <Button variant={"primary"} type={"button"} onClick={() => console.log("click")}>
         Click
       </Button>
-
       {/* Active */}
       <div>
         <Input
@@ -108,7 +113,6 @@ export default function Home() {
       <div>
         <Input label="Поиск" leftIcon={<Icon name="search-outline" />} placeholder="Input search" />
       </div>
-
       <Recaptcha status={recaptchaStatus} onCheckedChange={handleChange} />
       {/*Tabs*/}
       <div style={{ display: "flex", flexDirection: "column", gap: "2rem", marginTop: "2rem" }}>
@@ -121,7 +125,6 @@ export default function Home() {
           <Tabs items={[{ label: "Tabs", value: "tab", disabled: true }]} />
         </div>
       </div>
-
       {/* Text-area */}
       <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
         <div>
@@ -135,7 +138,6 @@ export default function Home() {
           <TextArea label="Text-area" disabled placeholder="Tell your story..." />
         </div>
       </div>
-
       {/* SelectBox */}
       <SelectBox
         label="Select"
