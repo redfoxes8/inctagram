@@ -1,7 +1,6 @@
 .root{
     display: flex;
     flex-direction: column;
-
 }
 .optionWrapper {
     display: flex;
@@ -12,13 +11,18 @@
     color: var(--light-100);
 }
 .item{
+    outline: none;
     background-color: transparent;
     border: none;
     position: relative;
-}
-.iconWrapper, .indicator {
     width: 36px;
     height: 36px;
+}
+.iconWrapper, .indicator {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -33,7 +37,7 @@
 }
 
 .item[data-state='checked'] .iconWrapper {
-    display: none;
+    opacity: 0;
 }
 .item::before {
     content: "";
@@ -43,19 +47,23 @@
     transform: translate(-50%, -50%) scale(0);
     width: 100%;
     height: 100%;
+    background-color: var(--dark-300);
     border-radius: 50%;
-    transition: transform 0.2s ease;
     z-index: -1;
+    transition: transform 0.2s ease, background-color 0.2s ease;
 }
-.item.active::before {
-    background-color: var(--dark-100);
+.item:focus::before {
+    transform: translate(-50%, -50%) scale(1);
+    background-color: var(--dark-500);
 }
 .item:hover::before {
     transform: translate(-50%, -50%) scale(1);
     background-color: var(--dark-300);
 }
-.item:focus-visible::before {
-    background-color: var(--dark-500);
+.item:active::before,
+.item:focus-visible::before{
+    transform: translate(-50%, -50%) scale(1);
+    background-color: var(--dark-100);
 }
 .root[data-disabled]{
     pointer-events: none;
