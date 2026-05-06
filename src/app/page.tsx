@@ -11,6 +11,7 @@ import { TextArea } from "@/shared/ui/TextArea"
 import { useState } from "react"
 import { SelectOption } from "@/shared/ui/SelectBox/SelectBox.types"
 import { SelectBox } from "@/shared/ui/SelectBox"
+import { DateRangePicker } from "@/shared/ui/DateRangePicker"
 
 const mockFetch = () => {
   return new Promise((resolve, reject) => {
@@ -30,6 +31,11 @@ const mockFetch = () => {
 
 export default function Home() {
   const [selectValue, setSelectValue] = useState("1")
+
+  //  state для DateRangePicker
+  const [selectedDate, setSelectedDate] = useState<Date>()
+  const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>()
+  const [selectedDates, setSelectedDates] = useState<Date[]>([])
 
   const options: SelectOption[] = [
     { value: "1", label: "Option 1", icon: "search-outline" },
@@ -82,6 +88,7 @@ export default function Home() {
         Click
       </Button>
 
+      {/* Input */}
       {/* Active */}
       <div>
         <Input
@@ -108,7 +115,6 @@ export default function Home() {
       <div>
         <Input label="Поиск" leftIcon={<Icon name="search-outline" />} placeholder="Input search" />
       </div>
-
       <Recaptcha status={recaptchaStatus} onCheckedChange={handleChange} />
       {/*Tabs*/}
       <div style={{ display: "flex", flexDirection: "column", gap: "2rem", marginTop: "2rem" }}>
@@ -121,7 +127,6 @@ export default function Home() {
           <Tabs items={[{ label: "Tabs", value: "tab", disabled: true }]} />
         </div>
       </div>
-
       {/* Text-area */}
       <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
         <div>
@@ -135,7 +140,6 @@ export default function Home() {
           <TextArea label="Text-area" disabled placeholder="Tell your story..." />
         </div>
       </div>
-
       {/* SelectBox */}
       <SelectBox
         label="Select"
@@ -144,6 +148,24 @@ export default function Home() {
         options={options}
         placeholder="Choose option"
       />
+      {/* DateRangePicker*/}
+      <div>
+        <DateRangePicker mode="single" value={selectedDate} onChange={setSelectedDate} label="Date" />
+
+        <DateRangePicker mode="range" value={dateRange} onChange={setDateRange} label="Date range" />
+
+        <DateRangePicker
+          mode="range"
+          value={dateRange}
+          onChange={setDateRange}
+          label="Date range"
+          error={"Error, select current month or last month"}
+        />
+
+        <DateRangePicker mode="range" value={dateRange} onChange={setDateRange} label="Date range" disabled />
+
+        <DateRangePicker mode="multiple" value={selectedDates} onChange={setSelectedDates} label="Dates multiple " />
+      </div>
     </div>
   )
 }

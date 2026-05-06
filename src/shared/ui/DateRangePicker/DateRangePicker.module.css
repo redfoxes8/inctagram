@@ -1,0 +1,310 @@
+/* stylelint-disable selector-pseudo-class-no-unknown */
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.labelRoot {
+    color: var(--light-900);
+    display: inline-flex;
+    align-items: center;
+}
+
+.labelError {
+    color: var(--danger-500);
+}
+
+.labelDisabled {
+    color: var(--dark-100);
+}
+
+.trigger {
+    width: 100%;
+    border: 1px solid var(--dark-300);
+    padding: 6px 12px;
+    background: var(--dark-700);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.trigger:is(:hover, :focus-visible, .active, .error, .disabled ) {
+    background: var(--dark-500);
+}
+
+.trigger:hover:not(.disabled) {
+    border: 1px solid var(--dark-100);
+}
+
+.trigger:focus-visible {
+    outline: 2px solid var(--accent-700);
+    outline-offset: 2px;
+}
+
+.trigger.error {
+    border: 1px solid var(--danger-500);
+}
+
+.trigger.disabled {
+    cursor: not-allowed;
+}
+
+.trigger.disabled .value {
+    color: var(--light-900);
+}
+
+.value {
+    color: var(--light-100);
+}
+
+.placeholder {
+    color: var(--light-900);
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    color: var(--light-100);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.popoverContent {
+    background: var(--dark-500);
+    border: 1px solid var(--dark-300);
+    border-radius: 2px;
+    width: auto;
+    z-index: 50;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.calendar {
+    --rdp-accent-color: var(--accent-500);
+    --rdp-accent-background-color: var(--accent-900);
+    --rdp-day-width: 28px;
+    --rdp-day-height: 28px;
+    --rdp-range_middle-background-color: var(--accent-900);
+    --rdp-range_start-background: var(--accent-900);
+    --rdp-range_end-background: var(--accent-900);
+    --rdp-today-color: var(--accent-500);
+    --rdp-nav_button-width: 36px;
+    --rdp-nav_button-height: 36px;
+
+    width: auto;
+    display: flex;
+    padding: 16px 24px;
+    color: var(--light-100);
+    background: var(--dark-500);
+}
+
+
+.calendar :global(.rdp-month) {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 260px;
+    width: 100%;
+}
+
+.calendar :global(.rdp-month_caption),
+.calendar :global(.rdp-nav) {
+    align-items: center;
+}
+
+.calendar :global(.rdp-month_caption) {
+    margin-right: auto;
+}
+
+.calendar :global(.rdp-month_grid) {
+    width: 100%;
+    margin-top: 12px;
+}
+
+.calendar :global(.rdp-month) {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 150%;
+    color: var(--light-100);
+}
+
+.calendar :global(.rdp-nav > *) {
+    background: var(--dark-100);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--rdp-nav_button-width);
+    height: var(--rdp-nav_button-height);
+    border-radius: 24px;
+    padding: 8px;
+}
+
+.calendar :global(.rdp-nav) {
+    display: inline-flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.customChevron {
+    color: var(--light-100);
+}
+
+.calendar :global(.rdp-weekday) {
+    padding: 8px 4px;
+    color: var(--light-900);
+}
+
+.calendar :global(.rdp-day) {
+    text-align: center;
+    padding: 4px;
+}
+
+.calendar :global(.rdp-day_button) {
+    border: none;
+    background-color: var(--dark-500);
+    max-width: 100%;
+    overflow-x: auto;
+    width: var(--rdp-day-width);
+    height: var(--rdp-day-height);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--light-100);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.calendar :global(.rdp-day_button:hover) {
+    background-color: var(--accent-700);
+    border-radius: 18px;
+}
+
+.calendar :global(.rdp-range_start) {
+    background-color: var(--accent-900);
+    border-top-left-radius: 18px;
+    border-bottom-left-radius: 18px;
+}
+
+.calendar :global(.rdp-range_start .rdp-day_button) {
+    background-color: var(--accent-900);
+    color: var(--light-100);
+    border-top-left-radius: 18px;
+    border-bottom-left-radius: 18px;
+}
+
+.calendar :global(.rdp-range_end) {
+    background-color: var(--accent-900);
+    border-top-right-radius: 18px;
+    border-bottom-right-radius: 18px;
+}
+
+.calendar :global(.rdp-range_end .rdp-day_button) {
+    background-color: var(--accent-900);
+    color: var(--light-100);
+    border-top-right-radius: 18px;
+    border-bottom-right-radius: 18px;
+}
+
+.calendar :global(.rdp-selected .rdp-day_button) {
+    background-color: var(--accent-900);
+    color: var(--light-100);
+}
+
+.calendar :global(.rdp-range_middle) {
+    background-color: var(--accent-900);
+    border-radius: 0;
+}
+
+.calendar :global(.rdp-range_middle .rdp-day_button) {
+    background-color: var(--accent-900);
+    color: var(--light-100);
+    border-radius: 0;
+}
+
+.calendar :global(.rdp-outside .rdp-day_button) {
+    color: var(--light-900);
+}
+
+.calendar :global(.rdp-outside.rdp-range_start .rdp-day_button) {
+    color: var(--light-100);
+}
+
+.calendar :global(.rdp-outside.rdp-range_end .rdp-day_button) {
+    color: var(--light-100);
+}
+
+.calendar :global(.rdp-outside.rdp-selected .rdp-day_button) {
+    color: var(--light-100);
+}
+
+.calendar :global(.rdp-focused .rdp-day_button) {
+    outline: 2px solid var(--accent-300);
+    border-radius: 18px;
+    outline-offset: 2px;
+}
+
+.calendar :global(.rdp-focused .rdp-day_button) {
+    outline: 2px solid var(--accent-300);
+    border-radius: 18px;
+    outline-offset: 2px;
+}
+
+.calendar .weekend[class][class] :global(.rdp-day_button) {
+    color: var(--danger-500);
+}
+
+.calendar :global(.rdp-today) :global(.rdp-day_button)[class] {
+    color: var(--accent-500);
+    font-weight: 700;
+}
+
+.calendar :global(.rdp-selected.rdp-today) :global(.rdp-day_button)[class],
+.calendar :global(.rdp-range_start.rdp-today) :global(.rdp-day_button)[class],
+.calendar :global(.rdp-range_end.rdp-today) :global(.rdp-day_button)[class] {
+    color: var(--light-100);
+}
+
+
+.calendar :global(.rdp-today) :global(.rdp-day_button):hover[class] {
+    color: var(--light-100);
+    background-color: var(--accent-700);
+}
+
+.calendar :global(.rdp-today) :global(.rdp-day_button):active[class] {
+    color: var(--light-100);
+}
+
+.calendar :global(.rdp-range_middle.rdp-today) :global(.rdp-day_button)[class] {
+    color: var(--light-100);
+}
+
+.errorMessage {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: var(--danger-500);
+}
+
+
+/* stylelint-enable selector-pseudo-class-no-unknown */
