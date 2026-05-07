@@ -12,6 +12,7 @@ import { useState } from "react"
 import { SelectOption } from "@/shared/ui/SelectBox/SelectBox.types"
 import { SelectBox } from "@/shared/ui/SelectBox"
 import { DateRangePicker } from "@/shared/ui/DateRangePicker"
+import { RadioGroup } from "@/shared/ui/RadioGroup"
 
 const mockFetch = () => {
   return new Promise((resolve, reject) => {
@@ -82,7 +83,12 @@ export default function Home() {
       но если кому нечем будет заняться пожалуйста создавайте таску в Jira через PM и делайте */}
       <Image src="/icons/facebook-svgrepo-com.svg" alt="Russian" width={24} height={16} />
       <Checkbox id={"1"} />
-
+      <RadioGroup
+        options={[
+          { label: "2", value: "2" },
+          { label: "3", value: "3" },
+        ]}
+      />
       {/*Если эта страница или компонент должны быть интерактивными, добавь сверху: "use client" потом нужно будет убрать*/}
       <Button variant={"primary"} type={"button"} onClick={() => console.log("click")}>
         Click

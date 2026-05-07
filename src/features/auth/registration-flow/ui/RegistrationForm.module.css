@@ -1,19 +1,9 @@
-.wrapper {
+.oauth_container {
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.content {
-  display: flex;
+  justify-content: center;
   flex-direction: column;
   align-items: center;
-  padding-top: 24px;
-  padding-bottom: 24px;
-  margin: 0 auto;
-  margin-top: 77px;
-  width: 100%;
-  max-width: 378px;
 }
 
 .icon_group {
@@ -58,19 +48,15 @@
 
 .button_group {
   display: flex;
+  padding-top: 6px;
   flex-direction: column;
-  padding-top: 60px;
   align-items: center;
+  gap: 18px;
 }
 
 .button_conf {
   width: 330px;
   height: 46px;
-}
-
-.registration_prompt {
-  padding-top: 18px;
-  padding-bottom: 6px;
 }
 
 .outlined_button_conf {
@@ -79,12 +65,7 @@
   height: 46px;
 }
 
-@media (width >= 378px) {
-  .content {
-    border: 1px solid var(--dark-300);
-    background-color: var(--dark-500);
-    padding: 24px;
-    border-radius: 2px;
-    margin-top: 84px;
-  }
+.checkbox_place {
+  width: 330px;
+  padding: 12px 6px;
 }

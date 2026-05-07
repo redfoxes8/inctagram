@@ -15,7 +15,8 @@ body {
   font-family: var(--font-inter), sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  max-width: 1280px;
+
+  /* max-width: 1280px; */
 }
 
 a {
@@ -28,15 +29,13 @@ ul {
   list-style: none;
 }
 
-/* main { */
+/* main {
+  flex-grow: 1;
 
-/*  flex-grow: 1; */
+  display: flex;
 
-/*  display: flex; */
-
-/*  flex-direction: column; */
-
-/* } */
+  flex-direction: column;
+} */
 
 .large {
   font-size: 26px;

@@ -4,13 +4,15 @@ import "../src/app/globals.css"
 const preview: Preview = {
   parameters: {
     backgrounds: {
-      default: "Dark-700",
-      values: [
-        {
-          name: "Dark-700",
-          value: "var(--dark-700)",
-        },
-      ],
+      options: {
+        // 👇 Default options
+        //dark: { name: "Dark", value: "#333" },
+        //light: { name: "Light", value: "#F7F9F2" },
+
+        // 👇 Add your own
+        dark: { name: "Dark", value: "var(--dark-700)" },
+        light: { name: "Light", value: "var(--light-700)" },
+      },
     },
     controls: {
       matchers: {
@@ -22,4 +24,9 @@ const preview: Preview = {
       test: "todo",
     },
   },
+  initialGlobals: {
+    // 👇 Set the initial background color
+    backgrounds: { value: "dark" },
+  },
 }
+export default preview
