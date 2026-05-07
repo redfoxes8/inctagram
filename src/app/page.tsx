@@ -11,6 +11,7 @@ import { TextArea } from "@/shared/ui/TextArea"
 import { useState } from "react"
 import { SelectOption } from "@/shared/ui/SelectBox/SelectBox.types"
 import { SelectBox } from "@/shared/ui/SelectBox"
+import { DateRangePicker } from "@/shared/ui/DateRangePicker"
 import { RadioGroup } from "@/shared/ui/RadioGroup"
 
 const mockFetch = () => {
@@ -31,6 +32,11 @@ const mockFetch = () => {
 
 export default function Home() {
   const [selectValue, setSelectValue] = useState("1")
+
+  //  state для DateRangePicker
+  const [selectedDate, setSelectedDate] = useState<Date>()
+  const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>()
+  const [selectedDates, setSelectedDates] = useState<Date[]>([])
 
   const options: SelectOption[] = [
     { value: "1", label: "Option 1", icon: "search-outline" },
@@ -87,6 +93,8 @@ export default function Home() {
       <Button variant={"primary"} type={"button"} onClick={() => console.log("click")}>
         Click
       </Button>
+
+      {/* Input */}
       {/* Active */}
       <div>
         <Input
@@ -146,6 +154,24 @@ export default function Home() {
         options={options}
         placeholder="Choose option"
       />
+      {/* DateRangePicker*/}
+      <div>
+        <DateRangePicker mode="single" value={selectedDate} onChange={setSelectedDate} label="Date" />
+
+        <DateRangePicker mode="range" value={dateRange} onChange={setDateRange} label="Date range" />
+
+        <DateRangePicker
+          mode="range"
+          value={dateRange}
+          onChange={setDateRange}
+          label="Date range"
+          error={"Error, select current month or last month"}
+        />
+
+        <DateRangePicker mode="range" value={dateRange} onChange={setDateRange} label="Date range" disabled />
+
+        <DateRangePicker mode="multiple" value={selectedDates} onChange={setSelectedDates} label="Dates multiple " />
+      </div>
     </div>
   )
 }
