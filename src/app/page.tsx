@@ -13,6 +13,7 @@ import { SelectOption } from "@/shared/ui/SelectBox/SelectBox.types"
 import { SelectBox } from "@/shared/ui/SelectBox"
 import { DateRangePicker } from "@/shared/ui/DateRangePicker"
 import { RadioGroup } from "@/shared/ui/RadioGroup"
+import { Scroll } from "@/shared/ui/Scroll"
 
 const mockFetch = () => {
   return new Promise((resolve, reject) => {
@@ -44,6 +45,8 @@ export default function Home() {
     { value: "3", label: "Option 3", icon: "person-outline" },
     { value: "4", label: "Option 4", icon: "home" },
   ]
+
+  const TAGS = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`) // Содержимое для скрола
 
   const [recaptchaStatus, setRecaptchaStatus] = useState<RecaptchaStatus>("default")
 
@@ -89,6 +92,15 @@ export default function Home() {
           { label: "3", value: "3" },
         ]}
       />
+      <Scroll style={{ width: "200px", height: "225px", border: "2px solid #ccc" }}>
+        <div style={{ padding: "15px 20px" }}>
+          <div>Tags</div>
+
+          {TAGS.map((tag) => (
+            <div key={tag}>{tag}</div>
+          ))}
+        </div>
+      </Scroll>
       {/*Если эта страница или компонент должны быть интерактивными, добавь сверху: "use client" потом нужно будет убрать*/}
       <Button variant={"primary"} type={"button"} onClick={() => console.log("click")}>
         Click
