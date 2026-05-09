@@ -15,7 +15,7 @@ RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
-RUN pnpm run build:production
+RUN pnpm run build
 
 # Стейдж запуска
 FROM node:20.11-alpine AS runner
