@@ -11,7 +11,7 @@ RUN pnpm install --frozen-lockfile
 FROM node:20.11-alpine AS builder
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
@@ -22,7 +22,7 @@ FROM node:20.11-alpine AS runner
 WORKDIR /app
 
 #  Устанавливаем pnpm ДО переключения пользователя
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 
 # Копируем необходимые файлы
 COPY --from=builder /app/package.json ./
