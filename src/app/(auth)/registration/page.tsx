@@ -1,4 +1,4 @@
-import { RegisterPage } from "@/pages/RegisterPage"
+import { RegisterPage } from "@/screens/RegisterPage"
 
 export default function SignIn() {
   return (
