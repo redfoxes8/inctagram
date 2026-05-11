@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import { Header } from "@/widgets/header"
 
 import "./globals.css"
+import { QueryProvider } from "@/app/providers/query-provider"
 import { StoreProvider } from "./providers/StoreProvider"
 
 const inter = Inter({
@@ -23,9 +24,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable}`}>
       <body>
-        <Header />
-        <StoreProvider>{children}</StoreProvider>
-        <div>SSSSSSSSSSSSSSSSSSSS</div>
+        <StoreProvider>
+          <QueryProvider>
+            <Header />
+            {children}
+          </QueryProvider>
+        </StoreProvider>
       </body>
     </html>
   )
