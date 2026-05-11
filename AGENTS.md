@@ -85,23 +85,31 @@ src/features/<feature-name>/
 
 ## Commit Message Convention
 
-Use Conventional Commits for all commit messages:
+Use Jira task key + Conventional Commits for all commit messages:
 
 ```text
-<type>[optional scope]: <description>
+<JIRA-KEY> <type>[optional scope]: <description>
 
 [optional body]
 
 [optional footer(s)]
 ````
 
+Jira task key format:
+
+```text
+<PROJECT-KEY>-<TASK-NUMBER>
+```
+
 Examples:
 
-- `feat(auth): add social login`
-- `fix(api): handle empty refresh token`
-- `refactor!: remove legacy session format`
+- `IN-1057 feat: add banner`
+- `ST-1057 fix(api): handle empty refresh token`
+- `TM-15 refactor!: remove legacy session format`
 
 Allowed types include `feat`, `fix`, `build`, `chore`, `ci`, `docs`, `perf`, `refactor`, `revert`, `style`, and `test`.
+
+Always start commit messages with the Jira task key, followed by one space, then the Conventional Commit header.
 
 Use `BREAKING CHANGE:` in the footer, or append `!` to the type/scope, when the commit introduces a breaking API change.
 
