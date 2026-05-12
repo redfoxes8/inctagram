@@ -12,8 +12,8 @@ import { Icon } from "@/shared/ui/Icon"
 import { Input } from "@/shared/ui/Input"
 
 import s from "./LoginForm.module.css"
-import { LoginRequestPayload } from "@/features/auth/types/auth-api.types"
 import { useLoginMutation } from "@/features/auth/api/use-login.mutation"
+import { LoginRequestPayload } from "@/features/auth/api/auth.type"
 
 const UNAUTHORIZED_ERROR = "Unauthorized"
 
