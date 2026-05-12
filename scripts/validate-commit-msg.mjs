@@ -1,75 +1,55 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync } from "node:fs"
 
 const commitMessageFilePath = process.argv[2]
 
 if (!commitMessageFilePath) {
-  console.error('Commit message file path is required.')
+  console.error("Commit message file path is required.")
   process.exit(1)
 }
 
-const commitMessage = readFileSync(commitMessageFilePath, 'utf8').trim()
+const commitMessage = readFileSync(commitMessageFilePath, "utf8").trim()
 
 if (!commitMessage) {
-  console.error('Commit message cannot be empty.')
+  console.error("Commit message cannot be empty.")
   process.exit(1)
 }
 
-if (commitMessage.startsWith('Merge ') || commitMessage.startsWith('Revert "')) {
+if (commitMessage.startsWith("Merge ") || commitMessage.startsWith('Revert "')) {
   process.exit(0)
 }
 
-const lines = commitMessage.split('\n')
+const lines = commitMessage.split("\n")
 const header = lines[0]
 
-const allowedTypes = [
-  'build',
-  'chore',
-  'ci',
-  'docs',
-  'feat',
-  'fix',
-  'perf',
-  'refactor',
-  'revert',
-  'style',
-  'test',
-]
+const allowedTypes = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "refactor", "revert", "style", "test"]
 
-const headerPattern = new RegExp(
-  `^(${allowedTypes.join('|')})(\\([a-z0-9./_-]+\\))?(!)?: [^\\s].+$`
-)
+const jiraKeyPattern = "[A-Z]+-[0-9]+"
+
+const conventionalCommitPattern = `(${allowedTypes.join("|")})(\\([a-z0-9./_-]+\\))?(!)?: [^\\s].+`
+
+const headerPattern = new RegExp(`^${jiraKeyPattern} ${conventionalCommitPattern}$`)
 
 if (!headerPattern.test(header)) {
   console.error(`Invalid commit message header: "${header}"`)
-  console.error('')
-  console.error('Expected format: <type>[optional scope]: <description>')
-  console.error('Examples:')
-  console.error('  feat(auth): add social login')
-  console.error('  fix(api): handle empty refresh token')
-  console.error('  refactor!: remove legacy session format')
-  console.error('')
-  console.error(`Allowed types: ${allowedTypes.join(', ')}`)
+  console.error("")
+  console.error("Expected format: <JIRA-KEY> <type>[optional scope]: <description>")
+  console.error("Examples:")
+  console.error("  IN-1057 feat: add banner")
+  console.error("  ST-1057 fix(api): handle empty refresh token")
+  console.error("  TM-15 refactor!: remove legacy session format")
+  console.error("")
+  console.error(`Allowed types: ${allowedTypes.join(", ")}`)
   process.exit(1)
 }
 
-const hasBang = header.includes('!:')
-const breakingFooterIndex = lines.findIndex(line => line.startsWith('BREAKING CHANGE:'))
+const hasBang = header.includes("!:")
+const breakingFooterIndex = lines.findIndex((line) => line.startsWith("BREAKING CHANGE:"))
 
 if (breakingFooterIndex !== -1) {
-  const hasBlankLineBeforeFooter =
-    breakingFooterIndex > 0 && lines[breakingFooterIndex - 1].trim() === ''
+  const hasBlankLineBeforeFooter = breakingFooterIndex > 0 && lines[breakingFooterIndex - 1].trim() === ""
 
   if (!hasBlankLineBeforeFooter) {
-    console.error('BREAKING CHANGE footer must be separated by a blank line.')
-    process.exit(1)
-  }
-}
-
-if (hasBang || breakingFooterIndex !== -1) {
-  const hasBreakingMarker = hasBang || breakingFooterIndex !== -1
-
-  if (!hasBreakingMarker) {
-    console.error('Breaking changes must use "!" in the header or a BREAKING CHANGE footer.')
+    console.error("BREAKING CHANGE footer must be separated by a blank line.")
     process.exit(1)
   }
 }
