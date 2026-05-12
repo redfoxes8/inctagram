@@ -9,11 +9,8 @@ export type RegistrationResponse = {
   code?: string
 } | void
 
-export type ApiErrorResponse = {
-  data: {
-    message: string
-    field: string
-  }[]
-  error: string
-  statusCode: number
+export type ApiError = {
+  code: number
+  message: string
+  extensions: any[]
 }

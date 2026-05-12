@@ -12,18 +12,19 @@ import s from "./RegistrationForm.module.css"
 import Link from "next/link"
 import { Modal } from "@/shared/ui/Modal"
 import { useState } from "react"
-import { useLazyCheckUsernameQuery, useRegistrationMutation } from "../../api/authApi"
 import { useRouter } from "next/navigation"
+import { useRegister } from "../../api/use-login"
+import { useCheckUsernameLazy } from "../../api/use-check-username"
 
 type Props = {}
 
 export function RegistrationForm({}: Props) {
-  const [registration, { isLoading }] = useRegistrationMutation()
-  const [triggerCheckUsername] = useLazyCheckUsernameQuery()
+  const { mutate, isPending, error } = useRegister()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
   const [emailValue, setEmailValue] = useState("")
+
   const {
     register,
     handleSubmit,
@@ -31,26 +32,34 @@ export function RegistrationForm({}: Props) {
     watch,
     control,
     reset,
+    setError,
   } = useForm({ mode: "onBlur" })
   const router = useRouter()
+  const termsValue = watch("terms")
 
   const passwordValue = watch("password")
-  watch(["username", "email", "password", "terms"])
+  const { mutateAsync: triggerCheckUsername } = useCheckUsernameLazy()
 
-  const onSubmit = async (data: any) => {
-    try {
-      await registration({
-        username: data.username,
-        email: data.email,
-        password: data.password,
-        passwordConfirmation: data.passwordConfirmation,
-      }).unwrap()
+  const onSubmit = (data: any) => {
+    mutate(data, {
+      //выпилить подтвержденный пароль
+      onSuccess: () => {
+        setEmailValue(data.email)
+        setIsOpen(true)
+      },
+      onError: (err: any) => {
+        const serverMessage = err?.message || "Something went wrong"
 
-      setEmailValue(data.email)
-      setIsOpen(true)
-    } catch (err) {
-      console.error("Registration error:", err)
-    }
+        if (serverMessage.includes("email")) {
+          setError("email", {
+            type: "server",
+            message: serverMessage,
+          })
+        } else {
+          console.error("General error:", serverMessage)
+        }
+      },
+    })
   }
 
   const handleClick = () => {
@@ -95,9 +104,8 @@ export function RegistrationForm({}: Props) {
                 if (value.length < 6) return true
 
                 try {
-                  const result = await triggerCheckUsername(value).unwrap()
-
-                  return result.available || "This username is already taken"
+                  const result = await triggerCheckUsername(value)
+                  return result.available || "User with this username is already registered"
                 } catch (error) {
                   return "Server error"
                 }
@@ -114,7 +122,7 @@ export function RegistrationForm({}: Props) {
               required: "Enter your email",
               pattern: {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Invalid email format",
+                message: "The email must match the format example@example.com",
               },
             })}
           />
@@ -133,8 +141,8 @@ export function RegistrationForm({}: Props) {
             error={errors.password?.message as string}
             {...register("password", {
               required: "Enter your password",
-              minLength: { value: 6, message: "Min length is 6" },
-              maxLength: { value: 20, message: "Max length is 20" },
+              minLength: { value: 6, message: "Minimum number of characters 6" },
+              maxLength: { value: 20, message: "Maximum number of characters 20" },
               validate: {
                 hasNumber: (v) => /[0-9]/.test(v) || "Must contain at least one number",
                 hasUpper: (v) => /[A-Z]/.test(v) || "Must contain at least one uppercase letter",
@@ -147,7 +155,7 @@ export function RegistrationForm({}: Props) {
 
           <Input
             label="Password confirmation"
-            type={showPassword ? "text" : "password"}
+            type={showConfirmPassword ? "text" : "password"}
             placeholder="************"
             className={s.input_conf}
             rightIcon={
@@ -192,8 +200,8 @@ export function RegistrationForm({}: Props) {
         </div>
 
         <div className={s.button_group}>
-          <Button className={clsx(s.button_conf, "h3")} disabled={!isGroupValid || isLoading}>
-            {isLoading ? "Sending..." : "Sign Up"}
+          <Button className={clsx(s.button_conf, "h3")} disabled={!isGroupValid || isPending || !termsValue}>
+            {isPending ? "Checking..." : "Sign Up"}
           </Button>
           <span className={"regular_text_16"}>Do you have an account?</span>
           <Button
