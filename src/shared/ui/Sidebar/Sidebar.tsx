@@ -6,7 +6,9 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import clsx from "clsx"
 import s from "./Sidebar.module.css"
-import { Icon, IconName } from "../Icon"
+import { Icon, type IconName } from "../Icon"
+
+type SidebarItemState = "default" | "hover" | "focus" | "active" | "disabled"
 
 type SidebarItem = {
   id: string
@@ -24,6 +26,7 @@ type Props = {
 
 export const Sidebar = ({ className = "", onLogout }: Props) => {
   const pathname = usePathname()
+
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
   const [focusedItem, setFocusedItem] = useState<string | null>(null)
 
@@ -68,13 +71,35 @@ export const Sidebar = ({ className = "", onLogout }: Props) => {
     return pathname?.startsWith(`${item.href}/`) || pathname === item.href
   }
 
-  const getItemState = (item: SidebarItem) => {
+  const getItemState = (item: SidebarItem): SidebarItemState => {
     if (item.disabled) return "disabled"
     if (item.id === "logout") return "default"
     if (isActive(item)) return "active"
     if (focusedItem === item.id) return "focus"
     if (hoveredItem === item.id) return "hover"
     return "default"
+  }
+
+  const getStateClassName = (state: SidebarItemState) => {
+    switch (state) {
+      case "active":
+        return s.active
+
+      case "focus":
+        return s.focus
+
+      case "hover":
+        return s.hover
+
+      case "disabled":
+        return s.disabled
+
+      case "default":
+        return s.default
+
+      default:
+        return undefined
+    }
   }
 
   const handleLogout = () => {
@@ -88,22 +113,30 @@ export const Sidebar = ({ className = "", onLogout }: Props) => {
     const state = getItemState(item)
     const isItemActive = state === "active"
     const iconName = isItemActive ? item.iconSolid : item.icon
+
+    const navLinkClassName = clsx(s.navLink, getStateClassName(state))
+
+    const commonProps = {
+      className: navLinkClassName,
+      "data-state": state,
+      "data-id": item.id,
+      onMouseEnter: () => setHoveredItem(item.id),
+      onMouseLeave: () => setHoveredItem(null),
+      onFocus: () => setFocusedItem(item.id),
+      onBlur: () => setFocusedItem(null),
+    }
+
     const isLogout = item.id === "logout"
 
     if (isLogout) {
       return (
         <NavigationMenu.Item key={item.id} className={s.navigationItem}>
           <button
+            type="button"
             onClick={handleLogout}
-            className={clsx(s.navLink, s[state])}
-            data-state={state}
-            data-id={item.id}
-            onMouseEnter={() => setHoveredItem(item.id)}
-            onMouseLeave={() => setHoveredItem(null)}
-            onFocus={() => setFocusedItem(item.id)}
-            onBlur={() => setFocusedItem(null)}
             disabled={item.disabled}
             aria-label={item.label}
+            {...commonProps}
           >
             <span className={s.icon}>
               <Icon name={iconName} />
@@ -119,27 +152,15 @@ export const Sidebar = ({ className = "", onLogout }: Props) => {
         <Link
           href={item.disabled ? "#" : item.href}
           prefetch={!item.disabled}
-          className={clsx(s.navLink, s[state])}
-          data-state={state}
-          data-id={item.id}
-          onMouseEnter={() => setHoveredItem(item.id)}
-          onMouseLeave={() => setHoveredItem(null)}
-          onFocus={() => setFocusedItem(item.id)}
-          onBlur={() => setFocusedItem(null)}
           aria-disabled={item.disabled}
           aria-current={isItemActive ? "page" : undefined}
           tabIndex={item.disabled ? -1 : 0}
+          {...commonProps}
         >
           <span className={s.icon}>
             <Icon name={iconName} />
           </span>
-          <span
-            className={clsx(s.label, {
-              [s.labelActive]: isItemActive,
-            })}
-          >
-            {item.label}
-          </span>
+          <span className={s.label}>{item.label}</span>
         </Link>
       </NavigationMenu.Item>
     )
