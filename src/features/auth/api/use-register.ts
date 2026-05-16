@@ -17,7 +17,8 @@ export const useRegister = () => {
         throw new Error(errorData.message || "Ошибка регистрации")
       }
 
-      return response.json()
+      const text = await response.text()
+      return text ? JSON.parse(text) : {}
     },
     onSuccess: (data) => {
       console.log("Успех: ", data)

@@ -1,9 +1,9 @@
-import { SuccessPage } from "@/pages/SuccessPage"
+import { RegisterPage } from "@/screens/register-page"
 
-export default function Success() {
+export default function SignIn() {
   return (
     <main style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <SuccessPage />
+      <RegisterPage />
     </main>
   )
 }

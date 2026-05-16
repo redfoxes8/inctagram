@@ -1,1 +1,0 @@
-export { SuccessPage } from "./SuccessPage"

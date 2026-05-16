@@ -1,25 +1,24 @@
 "use client"
 
+import Link from "next/link"
+import clsx from "clsx"
+import { Controller, useForm } from "react-hook-form"
+import { Modal } from "@/shared/ui/Modal"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { useRegister } from "../../api/use-register"
+import { useCheckUsernameLazy } from "../../api/use-check-username"
+
+import s from "./RegistrationForm.module.css"
 import Image from "next/image"
 import { Icon } from "@/shared/ui/Icon"
 import { Input } from "@/shared/ui/Input"
 import { Checkbox } from "@/shared/ui/Checkbox"
 import { Button } from "@/shared/ui/Button"
-import clsx from "clsx"
-import { Controller, useForm } from "react-hook-form"
 
-import s from "./RegistrationForm.module.css"
-import Link from "next/link"
-import { Modal } from "@/shared/ui/Modal"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { useRegister } from "../../api/use-login"
-import { useCheckUsernameLazy } from "../../api/use-check-username"
-
-type Props = {}
-
-export function RegistrationForm({}: Props) {
-  const { mutate, isPending, error } = useRegister()
+export function RegistrationForm() {
+  const router = useRouter()
+  const { mutate, isPending } = useRegister()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
@@ -33,18 +32,19 @@ export function RegistrationForm({}: Props) {
     control,
     reset,
     setError,
-  } = useForm({ mode: "onBlur" })
-  const router = useRouter()
-  const termsValue = watch("terms")
+  } = useForm({ mode: "onChange" })
 
+  const termsValue = watch("terms")
   const passwordValue = watch("password")
+
   const { mutateAsync: triggerCheckUsername } = useCheckUsernameLazy()
 
-  const onSubmit = (data: any) => {
-    mutate(data, {
-      //выпилить подтвержденный пароль
+  const onSubmit = (formData: any) => {
+    const { terms, ...payload } = formData
+
+    mutate(payload, {
       onSuccess: () => {
-        setEmailValue(data.email)
+        setEmailValue(formData.email)
         setIsOpen(true)
       },
       onError: (err: any) => {
@@ -56,7 +56,7 @@ export function RegistrationForm({}: Props) {
             message: serverMessage,
           })
         } else {
-          console.error("General error:", serverMessage)
+          console.error(serverMessage)
         }
       },
     })

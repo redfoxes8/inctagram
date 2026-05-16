@@ -17,18 +17,17 @@
 }
 
 .bro_img {
-  margin-top: 72px;
+  margin-top: 66px;
 }
 
 .confirmed {
   padding-top: 19px;
-  padding-bottom: 54px;
 }
 
 .button_mobileOnly {
   width: 330px;
   height: 46px;
-  padding-top: 46px;
+  margin-top: 46px;
   display: block;
 }
 
@@ -46,12 +45,17 @@
   }
 
   .bro_img {
-    margin-top: 66px;
+    margin-top: 72px;
   }
 
   .button_mobileOnly {
     width: 330px;
     height: 46px;
     display: none;
+  }
+
+  .confirmed {
+    padding-top: 19px;
+    padding-bottom: 54px;
   }
 }

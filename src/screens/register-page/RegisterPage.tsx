@@ -3,9 +3,7 @@ import s from "./RegisterPage.module.css"
 
 import { RegistrationForm } from "@/features/auth/registration-flow"
 
-type Props = {}
-
-export function RegisterPage({}: Props) {
+export function RegisterPage() {
   return (
     <Container>
       <div className={s.content}>
