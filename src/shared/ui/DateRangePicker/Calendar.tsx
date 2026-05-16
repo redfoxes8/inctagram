@@ -21,11 +21,11 @@ export const Calendar = ({ mode, selected, onSelect, disabled }: any) => {
       className={s.calendar}
       modifiers={{ weekend: isWeekend }}
       modifiersClassNames={{
-        selected: s.selectedDay,
-        range_start: s.rangeStart,
-        range_end: s.rangeEnd,
-        range_middle: s.rangeMiddle,
-        weekend: s.weekend,
+        selected: s.selectedDay ?? "",
+        range_start: s.rangeStart ?? "",
+        range_end: s.rangeEnd ?? "",
+        range_middle: s.rangeMiddle ?? "",
+        weekend: s.weekend ?? "",
       }}
       components={{
         Chevron: ({ orientation }) => (

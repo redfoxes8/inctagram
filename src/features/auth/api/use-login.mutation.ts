@@ -1,27 +1,21 @@
 import { useMutation } from "@tanstack/react-query"
 
-import { localStorageKeys, type LoginRequestPayload, LoginResponse } from "../types/auth-api.types"
-
-async function login(payload: LoginRequestPayload): Promise<LoginResponse> {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`, {
-    method: "POST",
-    headers: {
-      accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  })
-
-  if (!response.ok) {
-    throw new Error("Login failed")
-  }
-
-  return response.json()
-}
+import { client } from "@/shared/api/client"
+import { localStorageKeys, LoginRequestPayload, LoginResponse } from "@/features/auth/api/auth.type"
 
 export const useLoginMutation = () => {
-  return useMutation({
-    mutationFn: login,
+  return useMutation<LoginResponse, Error, LoginRequestPayload>({
+    mutationFn: async (payload: LoginRequestPayload) => {
+      const clientData = await client.POST("/api/v1/auth/login", {
+        body: payload,
+      })
+
+      if (!clientData) {
+        throw new Error("Login failed")
+      }
+
+      return clientData.data as LoginResponse
+    },
 
     onSuccess: async (data) => {
       localStorage.setItem(localStorageKeys.accessToken, data.accessToken)

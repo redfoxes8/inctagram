@@ -14,13 +14,13 @@ export const TextArea = ({ label, error, disabled, id, className, rows = 4, ...p
   const textareaId = id || label?.toLowerCase().replace(/\s/g, "-")
 
   return (
-    <div className={clsx(s.container, { [s.disabledContainer]: disabled }, className)}>
+    <div className={clsx(s.container, disabled && s.disabledContainer, className)}>
       {label && (
         <Label.Root htmlFor={textareaId} className={s.label}>
           {label}
         </Label.Root>
       )}
-      <div className={clsx(s.textareaWrapper, { [s.error]: error, [s.disabled]: disabled })}>
+      <div className={clsx(s.textareaWrapper, error && s.error, disabled && s.disabled)}>
         <textarea
           id={textareaId}
           className={s.textarea}

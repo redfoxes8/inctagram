@@ -37,7 +37,7 @@ export default function Home() {
   //  state для DateRangePicker
   const [selectedDate, setSelectedDate] = useState<Date>()
   const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>()
-  const [selectedDates, setSelectedDates] = useState<Date[]>([])
+  const [selectedDates, setSelectedDates] = useState<Date[] | undefined>([])
 
   const options: SelectOption[] = [
     { value: "1", label: "Option 1", icon: "search-outline" },

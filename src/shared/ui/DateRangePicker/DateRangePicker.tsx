@@ -11,6 +11,8 @@ import { getDisplayValue } from "./formatters"
 
 type DatePickerMode = "single" | "range" | "multiple"
 
+type TriggerState = "default" | "hover" | "active" | "error" | "disabled"
+
 type BaseProps = {
   error?: string
   disabled?: boolean
@@ -57,7 +59,7 @@ export function DateRangePicker(props: DateRangePickerProps) {
     }
   }
 
-  const getTriggerState = () => {
+  const getTriggerState = (): TriggerState => {
     if (disabled) return "disabled"
     if (error) return "error"
     if (open) return "active"
@@ -65,25 +67,37 @@ export function DateRangePicker(props: DateRangePickerProps) {
     return "default"
   }
 
+  const getTriggerStateClassName = (state: TriggerState) => {
+    switch (state) {
+      case "active":
+        return s.active
+      case "hover":
+        return s.hover
+      case "error":
+        return s.error
+      case "disabled":
+        return s.disabled
+      case "default":
+        return s.default
+    }
+  }
+
+  const triggerState = getTriggerState()
+
   return (
     <div className={s.container}>
-      <Label.Root
-        className={clsx(s.labelRoot, "regular_text_14", {
-          [s.labelError]: error,
-          [s.labelDisabled]: disabled,
-        })}
-      >
+      <Label.Root className={clsx(s.labelRoot, "regular_text_14", error && s.labelError, disabled && s.labelDisabled)}>
         {label}
       </Label.Root>
 
       <Popover.Root open={open && !disabled} onOpenChange={setOpen}>
         <Popover.Trigger asChild>
           <button
-            className={clsx(s.trigger, s[getTriggerState()], "medium_text_14")}
+            className={clsx(s.trigger, getTriggerStateClassName(triggerState), "medium_text_14")}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            <span className={clsx(s.value, "regular_text_16", { [s.placeholder]: !value })}>{displayValue}</span>
+            <span className={clsx(s.value, "regular_text_16", !value && s.placeholder)}>{displayValue}</span>
             <Icon className={s.icon} name="calendar" />
           </button>
         </Popover.Trigger>

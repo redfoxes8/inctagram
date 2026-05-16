@@ -29,13 +29,13 @@ export const Input = ({
   const inputId = id || label?.toLowerCase().replace(/\s/g, "-")
 
   return (
-    <div className={clsx(s.container, { [s.disabledContainer]: disabled }, className)}>
+    <div className={clsx(s.container, disabled && s.disabledContainer, className)}>
       {label && (
         <Label.Root htmlFor={inputId} className={clsx(s.label, "regular_text_14")}>
           {label}
         </Label.Root>
       )}
-      <div className={clsx(s.inputWrapper, { [s.error]: error, [s.disabled]: disabled })}>
+      <div className={clsx(s.inputWrapper, error && s.error, disabled && s.disabled)}>
         {leftIcon && (
           <button
             type="button"
