@@ -1,0 +1,61 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  margin: 0 auto;
+  margin-top: 77px;
+  width: 100%;
+  max-width: 378px;
+}
+
+.button {
+  width: 330px;
+  height: 46px;
+  display: none;
+}
+
+.bro_img {
+  margin-top: 66px;
+}
+
+.confirmed {
+  padding-top: 19px;
+}
+
+.button_mobileOnly {
+  width: 330px;
+  height: 46px;
+  margin-top: 46px;
+  display: block;
+}
+
+@media (width >= 378px) {
+  .content {
+    padding: 24px;
+    border-radius: 2px;
+    margin-top: 84px;
+  }
+
+  .button {
+    width: 330px;
+    height: 46px;
+    display: block;
+  }
+
+  .bro_img {
+    margin-top: 72px;
+  }
+
+  .button_mobileOnly {
+    width: 330px;
+    height: 46px;
+    display: none;
+  }
+
+  .confirmed {
+    padding-top: 19px;
+    padding-bottom: 54px;
+  }
+}

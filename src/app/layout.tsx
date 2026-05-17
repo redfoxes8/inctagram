@@ -4,7 +4,6 @@ import { Header } from "@/widgets/header"
 
 import "./globals.css"
 import { QueryProvider } from "@/app/providers/query-provider"
-import { StoreProvider } from "./providers/StoreProvider"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,12 +23,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable}`}>
       <body>
-        <StoreProvider>
-          <QueryProvider>
-            <Header />
-            {children}
-          </QueryProvider>
-        </StoreProvider>
+        <QueryProvider>
+          <Header />
+          {children}
+        </QueryProvider>
       </body>
     </html>
   )

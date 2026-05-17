@@ -1,0 +1,1 @@
+export { VerificationExpiredPage } from "./VerificationExpiredPage"

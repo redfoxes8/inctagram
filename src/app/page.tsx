@@ -102,7 +102,7 @@ export default function Home() {
         </div>
       </Scroll>
       {/*Если эта страница или компонент должны быть интерактивными, добавь сверху: "use client" потом нужно будет убрать*/}
-      <Button variant={"primary"} type={"button"} onClick={() => console.log("click")}>
+      <Button variant={"primary"} type={"button"}>
         Click
       </Button>
 
@@ -182,7 +182,7 @@ export default function Home() {
 
         <DateRangePicker mode="range" value={dateRange} onChange={setDateRange} label="Date range" disabled />
 
-        <DateRangePicker mode="multiple" value={selectedDates} onChange={setSelectedDates} label="Dates multiple " />
+        {/* <DateRangePicker mode="multiple" value={selectedDates} onChange={setSelectedDates} label="Dates multiple " /> */}
       </div>
     </div>
   )

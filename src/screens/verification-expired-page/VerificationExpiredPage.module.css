@@ -1,0 +1,80 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  margin: 0 auto;
+  margin-top: 77px;
+  width: 100%;
+  max-width: 378px;
+}
+
+.button {
+  width: 330px;
+  height: 46px;
+  display: none;
+}
+
+.rafiki_img {
+  margin-top: 30px;
+  width: 330px;
+  height: 246px;
+}
+
+.description {
+  padding-top: 13px;
+  text-align: center;
+}
+
+.button_mobileOnly {
+  width: 330px;
+  height: 46px;
+  margin-top: 42px;
+  display: block;
+}
+
+.input_conf {
+  display: block;
+}
+
+@media (width >= 378px) {
+  .content {
+    padding: 24px;
+    border-radius: 2px;
+    margin-top: 84px;
+  }
+
+  .active_group {
+    margin-top: 30px;
+  }
+
+  .button {
+    width: 229px;
+    height: 46px;
+    margin-top: 24px;
+    display: block;
+  }
+
+  .rafiki_img {
+    margin-top: 72px;
+    width: 440px;
+    height: 350px;
+  }
+
+  .button_mobileOnly {
+    width: 330px;
+    height: 46px;
+    display: none;
+  }
+
+  .input_conf {
+    width: 229px;
+    display: none;
+  }
+
+  .confirmed {
+    padding-top: 19px;
+    padding-bottom: 54px;
+  }
+}
