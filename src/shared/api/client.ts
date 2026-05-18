@@ -1,6 +1,6 @@
 import createClient, { Middleware } from "openapi-fetch"
 import { paths } from "@/shared/api/schema"
-import { localStorageKeys } from "@/features/auth/api/auth.type"
+import { localStorageKeys } from "@/features/auth/types/auth-api.types"
 
 export const client = createClient<paths>({
   baseUrl: "https://main-gateway-service.nymbi.org",
