@@ -6,7 +6,7 @@ export const useConfirmEmail = () => {
     mutationFn: async (code: string) => {
       const params = new URLSearchParams({ code })
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/confirm-email?${params}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/auth/confirm-email?${params}`, {
         method: "POST",
         headers: {
           Accept: "application/json",
