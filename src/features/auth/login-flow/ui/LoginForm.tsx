@@ -95,7 +95,7 @@ export function LoginForm() {
         </Button>
         <span className={clsx("regular_text_16", s.registration_prompt)}>Don’t have an account?</span>
         <Button asChild variant="outlined" className={s.outlined_button_conf}>
-          <Link href="/registration">Sign Up</Link>
+          <Link href="/register">Sign Up</Link>
         </Button>
       </div>
     </form>

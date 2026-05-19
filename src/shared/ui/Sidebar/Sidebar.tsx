@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { ComponentPropsWithoutRef, useState } from "react"
 import * as NavigationMenu from "@radix-ui/react-navigation-menu"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -22,9 +22,9 @@ type SidebarItem = {
 type Props = {
   className?: string
   onLogout?: () => void
-}
+} & ComponentPropsWithoutRef<"aside">
 
-export const Sidebar = ({ className = "", onLogout }: Props) => {
+export const Sidebar = ({ className = "", onLogout, ...rest }: Props) => {
   const pathname = usePathname()
 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
@@ -167,7 +167,7 @@ export const Sidebar = ({ className = "", onLogout }: Props) => {
   }
 
   return (
-    <aside className={clsx(s.sidebar, className)}>
+    <aside className={clsx(s.sidebar, className)} {...rest}>
       <NavigationMenu.Root className={s.navigationRoot}>
         <NavigationMenu.List className={s.navigationList}>
           <div className={s.mainNavGroup}>{mainNavItems.map(renderNavItem)}</div>

@@ -4,923 +4,1526 @@
  */
 
 export interface paths {
-  "/api/v1/gateway-testing/test-log": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations["testLog"]
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  "/api/v1/prisma/prisma-test": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get all users from DB (Test)
-     * @description Returns a raw list of all users from the Prisma database. Only for testing purposes.
-     */
-    get: operations["prismaTest"]
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  "/api/v1/auth/registration": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Registration
-     * @description Register a new user.
-     */
-    post: operations["registration"]
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  "/api/v1/auth/confirm-email": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Confirm email
-     * @description Confirm user email using the code sent via email.
-     */
-    post: operations["confirmEmail"]
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  "/api/v1/auth/login": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Login
-     * @description Login with username/email and password. Returns an access token and sets a refresh token in cookies.
-     */
-    post: operations["login"]
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  "/api/v1/auth/password-recovery": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Password recovery
-     * @description Request a password recovery email.
-     */
-    post: operations["passwordRecovery"]
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  "/api/v1/auth/change-password": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Change password
-     * @description Change password using the recovery code.
-     */
-    post: operations["newPassword"]
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  "/api/v1/auth/logout": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Logout
-     * @description Logout the user and clear the session.
-     */
-    post: operations["logout"]
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  "/api/v1/auth/google/client-id": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get Google Client ID
-     * @description Returns the Google Client ID for frontend OAuth initialization.
-     */
-    get: operations["getGoogleClientId"]
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  "/api/v1/auth/google/login": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Google Login & Registration
-     * @description Universal endpoint for Google OAuth2. If the user does not exist, it registers them automatically. If the user exists, it logs them in. In both cases, it returns an accessToken in the body and sets a refreshToken in HttpOnly cookies. No additional requests are needed after a successful call.
-     */
-    post: operations["googleLogin"]
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  "/api/v1/users/check-username": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Check if username is available
-     * @description Checks whether the provided username is already taken by another user.
-     */
-    get: operations["checkUsername"]
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  "/api/v1/sessions/my-devices": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get all active sessions
-     * @description Returns a list of all active sessions for the current user.
-     */
-    get: operations["myDevices"]
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  "/api/v1/sessions/deactivate-one/{deviceId}": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    /**
-     * Deactivate a session
-     * @description Deactivate a specific session by its device ID.
-     */
-    delete: operations["deactivateOne"]
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  "/api/v1/sessions/deactivate-all": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    /**
-     * Deactivate all other sessions
-     * @description Terminates all active sessions for the current user, except for the current session.
-     */
-    delete: operations["deactivateAll"]
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
+    "/api/v1/gateway-testing/test-log": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["testLog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/prisma/prisma-test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all users from DB (Test)
+         * @description Returns a raw list of all users from the Prisma database. Only for testing purposes.
+         */
+        get: operations["prismaTest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/registration": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Registration
+         * @description Register a new user.
+         */
+        post: operations["registration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/registration-email-resending": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Resend registration confirmation email */
+        post: operations["registrationEmailResending"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/confirm-email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm email
+         * @description Confirm user email using the code sent via email.
+         */
+        post: operations["confirmEmail"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Login
+         * @description Login with username/email and password. Returns an access token and sets a refresh token in cookies.
+         */
+        post: operations["login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/refresh-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Refresh access and refresh tokens
+         * @description Uses a valid refresh token from cookies to generate a new token pair.
+         */
+        post: operations["refreshToken"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/password-recovery": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Password recovery
+         * @description Request a password recovery email.
+         */
+        post: operations["passwordRecovery"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/change-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change password
+         * @description Change password using the recovery code.
+         */
+        post: operations["newPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Logout
+         * @description Logout the user and clear the session.
+         */
+        post: operations["logout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/google/client-id": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Google Client ID
+         * @description Returns the Google Client ID for frontend OAuth initialization.
+         */
+        get: operations["getGoogleClientId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/google/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Google Login & Registration
+         * @description Universal endpoint for Google OAuth2. If the user does not exist, it registers them automatically. If the user exists, it logs them in. In both cases, it returns an accessToken in the body and sets a refreshToken in HttpOnly cookies. No additional requests are needed after a successful call.
+         */
+        post: operations["googleLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/check-username": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Check if username is available
+         * @description Checks whether the provided username is already taken by another user.
+         */
+        get: operations["checkUsername"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sessions/my-devices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all active sessions
+         * @description Returns a list of all active sessions for the current user.
+         */
+        get: operations["myDevices"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sessions/deactivate-one/{deviceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Deactivate a session
+         * @description Deactivate a specific session by its device ID.
+         */
+        delete: operations["deactivateOne"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sessions/deactivate-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Deactivate all other sessions
+         * @description Terminates all active sessions for the current user, except for the current session.
+         */
+        delete: operations["deactivateAll"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create post
+         * @description Creates a post through Post-MS. The ownerId is taken from JWT only.
+         */
+        post: operations["createPost"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/posts/feed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get current user feed
+         * @description Returns current user posts through Post-MS. Cursor is opaque and passed to Post-MS without parsing.
+         */
+        get: operations["getFeed"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/posts/{postId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete post
+         * @description Deletes a post through Post-MS. Post-MS makes the final ownership decision using ownerId from JWT.
+         */
+        delete: operations["deletePost"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/files/upload-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Generate signed upload URL (Generic / Post Image)
+         * @description Requests a signed upload URL from File-MS.
+         *
+         *           **Business Context:** This generic endpoint implicitly maps the upload to the `POST_IMAGE` domain type.
+         *           For other domain types (e.g., AVATAR), dedicated endpoints (like `/users/avatar/upload-url`) should be used to automatically enforce the correct business context.
+         *
+         *           The `ownerId` is securely extracted from the JWT token.
+         */
+        post: operations["generateUploadUrl"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
-export type webhooks = Record<string, never>
+export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    RegisterUserDto: {
-      /**
-       * @description Unique username
-       * @example cool_user
-       */
-      username: string
-      /**
-       * Format: email
-       * @description User email
-       * @example user@example.com
-       */
-      email: string
-      /**
-       * @description User password
-       * @example StrongPassword123!
-       */
-      password: string
-      /**
-       * @description Password confirmation
-       * @example StrongPassword123!
-       */
-      passwordConfirmation?: string
-    }
-    LoginDTO: {
-      /**
-       * @description Username or Email. Minimum length for username is 6, maximum 30. Email format is also supported.
-       * @example cool_user
-       */
-      usernameOrEmail: string
-      /**
-       * @description User password. Must contain 0-9, a-z, A-Z, and special characters.
-       * @example StrongPassword123!
-       */
-      password: string
-    }
-    PasswordRecoveryDto: {
-      /**
-       * Format: email
-       * @description User email for recovery
-       * @example user@example.com
-       */
-      email: string
-    }
-    ChangePasswordDTO: {
-      /**
-       * @description Recovery code sent via email
-       * @example 123456-abc-...
-       */
-      recoveryCode: string
-      /**
-       * @description New password for the user
-       * @example NewStrongPassword123!
-       */
-      newPassword: string
-    }
-    GoogleLoginDto: {
-      /**
-       * @description Google authorization code
-       * @example 4/0AdQt8qi...
-       */
-      code: string
-      /**
-       * @description Optional username for new users
-       * @example google_user
-       */
-      username?: string
-      /**
-       * @description Redirect URI used in Google console
-       * @example http://localhost:3000/auth/google/callback
-       */
-      redirectUri?: string
-    }
-    SessionViewModel: {
-      /**
-       * @description IP address of the device
-       * @example 192.168.1.1
-       */
-      ip: string
-      /**
-       * @description Device title (Browser / OS)
-       * @example Chrome / Windows
-       */
-      title: string
-      /**
-       * @description Last active date in ISO format
-       * @example 2023-10-10T14:48:00.000Z
-       */
-      lastActiveDate: string
-      /**
-       * @description Unique device identifier
-       * @example 123e4567-e89b-12d3-a456-426614174000
-       */
-      deviceId: string
-    }
-  }
-  responses: never
-  parameters: never
-  requestBodies: never
-  headers: never
-  pathItems: never
+    schemas: {
+        RegisterUserDto: {
+            /**
+             * @description Unique username
+             * @example cool_user
+             */
+            username: string;
+            /**
+             * Format: email
+             * @description User email
+             * @example user@example.com
+             */
+            email: string;
+            /**
+             * @description User password
+             * @example StrongPassword123!
+             */
+            password: string;
+        };
+        EmailResendDto: {
+            /**
+             * Format: email
+             * @description User email
+             * @example user@example.com
+             */
+            email: string;
+        };
+        LoginDTO: {
+            /**
+             * @description Username or Email. Minimum length for username is 6, maximum 30. Email format is also supported.
+             * @example cool_user
+             */
+            usernameOrEmail: string;
+            /**
+             * @description User password. Must contain 0-9, a-z, A-Z, and special characters.
+             * @example StrongPassword123!
+             */
+            password: string;
+        };
+        LoginResponseDto: {
+            /**
+             * @description JWT access token
+             * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+             */
+            accessToken: string;
+        };
+        PasswordRecoveryDto: {
+            /**
+             * Format: email
+             * @description User email for recovery
+             * @example user@example.com
+             */
+            email: string;
+        };
+        ChangePasswordDTO: {
+            /**
+             * @description Recovery code sent via email
+             * @example 123456-abc-...
+             */
+            recoveryCode: string;
+            /**
+             * @description New password for the user
+             * @example NewStrongPassword123!
+             */
+            newPassword: string;
+        };
+        GoogleLoginDto: {
+            /**
+             * @description Google authorization code
+             * @example 4/0AdQt8qi...
+             */
+            code: string;
+            /**
+             * @description Optional username for new users
+             * @example google_user
+             */
+            username?: string;
+            /**
+             * @description Redirect URI used in Google console
+             * @example http://localhost:3000/auth/google/callback
+             */
+            redirectUri?: string;
+        };
+        SessionViewModel: {
+            /**
+             * @description IP address of the device
+             * @example 192.168.1.1
+             */
+            ip: string;
+            /**
+             * @description Device title (Browser / OS)
+             * @example Chrome / Windows
+             */
+            title: string;
+            /**
+             * @description Last active date in ISO format
+             * @example 2023-10-10T14:48:00.000Z
+             */
+            lastActiveDate: string;
+            /**
+             * @description Unique device identifier
+             * @example 123e4567-e89b-12d3-a456-426614174000
+             */
+            deviceId: string;
+        };
+        CreatePostDto: {
+            /**
+             * @description Post description
+             * @example My first Inctagram post
+             */
+            description: string;
+            /**
+             * @description Uploaded file identifiers returned by File-MS
+             * @example [
+             *       "a9f5e3b1-1c4f-4f2c-8c89-7d4e9ad4d7b1"
+             *     ]
+             */
+            fileIds: string[];
+        };
+        PostImageResponseDto: {
+            /** @example image-id */
+            id: string;
+            /** @example file-id */
+            fileId: string;
+            /** @example https://cdn.nymbi.org/posts/file-id.jpg */
+            url: string;
+            /** @example 0 */
+            order: number;
+        };
+        PostResponseDto: {
+            /** @example post-id */
+            id: string;
+            /** @example user-id */
+            ownerId: string;
+            /** @example My first Inctagram post */
+            description: string;
+            images: components["schemas"]["PostImageResponseDto"][];
+            /** @example 2026-05-12T10:00:00.000Z */
+            createdAt: string;
+            /** @example 2026-05-12T10:00:00.000Z */
+            updatedAt: string;
+        };
+        CreatePostResponseDto: {
+            post: components["schemas"]["PostResponseDto"];
+        };
+        GetFeedResponseDto: {
+            posts: components["schemas"]["PostResponseDto"][];
+            /**
+             * @description Opaque Base64 cursor for the next page
+             * @example eyJjcmVhdGVkQXQiOiIyMDI2LTA1LTEyVDEwOjAwOjAwLjAwMFoiLCJpZCI6InBvc3QtaWQifQ==
+             */
+            nextCursor?: string;
+            /** @example true */
+            hasMore: boolean;
+        };
+        GenerateUploadUrlDto: {
+            /**
+             * @description Physical file extension required for S3 bucket routing and Content-Type generation. MUST include the leading dot.
+             * @example .webp
+             * @enum {string}
+             */
+            fileExtension: GenerateUploadUrlDtoFileExtension;
+            /**
+             * @description File size in bytes
+             * @example 524288
+             */
+            fileSize: number;
+        };
+        GenerateUploadUrlResponseDto: {
+            /**
+             * @description The exact URL where the frontend should make the multipart/form-data POST request.
+             * @example https://storage.nymbi.org/signed-upload-url
+             */
+            uploadUrl: string;
+            /**
+             * @description Form fields that must be appended to the FormData before uploading the file to S3.
+             * @example {
+             *       "key": "post_image/user-id/123_photo.webp",
+             *       "Content-Type": "image/webp",
+             *       "policy": "eyJhbGciOiJIUzI1NiIsInR5...",
+             *       "x-amz-signature": "signature-hash"
+             *     }
+             */
+            uploadFields: {
+                [key: string]: string;
+            };
+            /**
+             * @description The internal ID of the file created in the database. Use this ID when attaching the file to a Post or Profile.
+             * @example f47ac10b-58cc-4372-a567-0e02b2c3d479
+             */
+            fileId: string;
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
-export type SchemaRegisterUserDto = components["schemas"]["RegisterUserDto"]
-export type SchemaLoginDto = components["schemas"]["LoginDTO"]
-export type SchemaPasswordRecoveryDto = components["schemas"]["PasswordRecoveryDto"]
-export type SchemaChangePasswordDto = components["schemas"]["ChangePasswordDTO"]
-export type SchemaGoogleLoginDto = components["schemas"]["GoogleLoginDto"]
-export type SchemaSessionViewModel = components["schemas"]["SessionViewModel"]
-export type $defs = Record<string, never>
+export type SchemaRegisterUserDto = components['schemas']['RegisterUserDto'];
+export type SchemaEmailResendDto = components['schemas']['EmailResendDto'];
+export type SchemaLoginDto = components['schemas']['LoginDTO'];
+export type SchemaLoginResponseDto = components['schemas']['LoginResponseDto'];
+export type SchemaPasswordRecoveryDto = components['schemas']['PasswordRecoveryDto'];
+export type SchemaChangePasswordDto = components['schemas']['ChangePasswordDTO'];
+export type SchemaGoogleLoginDto = components['schemas']['GoogleLoginDto'];
+export type SchemaSessionViewModel = components['schemas']['SessionViewModel'];
+export type SchemaCreatePostDto = components['schemas']['CreatePostDto'];
+export type SchemaPostImageResponseDto = components['schemas']['PostImageResponseDto'];
+export type SchemaPostResponseDto = components['schemas']['PostResponseDto'];
+export type SchemaCreatePostResponseDto = components['schemas']['CreatePostResponseDto'];
+export type SchemaGetFeedResponseDto = components['schemas']['GetFeedResponseDto'];
+export type SchemaGenerateUploadUrlDto = components['schemas']['GenerateUploadUrlDto'];
+export type SchemaGenerateUploadUrlResponseDto = components['schemas']['GenerateUploadUrlResponseDto'];
+export type $defs = Record<string, never>;
 export interface operations {
-  testLog: {
-    parameters: {
-      query: {
-        text: string
-      }
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  prismaTest: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description List of users retrieved directly from the database */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  registration: {
-    parameters: {
-      query?: never
-      header: {
-        /** @description Google reCAPTCHA token */
-        recaptcha: string
-      }
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["RegisterUserDto"]
-      }
-    }
-    responses: {
-      /** @description Registration successful */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation error */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          /**
-           * @example {
-           *       "statusCode": 400,
-           *       "message": "Validation failed",
-           *       "errorsMessages": [
-           *         {
-           *           "message": "Email must be a valid email address",
-           *           "field": "email"
-           *         }
-           *       ]
-           *     }
-           */
-          "application/json": unknown
-        }
-      }
-    }
-  }
-  confirmEmail: {
-    parameters: {
-      query: {
-        code: string
-      }
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Email confirmed successfully */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Invalid or expired code */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          /**
-           * @example {
-           *       "statusCode": 400,
-           *       "message": "Invalid code",
-           *       "errorsMessages": [
-           *         {
-           *           "message": "Code has expired",
-           *           "field": "code"
-           *         }
-           *       ]
-           *     }
-           */
-          "application/json": unknown
-        }
-      }
-    }
-  }
-  login: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["LoginDTO"]
-      }
-    }
-    responses: {
-      /** @description Login successful */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          "application/json": unknown
-        }
-      }
-      /** @description Invalid credentials or OAuth provider required */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          /**
-           * @example {
-           *       "statusCode": 401,
-           *       "message": "Unauthorized"
-           *     }
-           */
-          "application/json": unknown
-        }
-      }
-    }
-  }
-  passwordRecovery: {
-    parameters: {
-      query?: never
-      header: {
-        /** @description Google reCAPTCHA token */
-        recaptcha: string
-      }
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PasswordRecoveryDto"]
-      }
-    }
-    responses: {
-      /** @description Recovery email sent */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation error */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          /**
-           * @example {
-           *       "statusCode": 400,
-           *       "message": "Validation failed",
-           *       "errorsMessages": [
-           *         {
-           *           "message": "Email must be a valid email address",
-           *           "field": "email"
-           *         }
-           *       ]
-           *     }
-           */
-          "application/json": unknown
-        }
-      }
-    }
-  }
-  newPassword: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ChangePasswordDTO"]
-      }
-    }
-    responses: {
-      /** @description Password changed successfully */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Invalid code or passwords do not match */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          /**
-           * @example {
-           *       "statusCode": 400,
-           *       "message": "Invalid code",
-           *       "errorsMessages": [
-           *         {
-           *           "message": "Code is invalid or has expired",
-           *           "field": "recoveryCode"
-           *         }
-           *       ]
-           *     }
-           */
-          "application/json": unknown
-        }
-      }
-    }
-  }
-  logout: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Logout successful */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          /**
-           * @example {
-           *       "statusCode": 401,
-           *       "message": "Unauthorized"
-           *     }
-           */
-          "application/json": unknown
-        }
-      }
-    }
-  }
-  getGoogleClientId: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Client ID returned successfully */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          "application/json": unknown
-        }
-      }
-    }
-  }
-  googleLogin: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["GoogleLoginDto"]
-      }
-    }
-    responses: {
-      /** @description Login successful */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          "application/json": unknown
-        }
-      }
-      /** @description Invalid Google token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          /**
-           * @example {
-           *       "statusCode": 401,
-           *       "message": "Unauthorized"
-           *     }
-           */
-          "application/json": unknown
-        }
-      }
-    }
-  }
-  checkUsername: {
-    parameters: {
-      query: {
-        /** @description The username to check */
-        username: string
-      }
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Username availability status */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          "application/json": {
-            available?: boolean
-          }
-        }
-      }
-      /** @description Validation error */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          /**
-           * @example {
-           *       "statusCode": 400,
-           *       "message": "Validation failed",
-           *       "errorsMessages": [
-           *         {
-           *           "message": "Invalid username format",
-           *           "field": "username"
-           *         }
-           *       ]
-           *     }
-           */
-          "application/json": unknown
-        }
-      }
-    }
-  }
-  myDevices: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description List of active sessions */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          "application/json": components["schemas"]["SessionViewModel"][]
-        }
-      }
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          /**
-           * @example {
-           *       "statusCode": 401,
-           *       "message": "Unauthorized"
-           *     }
-           */
-          "application/json": unknown
-        }
-      }
-    }
-  }
-  deactivateOne: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The unique identifier of the device/session */
-        deviceId: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Session successfully deactivated */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          /**
-           * @example {
-           *       "statusCode": 401,
-           *       "message": "Unauthorized"
-           *     }
-           */
-          "application/json": unknown
-        }
-      }
-      /** @description Forbidden to delete another user session */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          /**
-           * @example {
-           *       "statusCode": 403,
-           *       "message": "Forbidden"
-           *     }
-           */
-          "application/json": unknown
-        }
-      }
-      /** @description Session not found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          /**
-           * @example {
-           *       "statusCode": 404,
-           *       "message": "Not Found",
-           *       "errorsMessages": [
-           *         {
-           *           "message": "Session with this ID does not exist",
-           *           "field": "deviceId"
-           *         }
-           *       ]
-           *     }
-           */
-          "application/json": unknown
-        }
-      }
-    }
-  }
-  deactivateAll: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description All other sessions successfully deactivated */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          /**
-           * @example {
-           *       "statusCode": 401,
-           *       "message": "Unauthorized"
-           *     }
-           */
-          "application/json": unknown
-        }
-      }
-    }
-  }
+    testLog: {
+        parameters: {
+            query: {
+                text: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    prismaTest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of users retrieved directly from the database */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    registration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterUserDto"];
+            };
+        };
+        responses: {
+            /** @description Registration successful */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 400,
+                     *       "message": "Validation failed",
+                     *       "errorsMessages": [
+                     *         {
+                     *           "message": "Email must be a valid email address",
+                     *           "field": "email"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    registrationEmailResending: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmailResendDto"];
+            };
+        };
+        responses: {
+            /** @description Confirmation email resent */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 400,
+                     *       "message": "Validation failed",
+                     *       "errorsMessages": [
+                     *         {
+                     *           "message": "User not found",
+                     *           "field": "email"
+                     *         },
+                     *         {
+                     *           "message": "Email already confirmed",
+                     *           "field": "email"
+                     *         },
+                     *         {
+                     *           "message": "The confirmation code is still valid",
+                     *           "field": "email"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    confirmEmail: {
+        parameters: {
+            query: {
+                code: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Email confirmed successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid or expired code */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 400,
+                     *       "message": "Invalid code",
+                     *       "errorsMessages": [
+                     *         {
+                     *           "message": "Code has expired",
+                     *           "field": "code"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    login: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginDTO"];
+            };
+        };
+        responses: {
+            /** @description Login successful */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LoginResponseDto"];
+                };
+            };
+            /** @description Invalid credentials or OAuth provider required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 401,
+                     *       "message": "Unauthorized"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    refreshToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Tokens successfully refreshed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LoginResponseDto"];
+                };
+            };
+            /** @description Unauthorized: Invalid token, session not found, or token reuse detected */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    passwordRecovery: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Google reCAPTCHA token */
+                recaptcha: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordRecoveryDto"];
+            };
+        };
+        responses: {
+            /** @description Recovery email sent */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 400,
+                     *       "message": "Validation failed",
+                     *       "errorsMessages": [
+                     *         {
+                     *           "message": "Email must be a valid email address",
+                     *           "field": "email"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    newPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePasswordDTO"];
+            };
+        };
+        responses: {
+            /** @description Password changed successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid code or passwords do not match */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 400,
+                     *       "message": "Invalid code",
+                     *       "errorsMessages": [
+                     *         {
+                     *           "message": "Code is invalid or has expired",
+                     *           "field": "recoveryCode"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    logout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Logout successful */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 401,
+                     *       "message": "Unauthorized"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    getGoogleClientId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Client ID returned successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    googleLogin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLoginDto"];
+            };
+        };
+        responses: {
+            /** @description Login successful */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Invalid Google token */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 401,
+                     *       "message": "Unauthorized"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    checkUsername: {
+        parameters: {
+            query: {
+                /** @description The username to check */
+                username: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Username availability status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        available?: boolean;
+                    };
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 400,
+                     *       "message": "Validation failed",
+                     *       "errorsMessages": [
+                     *         {
+                     *           "message": "Invalid username format",
+                     *           "field": "username"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    myDevices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of active sessions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionViewModel"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 401,
+                     *       "message": "Unauthorized"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    deactivateOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The unique identifier of the device/session */
+                deviceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Session successfully deactivated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 401,
+                     *       "message": "Unauthorized"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description Forbidden to delete another user session */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 403,
+                     *       "message": "Forbidden"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description Session not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 404,
+                     *       "message": "Not Found",
+                     *       "errorsMessages": [
+                     *         {
+                     *           "message": "Session with this ID does not exist",
+                     *           "field": "deviceId"
+                     *         }
+                     *       ]
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    deactivateAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description All other sessions successfully deactivated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 401,
+                     *       "message": "Unauthorized"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    createPost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePostDto"];
+            };
+        };
+        responses: {
+            /** @description Post created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatePostResponseDto"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 400,
+                     *       "message": "Validation failed"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 401,
+                     *       "message": "Unauthorized"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description Post service unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 503,
+                     *       "message": "Service unavailable"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    getFeed: {
+        parameters: {
+            query?: {
+                /** @description Opaque Base64 cursor returned by the previous response */
+                cursor?: string;
+                /** @description Number of posts to return */
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Posts returned successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetFeedResponseDto"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 400,
+                     *       "message": "Validation failed"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 401,
+                     *       "message": "Unauthorized"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description Post service unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 503,
+                     *       "message": "Service unavailable"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    deletePost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Post identifier */
+                postId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Post deleted successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 401,
+                     *       "message": "Unauthorized"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description Forbidden to delete another user post */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 403,
+                     *       "message": "Forbidden"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description Post not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 404,
+                     *       "message": "Not Found"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description Post service unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 503,
+                     *       "message": "Service unavailable"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    generateUploadUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GenerateUploadUrlDto"];
+            };
+        };
+        responses: {
+            /** @description Signed upload URL generated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerateUploadUrlResponseDto"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 400,
+                     *       "message": "Validation failed: Invalid file extension (must be one of the supported formats like .jpeg, .pdf, .mp4) OR file size exceeds the allowed limits."
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 401,
+                     *       "message": "Unauthorized"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description File service unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 503,
+                     *       "message": "Service unavailable"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+}
+export enum GenerateUploadUrlDtoFileExtension {
+    _jpeg = ".jpeg",
+    _jpg = ".jpg",
+    _png = ".png",
+    _gif = ".gif",
+    _webp = ".webp",
+    _pdf = ".pdf",
+    _mp4 = ".mp4",
+    _mp3 = ".mp3",
+    _webm = ".webm"
 }

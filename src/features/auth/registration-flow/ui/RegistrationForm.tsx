@@ -147,6 +147,8 @@ export function RegistrationForm() {
                 hasNumber: (v) => /[0-9]/.test(v) || "Must contain at least one number",
                 hasUpper: (v) => /[A-Z]/.test(v) || "Must contain at least one uppercase letter",
                 hasLower: (v) => /[a-z]/.test(v) || "Must contain at least one lowercase letter",
+                hasSpecial: (v) =>
+                  /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/.test(v) || "Must contain at least one special character",
                 onlyAllowed: (v) =>
                   /^[A-Za-z0-9!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]+$/.test(v) || "Contains forbidden characters",
               },
