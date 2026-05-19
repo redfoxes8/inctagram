@@ -23,8 +23,8 @@ RUN echo "=== Checking package.json ===" && \
     ls -la package.json && \
     cat package.json | grep "build:production"
 
-# Запускаем сборку (Добавлен флаг для игнорирования пустого воркспейса)
-RUN pnpm run build:production --ignore-workspace
+# Удаляем файл воркспейса, который ломает pnpm, и запускаем сборку
+RUN rm -f pnpm-workspace.yaml && pnpm run build:production
 
 # Стейдж запуска
 FROM node:22-alpine AS runner
