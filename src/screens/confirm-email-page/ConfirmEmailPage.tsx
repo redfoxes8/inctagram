@@ -8,44 +8,48 @@ import clsx from "clsx"
 import { useSearchParams, useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { useConfirmEmail } from "@/features/auth/api/use-confirm-email"
+import { ConfirmEmailError } from "@/features/auth/types/auth-api.types"
 
 export function ConfirmEmailPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { mutate } = useConfirmEmail()
+  const { mutate, isSuccess, isPending, isError } = useConfirmEmail()
 
   const code = searchParams.get("code")
 
   useEffect(() => {
     if (!code) {
-      // router.replace("/register")
+      router.replace("/register")
       return
     }
-    mutate(code, {
-      onSuccess: () => {
-        console.log()
-      },
-      onError: () => {
-        router.replace("/auth/verification-expired")
-      },
-    })
+    mutate(code)
   }, [code, mutate, router])
+
+  useEffect(() => {
+    if (isError) {
+      router.replace("/verification-expired")
+    }
+  }, [isError, router])
 
   return (
     <Container>
-      <div className={s.content}>
-        <span className={`h2`}>Congratulations!</span>
-        <span className={clsx(`regular_text_16`, s.confirmed)}>Your email has been confirmed</span>
+      {isPending && <div>LOADER...</div>}
 
-        <Button className={s.button} onClick={() => router.push("/login")}>
-          Sign In
-        </Button>
+      {isSuccess && (
+        <div className={s.content}>
+          <span className={`h2`}>Congratulations!</span>
+          <span className={clsx(`regular_text_16`, s.confirmed)}>Your email has been confirmed</span>
 
-        <Image className={s.bro_img} src={"/bro.png"} alt="bro" width={330} height={230} />
-        <Button className={s.button_mobileOnly} onClick={() => router.push("/login")}>
-          Sign In
-        </Button>
-      </div>
+          <Button className={s.button} onClick={() => router.push("/login")}>
+            Sign In
+          </Button>
+
+          <Image className={s.bro_img} src={"/bro.png"} alt="bro" width={330} height={230} loading="eager" />
+          <Button className={s.button_mobileOnly} onClick={() => router.push("/login")}>
+            Sign In
+          </Button>
+        </div>
+      )}
     </Container>
   )
 }

@@ -5,3 +5,5 @@ export type LoginRequestPayload = components["schemas"]["LoginDTO"]
 export type LoginResponse = {
   accessToken: string
 }
+
+export type RegistrationEmailResendingPayload = components["schemas"]["EmailResendDto"]
