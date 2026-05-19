@@ -33,8 +33,8 @@ const mockFetch = () => {
 
 export default function Home() {
   const [selectValue, setSelectValue] = useState("1")
-
-  //  state для DateRangePicker
+  const numbers = [1, 2, 3, 4]
+  console.log(numbers)
   const [selectedDate, setSelectedDate] = useState<Date>()
   const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>()
   const [selectedDates, setSelectedDates] = useState<Date[] | undefined>([])
