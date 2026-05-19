@@ -8,24 +8,24 @@ import clsx from "clsx"
 import { useForm } from "react-hook-form"
 import { Input } from "@/shared/ui/Input"
 import { ConfirmEmailError } from "@/features/auth/types/auth-api.types"
-import { useConfirmEmail } from "@/features/auth/api/use-confirm-email"
+import { useEmailResendMutation } from "@/features/auth/api/use-email-resending"
+import { useRouter } from "next/navigation"
 
 type VerificationFormInputs = {
   email: string
 }
 
 export function VerificationExpiredPage() {
-  const { mutate, isPending } = useConfirmEmail()
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors, isValid },
   } = useForm<VerificationFormInputs>({ mode: "all" })
-
+  const router = useRouter()
+  const { mutate: resendEmail, isPending } = useEmailResendMutation()
   const onSubmit = (data: VerificationFormInputs) => {
-    console.log(data)
-    mutate(data.email, {
+    resendEmail(data, {
       onSuccess: () => {
         console.log("All fine")
       },
@@ -70,14 +70,19 @@ export function VerificationExpiredPage() {
               },
             })}
           />
-          <Button type="submit" disabled={!isValid} className={s.button}>
-            Resend verification link
+          <Button
+            type="submit"
+            disabled={!isValid || isPending}
+            className={s.button}
+            onClick={() => router.push("/login")}
+          >
+            {isPending ? "Sending..." : "Resend verification link"}
           </Button>
         </div>
 
         <Image className={s.rafiki_img} src={"/rafiki_web.png"} alt="rafiki" width={1000} height={1000} priority />
-        <Button disabled={!isValid} className={s.button_mobileOnly}>
-          {!isPending ? <span>Resend verification link</span> : <span>Sending...</span>}
+        <Button disabled={!isValid || isPending} className={s.button_mobileOnly} onClick={() => router.push("/login")}>
+          {isPending ? "Sending..." : "Resend verification link"}
         </Button>
       </form>
     </Container>

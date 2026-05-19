@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query"
 
 import { client } from "@/shared/api/client"
 import { LoginRequestPayload, LoginResponse } from "@/features/auth/api/auth.type"
-import { localStorageKeys } from "@/features/auth/types/auth-api.types"
+import { localStorageKeys } from "../types/auth-api.types"
 
 export const useLoginMutation = () => {
   return useMutation<LoginResponse, Error, LoginRequestPayload>({
