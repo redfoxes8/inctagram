@@ -23,8 +23,8 @@ RUN echo "=== Checking package.json ===" && \
     ls -la package.json && \
     cat package.json | grep "build:production"
 
-# Запускаем сборку
-RUN pnpm run build:production
+# Запускаем сборку (Добавлен флаг для игнорирования пустого воркспейса)
+RUN pnpm run build:production --ignore-workspace
 
 # Стейдж запуска
 FROM node:22-alpine AS runner
