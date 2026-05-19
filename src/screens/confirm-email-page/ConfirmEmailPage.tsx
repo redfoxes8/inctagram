@@ -8,7 +8,6 @@ import clsx from "clsx"
 import { useSearchParams, useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { useConfirmEmail } from "@/features/auth/api/use-confirm-email"
-import { ConfirmEmailError } from "@/features/auth/types/auth-api.types"
 
 export function ConfirmEmailPage() {
   const router = useRouter()
