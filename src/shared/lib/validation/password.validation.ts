@@ -2,7 +2,6 @@ export const passwordValidation = {
   required: "Password is required",
 
   validate: {
-    // Проверка на пробелы перенесена в кастомный валидатор
     notEmpty: (v: string) => v.trim().length > 0 || "Password cannot be empty spaces",
 
     minLength: (v: string) => v.length >= 6 || "Minimum number of characters is 6",
