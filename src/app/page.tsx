@@ -14,6 +14,7 @@ import { SelectBox } from "@/shared/ui/SelectBox"
 import { DateRangePicker } from "@/shared/ui/DateRangePicker"
 import { RadioGroup } from "@/shared/ui/RadioGroup"
 import { Scroll } from "@/shared/ui/Scroll"
+import { Modal } from "@/shared/ui"
 
 const mockFetch = () => {
   return new Promise((resolve, reject) => {
@@ -38,6 +39,8 @@ export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date>()
   const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>()
   const [selectedDates, setSelectedDates] = useState<Date[] | undefined>([])
+
+  const [isOpen, setIsOpen] = useState(true)
 
   const options: SelectOption[] = [
     { value: "1", label: "Option 1", icon: "search-outline" },
@@ -133,7 +136,7 @@ export default function Home() {
       <div>
         <Input label="Поиск" leftIcon={<Icon name="search-outline" />} placeholder="Input search" />
       </div>
-      <Recaptcha status={recaptchaStatus} onCheckedChange={handleChange} />
+
       {/*Tabs*/}
       <div style={{ display: "flex", flexDirection: "column", gap: "2rem", marginTop: "2rem" }}>
         <div>
@@ -166,6 +169,31 @@ export default function Home() {
         options={options}
         placeholder="Choose option"
       />
+
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={() => console.log("YES")}
+        onCancel={() => console.log("NO")}
+        title="Delete post?"
+        confirmText="Yes"
+        cancelText="No"
+        showCancelButton
+      >
+        <p className="regular_text_16 ">Are you sure you want to delete this post?</p>
+      </Modal>
+
+      {/* <Modal
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  title="Email sent"
+>
+  <p className="regular_text_16 ">
+    We have sent a confirmation link
+    to your email
+  </p>
+</Modal> */}
+
       {/* DateRangePicker*/}
       <div>
         <DateRangePicker mode="single" value={selectedDate} onChange={setSelectedDate} label="Date" />

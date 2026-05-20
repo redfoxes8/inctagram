@@ -6,4 +6,17 @@ export type LoginResponse = {
   accessToken: string
 }
 
+export const localStorageKeys = {
+  accessToken: "accessToken",
+  recoveryEmail: " recoveryEmail",
+}
+
 export type RegistrationEmailResendingPayload = components["schemas"]["EmailResendDto"]
+
+export type PasswordRecoveryDto = components["schemas"]["PasswordRecoveryDto"]
+
+export type PasswordRecoveryPayload = PasswordRecoveryDto & {
+  recaptchaToken: string
+}
+
+export type ChangePasswordPayload = components["schemas"]["ChangePasswordDTO"]
