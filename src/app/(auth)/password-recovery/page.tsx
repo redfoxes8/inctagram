@@ -2,12 +2,15 @@
 
 import { ChangePasswordPage } from "@/screens/change-password-page"
 import { Container } from "@/shared/ui/Container"
+import { Suspense } from "react"
 
 export default function Page() {
   return (
     <main>
       <Container>
-        <ChangePasswordPage />
+        <Suspense fallback={<div>Loading...</div>}>
+          <ChangePasswordPage />
+        </Suspense>
       </Container>
     </main>
   )
