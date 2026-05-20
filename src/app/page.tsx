@@ -5,7 +5,7 @@ import Image from "next/image"
 import { Checkbox } from "@/shared/ui/Checkbox"
 import { Button } from "@/shared/ui/Button"
 import { Input } from "@/shared/ui/Input"
-import { Recaptcha, RecaptchaStatus } from "@/shared/ui/Recaptcha"
+import { Recaptcha } from "@/shared/ui/Recaptcha"
 import { Tabs } from "@/shared/ui/Tabs"
 import { TextArea } from "@/shared/ui/TextArea"
 import { useState } from "react"
@@ -14,6 +14,7 @@ import { SelectBox } from "@/shared/ui/SelectBox"
 import { DateRangePicker } from "@/shared/ui/DateRangePicker"
 import { RadioGroup } from "@/shared/ui/RadioGroup"
 import { Scroll } from "@/shared/ui/Scroll"
+import { Modal } from "@/shared/ui"
 
 const mockFetch = () => {
   return new Promise((resolve, reject) => {
@@ -39,6 +40,8 @@ export default function Home() {
   const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>()
   const [selectedDates, setSelectedDates] = useState<Date[] | undefined>([])
 
+  const [isOpen, setIsOpen] = useState(true)
+
   const options: SelectOption[] = [
     { value: "1", label: "Option 1", icon: "search-outline" },
     { value: "2", label: "Option 2", icon: "settings-outline" },
@@ -47,26 +50,6 @@ export default function Home() {
   ]
 
   const TAGS = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`) // Содержимое для скрола
-
-  const [recaptchaStatus, setRecaptchaStatus] = useState<RecaptchaStatus>("default")
-
-  const handleChange = async () => {
-    if (recaptchaStatus === "loading" || recaptchaStatus === "checked") return
-
-    setRecaptchaStatus("loading")
-
-    try {
-      await mockFetch()
-      setRecaptchaStatus("checked")
-
-      setTimeout(() => {
-        setRecaptchaStatus("expired")
-      }, 120000)
-    } catch (err) {
-      setRecaptchaStatus("error")
-    }
-  }
-  console.log("Component Render", recaptchaStatus)
 
   return (
     <div className={styles.container}>
@@ -133,7 +116,7 @@ export default function Home() {
       <div>
         <Input label="Поиск" leftIcon={<Icon name="search-outline" />} placeholder="Input search" />
       </div>
-      <Recaptcha status={recaptchaStatus} onCheckedChange={handleChange} />
+
       {/*Tabs*/}
       <div style={{ display: "flex", flexDirection: "column", gap: "2rem", marginTop: "2rem" }}>
         <div>
@@ -166,6 +149,31 @@ export default function Home() {
         options={options}
         placeholder="Choose option"
       />
+
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={() => console.log("YES")}
+        onCancel={() => console.log("NO")}
+        title="Delete post?"
+        confirmText="Yes"
+        cancelText="No"
+        showCancelButton
+      >
+        <p className="regular_text_16 ">Are you sure you want to delete this post?</p>
+      </Modal>
+
+      {/* <Modal
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  title="Email sent"
+>
+  <p className="regular_text_16 ">
+    We have sent a confirmation link
+    to your email
+  </p>
+</Modal> */}
+
       {/* DateRangePicker*/}
       <div>
         <DateRangePicker mode="single" value={selectedDate} onChange={setSelectedDate} label="Date" />
