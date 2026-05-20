@@ -5,7 +5,7 @@ import Image from "next/image"
 import { Checkbox } from "@/shared/ui/Checkbox"
 import { Button } from "@/shared/ui/Button"
 import { Input } from "@/shared/ui/Input"
-import { Recaptcha, RecaptchaStatus } from "@/shared/ui/Recaptcha"
+import { Recaptcha } from "@/shared/ui/Recaptcha"
 import { Tabs } from "@/shared/ui/Tabs"
 import { TextArea } from "@/shared/ui/TextArea"
 import { useState } from "react"
@@ -50,26 +50,6 @@ export default function Home() {
   ]
 
   const TAGS = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`) // Содержимое для скрола
-
-  const [recaptchaStatus, setRecaptchaStatus] = useState<RecaptchaStatus>("default")
-
-  const handleChange = async () => {
-    if (recaptchaStatus === "loading" || recaptchaStatus === "checked") return
-
-    setRecaptchaStatus("loading")
-
-    try {
-      await mockFetch()
-      setRecaptchaStatus("checked")
-
-      setTimeout(() => {
-        setRecaptchaStatus("expired")
-      }, 120000)
-    } catch (err) {
-      setRecaptchaStatus("error")
-    }
-  }
-  console.log("Component Render", recaptchaStatus)
 
   return (
     <div className={styles.container}>
