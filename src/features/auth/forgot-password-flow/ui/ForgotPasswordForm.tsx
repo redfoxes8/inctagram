@@ -101,11 +101,10 @@ export function ForgotPasswordForm() {
             </p>
 
             <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Email sent" confirmText="OK">
-              <div className={s.modalContent}>
-                <p className="regular_text_16"> We have sent a confirmation link to: </p>
-                <p className={s.email}> {submittedEmail} </p>
-                <p className="regular_text_14"> Please check your inbox.</p>
-              </div>
+              <>
+                <span className="regular_text_16">We have sent a link to confirm your email to:</span>
+                <span className={"regular_text_16"}> {submittedEmail} </span>
+              </>
             </Modal>
           </>
         )}
