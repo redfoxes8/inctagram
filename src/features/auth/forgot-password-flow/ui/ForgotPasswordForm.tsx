@@ -26,7 +26,7 @@ export function ForgotPasswordForm() {
     formState: { errors, isValid },
     reset,
   } = useForm<SchemaPasswordRecoveryDto>({
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: {
       email: "",
     },
