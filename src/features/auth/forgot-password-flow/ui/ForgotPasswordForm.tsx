@@ -35,16 +35,20 @@ export function ForgotPasswordForm() {
   const isFormValid = isValid && !!recaptchaToken
 
   const onSubmitForm = async (data: SchemaPasswordRecoveryDto) => {
-    await passwordRecoveryMutation({
-      email: data.email,
-      recaptchaToken,
-    })
+    try {
+      await passwordRecoveryMutation({
+        email: data.email,
+        recaptchaToken,
+      })
 
-    setSubmittedEmail(data.email)
-    setIsOpen(true)
+      setSubmittedEmail(data.email)
+      setIsOpen(true)
 
-    reset()
-    setRecaptchaToken("")
+      reset()
+      setRecaptchaToken("")
+    } catch {
+      // error handled by react-query
+    }
   }
 
   const errorMessage = error instanceof Error ? error.message || EMAIL_VALIDATION_ERROR : null

@@ -4,22 +4,29 @@ import { client } from "@/shared/api/client"
 
 import { ChangePasswordPayload, localStorageKeys } from "@/features/auth/api/auth.type"
 
+type ApiError = {
+  statusCode: number
+  message: string
+  errorsMessages?: {
+    message: string
+    field: string
+  }[]
+}
+
 export const useChangePasswordMutation = () => {
   return useMutation<void, Error, ChangePasswordPayload>({
     mutationFn: async (payload: ChangePasswordPayload) => {
-      const clientData = await client.POST("/api/v1/auth/change-password", {
+      const { error } = await client.POST("/api/v1/auth/change-password", {
         body: payload,
       })
 
-      if (clientData.error) {
-        const errorMessage =
-          typeof clientData.error === "object" && clientData.error !== null && "message" in clientData.error
-            ? String(clientData.error.message)
-            : "Failed to change password"
-
+      if (error) {
+        const apiError = error as ApiError
+        const errorMessage = apiError.errorsMessages?.[0]?.message || apiError.message || "Failed to change password"
         throw new Error(errorMessage)
       }
     },
+
     retry: (count, error) => {
       return error.message.includes("network") && count < 2
     },

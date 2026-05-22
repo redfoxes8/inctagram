@@ -1,0 +1,1 @@
+export { RecoveryPasswordExpiredPage } from "./RecoveryPasswordExpiredPage"
