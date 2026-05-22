@@ -53,12 +53,26 @@ export function ChangePasswordForm() {
   const onSubmit = async (data: ChangePasswordFormValues) => {
     if (!recoveryCode) return
 
-    const payload: ChangePasswordPayload = {
-      recoveryCode,
-      newPassword: data.password,
+    try {
+      const payload: ChangePasswordPayload = {
+        recoveryCode,
+        newPassword: data.password,
+      }
+
+      await changePasswordMutation(payload)
+
+      router.replace("/login")
+    } catch (e) {
+      if (e instanceof Error) {
+        const message = e.message.toLowerCase()
+
+        if (message.includes("expired") || message.includes("invalid") || message.includes("already used")) {
+          router.replace("/password-recovery-expired")
+
+          return
+        }
+      }
     }
-    await changePasswordMutation(payload)
-    router.replace("/login")
   }
 
   const errorMessage = error instanceof Error ? error.message : null

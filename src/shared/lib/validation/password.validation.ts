@@ -14,8 +14,11 @@ export const passwordValidation = {
 
     hasLower: (v: string) => /[a-z]/.test(v) || "Must contain at least one lowercase letter",
 
+    hasSpecialChar: (v: string) =>
+      /[!"#$%&'()*+,\-./:;<=>?@[\\\]^_{|}~]/.test(v) || "Must contain at least one special character",
+
     onlyAllowed: (v: string) =>
-      /^[A-Za-z0-9!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]+$/.test(v) || "Contains forbidden characters",
+      /^[A-Za-z0-9!"#$%&'()*+,\-./:;<=>?@[\\\]^_{|}~]+$/.test(v) || "Contains forbidden characters",
   },
 } as const
 
