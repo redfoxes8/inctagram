@@ -12,7 +12,13 @@ export const RecoveryPasswordExpiredPage = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [recaptchaToken, setRecaptchaToken] = useState("")
 
-  const email = localStorage.getItem(localStorageKeys.recoveryEmail) || ""
+  const [email] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(localStorageKeys.recoveryEmail) || ""
+    }
+
+    return ""
+  })
 
   const { mutateAsync: passwordRecoveryMutation, isPending, error } = useForgotPasswordMutation()
 
