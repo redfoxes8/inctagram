@@ -1,15 +1,18 @@
 .dialog {
-  background: #171717;
-  border: 1px solid #333;
-  color: white;
-  padding: 0;
-  width: 330px;
-  height: 240px;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  margin: 0;
+  inset: 0;
+  margin: auto;
+  width: calc(100% - 30px);
+  max-width: 330px;
+  max-height: 90vh;
+  padding: 0;
+  background: var(--dark-300);
+  color: var(--light-100);
+  border: 1px solid var(--dark-100);
+  border-radius: 2px;
+  overflow: hidden;
+  z-index: 1000;
+  animation: modal-show 0.2s ease;
 }
 
 .dialog::backdrop {
@@ -22,21 +25,74 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 24px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--dark-100);
+}
+
+.title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.closeIcon {
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .content {
-  padding: 24px;
-  text-align: center;
   display: flex;
   flex-direction: column;
-  height: calc(100% - 50px);
-  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 24px 36px;
+  text-align: center;
+  overflow-y: auto;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.buttons button {
+  width: 100%;
+  padding: 6px 24px;
+}
+
+.btn_outlined {
+  border: none;
 }
 
 @media (width >= 768px) {
   .dialog {
     width: 378px;
-    height: 228px;
+  }
+
+  .content {
+    padding: 24px 24px 36px;
+  }
+
+  .buttons {
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 25px;
+  }
+
+  .buttons button {
+    width: auto;
+    padding: 6px 24px;
+  }
+}
+
+@keyframes modal-show {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

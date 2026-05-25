@@ -83,7 +83,9 @@ export function LoginForm() {
               },
             })}
           />
-          <button className={clsx("regular_text_14", s.forgot_password)}>Forgot Password</button>
+          <Button asChild className={clsx("regular_text_14", s.forgot_password)}>
+            <Link href="/forgot-password">Forgot Password</Link>
+          </Button>
         </div>
       </div>
 
