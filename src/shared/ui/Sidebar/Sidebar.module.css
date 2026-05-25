@@ -12,7 +12,7 @@
   z-index: 9;
 }
 
-.sidebar::before {
+/* .sidebar::before {
   content: "";
   position: absolute;
   right: 10px;
@@ -20,7 +20,7 @@
   bottom: 10px;
   width: 1px;
   background-color: var(--dark-300);
-}
+} */
 
 .sidebar::-webkit-scrollbar {
   width: 4px;

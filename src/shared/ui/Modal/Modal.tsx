@@ -3,7 +3,7 @@ import s from "./Modal.module.css"
 import { Button } from "@/shared/ui/Button"
 
 type ModalProps = {
-  email: string
+  email?: string
   onClose: () => void
 }
 

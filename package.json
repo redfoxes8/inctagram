@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --hostname dev.it-incubator.ru --port 3000 --experimental-https",
+    "dev": "next dev --hostname dev.nymbi.org --port 3000 --experimental-https",
     "build": "next build",
     "build:production": "next build",
     "start": "next start",

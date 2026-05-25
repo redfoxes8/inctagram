@@ -22,9 +22,10 @@ type SidebarItem = {
 type Props = {
   className?: string
   onLogout?: () => void
+  onCreateClick?: () => void
 } & ComponentPropsWithoutRef<"aside">
 
-export const Sidebar = ({ className = "", onLogout, ...rest }: Props) => {
+export const Sidebar = ({ className = "", onLogout, onCreateClick, ...rest }: Props) => {
   const pathname = usePathname()
 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
@@ -32,7 +33,7 @@ export const Sidebar = ({ className = "", onLogout, ...rest }: Props) => {
 
   const mainNavItems: SidebarItem[] = [
     { id: "feed", href: "/", icon: "home-outline", iconSolid: "home", label: "Feed" },
-    { id: "create", href: "/create", icon: "plus-circle-outline", iconSolid: "plus-circle", label: "Create" },
+    { id: "create", href: "#", icon: "plus-circle-outline", iconSolid: "plus-circle", label: "Create" },
     { id: "profile", href: "/profile", icon: "person-outline", iconSolid: "person", label: "My Profile" },
     {
       id: "messenger",
@@ -127,17 +128,14 @@ export const Sidebar = ({ className = "", onLogout, ...rest }: Props) => {
     }
 
     const isLogout = item.id === "logout"
+    const isCreate = item.id === "create"
 
-    if (isLogout) {
+    if (isLogout || isCreate) {
+      const handleClick = isLogout ? handleLogout : onCreateClick
+
       return (
         <NavigationMenu.Item key={item.id} className={s.navigationItem}>
-          <button
-            type="button"
-            onClick={handleLogout}
-            disabled={item.disabled}
-            aria-label={item.label}
-            {...commonProps}
-          >
+          <button type="button" onClick={handleClick} disabled={item.disabled} aria-label={item.label} {...commonProps}>
             <span className={s.icon}>
               <Icon name={iconName} />
             </span>
