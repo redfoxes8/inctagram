@@ -42,15 +42,47 @@ export function LoginForm() {
       setServerError(UNAUTHORIZED_ERROR)
     }
   }
-
+  // ФУНКЦИЯ-ОБРАБОТЧИК OAuth ВХОДА - перенаправляет пользователя на страницу аутентификации Google или GitHub
+  const handleOAuthLogin = (provider: "google" | "github") => {
+    const redirectUri = `${window.location.origin}/oauth/callback` //URL ДЛЯ РЕДИРЕКТА ПОСЛЕ АУТЕНТИФИКАЦИИ
+    // Переменная для хранения URL аутентификации провайдера
+    let authUrl = ""
+    if (provider === "google") {
+      //ФОРМИРОВАНИЕ URL ДЛЯ КОНКРЕТНОГО ПРОВАЙДЕРА
+      authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=email%20profile`
+      // Идентификатор приложения в Googl, куда вернуться после входа, запрашиваем временный код, запрашиваем доступ к email и профилю
+    } else {
+      authUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${redirectUri}&scope=user:email`
+      // `client_id'- id приложения,`&redirect_uri=${redirectUri}`- куда вернуться после входа, `&scope=user:email` - запрашиваем доступ к email
+    }
+    // Сохраняем в sessionStorage - будут использованы на странице /oauth/callback после возврата от провайдера
+    sessionStorage.setItem("oauth_provider", provider)
+    window.location.href = authUrl // Пользователь переходит на Google/GitHub
+  }
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={s.content}>
-      <h1 className="h1">Sign In</h1>
+      {" "}
+      {/* Форма регистрации */}
+      <h1 className="h1">Sign In</h1> {/* Заголовок формы */}
       <div className={s.icon_group}>
-        <Image src="/icons/google-svgrepo-com.svg" height={36} width={36} alt="google" className={s.social_icon} />
-        <Icon name="github-svgrepo-com (3) 1" className={s.github_icon} />
+        {" "}
+        {/* Инициализацию OAuth входа через Google или GitHub, БЛОК С ИКОНКАМИ OAuth ПРОВАЙДЕРОВ*/}
+        <Image
+          src="/icons/google-svgrepo-com.svg"
+          height={36}
+          width={36}
+          alt="google"
+          className={s.social_icon}
+          onClick={() => handleOAuthLogin("google")}
+          style={{ cursor: "pointer" }}
+        />
+        <Icon
+          name="github-svgrepo-com (3) 1"
+          className={s.github_icon}
+          onClick={() => handleOAuthLogin("github")}
+          style={{ cursor: "pointer" }}
+        />
       </div>
-
       <div className={s.input_group}>
         <Input
           label="Email"
@@ -88,7 +120,6 @@ export function LoginForm() {
           </Button>
         </div>
       </div>
-
       <div className={s.button_group}>
         {serverError && <span>{serverError}</span>}
 

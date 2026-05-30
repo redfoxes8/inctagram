@@ -68,24 +68,49 @@ export function RegistrationForm() {
   }
 
   const isGroupValid = isValid
-
+  //Инициализацию OAuth регистрации через Google или GitHub
+  //ФУНКЦИЯ-ОБРАБОТЧИК OAuth РЕГИСТРАЦИИ, если пользователь пришел со страницы регистрации
+  const handleOAuthSignUp = (provider: "google" | "github") => {
+    const redirectUri = `${window.location.origin}/oauth/callback` //URL ДЛЯ РЕДИРЕКТА ПОСЛЕ АУТЕНТИФИКАЦИИ
+    // Переменная для хранения URL аутентификации провайдера
+    let authUrl = ""
+    //ФОРМИРОВАНИЕ URL ДЛЯ КОНКРЕТНОГО ПРОВАЙДЕРА
+    if (provider === "google") {
+      authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=email%20profile`
+      // Идентификатор приложения в Googl, куда вернуться после входа, запрашиваем временный код, запрашиваем доступ к email и профилю
+    } else {
+      authUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${redirectUri}&scope=user:email`
+      // `client_id'- id приложения,`&redirect_uri=${redirectUri}`- куда вернуться после входа, `&scope=user:email` - запрашиваем доступ к email
+    }
+    // Сохраняем в sessionStorage - будут использованы на странице /oauth/callback после возврата от провайдера
+    sessionStorage.setItem("oauth_provider", provider)
+    sessionStorage.setItem("oauth_from_register", "true")
+    window.location.href = authUrl // Пользователь переходит на Google/GitHub
+  }
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className={s.container}>
+        {/* Форма регистрации */}
         <div className={s.oauth_container}>
-          <span className="h2">Sign Up</span>
+          <span className="h2">Sign Up</span> {/* Заголовок формы */}
           <div className={s.icon_group}>
+            {/*Инициализацию OAuth входа через Google или GitHub, БЛОК С ИКОНКАМИ OAuth ПРОВАЙДЕРОВ*/}
             <Image
               src={"/icons/google-svgrepo-com.svg"}
               height={36}
               width={36}
               alt="google"
               style={{ cursor: "pointer" }}
+              onClick={() => handleOAuthSignUp("google")}
             />
-            <Icon name={"github-svgrepo-com (3) 1"} className={s.github_icon} />
+            <Icon
+              name={"github-svgrepo-com (3) 1"}
+              className={s.github_icon}
+              onClick={() => handleOAuthSignUp("github")}
+              style={{ cursor: "pointer" }}
+            />
           </div>
         </div>
-
         <div className={s.input_group}>
           <Input
             label="Username"
@@ -173,7 +198,6 @@ export function RegistrationForm() {
             })}
           />
         </div>
-
         <div className={s.checkbox_place}>
           <Controller
             name="terms"
@@ -200,7 +224,6 @@ export function RegistrationForm() {
             )}
           />
         </div>
-
         <div className={s.button_group}>
           <Button className={clsx(s.button_conf, "h3")} disabled={!isGroupValid || isPending || !termsValue}>
             {isPending ? "Checking..." : "Sign Up"}

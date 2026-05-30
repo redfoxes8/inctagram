@@ -8,7 +8,7 @@ export type LoginResponse = {
 
 export const localStorageKeys = {
   accessToken: "accessToken",
-  recoveryEmail: " recoveryEmail",
+  recoveryEmail: "recoveryEmail",
 }
 
 export type RegistrationEmailResendingPayload = components["schemas"]["EmailResendDto"]
@@ -20,3 +20,41 @@ export type PasswordRecoveryPayload = PasswordRecoveryDto & {
 }
 
 export type ChangePasswordPayload = components["schemas"]["ChangePasswordDTO"]
+
+// ============ Добавлено для OAuth ============
+// Тип для провайдера - ограничиваем только двумя значениями
+export type OAuthProvider = "google" | "github"
+
+// фронтенд отправляет на бэкенд
+export type OAuthLoginPayload = {
+  provider: OAuthProvider
+  code: string // временный код от Google/GitHub
+}
+
+// бэкенд возвращает
+export type OAuthResponse = {
+  accessToken: string // JWT для авторизации
+  isNewUser?: boolean // пользователь только что зарегистрирован
+  email?: string
+  username?: string
+}
+
+// Для привязки провайдера к существующему аккаунту
+export type LinkProviderPayload = {
+  provider: OAuthProvider
+  code: string
+  email: string
+  password: string
+}
+
+export type LinkProviderResponse = {
+  accessToken: string
+  message: string
+}
+
+// Тип для обработки ошибки "email уже существует без привязанного провайдера"
+export type OAuthConflictError = {
+  statusCode: 409
+  message: string
+  email: string
+}
