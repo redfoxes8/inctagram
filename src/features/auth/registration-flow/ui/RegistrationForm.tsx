@@ -218,7 +218,7 @@ export function RegistrationForm() {
       </form>
       <Modal isOpen={isOpen} onClose={handleClick} title="Email sent" confirmText="OK">
         <>
-          <span className="regular_text_16">We have sent a link to confirm your email to:</span>
+          <span className="regular_text_16">We have sent a link to confirm your email to: </span>
           <span className={"regular_text_16"}> {emailValue} </span>
         </>
       </Modal>

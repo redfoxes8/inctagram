@@ -8,13 +8,9 @@ import { Button } from "../Button"
 import { Icon } from "../Icon"
 
 type ModalProps = {
-<<<<<<< HEAD
-  email?: string
-=======
   title?: string
   children: ReactNode
   isOpen: boolean
->>>>>>> main
   onClose: () => void
 
   onConfirm?: () => void

@@ -237,6 +237,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get current user profile */
+        get: operations["getMe"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/users/check-username": {
         parameters: {
             query?: never;
@@ -249,6 +266,26 @@ export interface paths {
          * @description Checks whether the provided username is already taken by another user.
          */
         get: operations["checkUsername"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Return count of active users
+         * @description Count users in DB who are not banned and returns this value
+         */
+        get: operations["count"];
         put?: never;
         post?: never;
         delete?: never;
@@ -337,6 +374,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/posts/images/upload-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Generate signed upload URL for Post Image
+         * @description Requests a signed upload URL from File-MS explicitly for the `POST_IMAGE` domain type.
+         *           The `ownerId` is securely extracted from the JWT token.
+         */
+        post: operations["generateUploadUrl"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/posts/feed": {
         parameters: {
             query?: never;
@@ -374,28 +432,27 @@ export interface paths {
         delete: operations["deletePost"];
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update post description
+         * @description Updates post description through Post-MS. Post-MS makes the final ownership decision using ownerId from JWT.
+         */
+        patch: operations["updatePost"];
         trace?: never;
     };
-    "/api/v1/files/upload-url": {
+    "/api/v1/posts/latest": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
         /**
-         * Generate signed upload URL (Generic / Post Image)
-         * @description Requests a signed upload URL from File-MS.
-         *
-         *           **Business Context:** This generic endpoint implicitly maps the upload to the `POST_IMAGE` domain type.
-         *           For other domain types (e.g., AVATAR), dedicated endpoints (like `/users/avatar/upload-url`) should be used to automatically enforce the correct business context.
-         *
-         *           The `ownerId` is securely extracted from the JWT token.
+         * Get latest posts
+         * @description Returns latest posts through Post-MS.
          */
-        post: operations["generateUploadUrl"];
+        get: operations["getLatestPosts"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -488,6 +545,33 @@ export interface components {
              */
             redirectUri?: string;
         };
+        UserMeResponseDto: {
+            /**
+             * @description Profile user identifier placeholder until Profile storage is introduced
+             * @example null
+             */
+            userId?: string | null;
+            /**
+             * @description Avatar image URL placeholder until Avatar storage is introduced
+             * @example null
+             */
+            avatarUrl?: string | null;
+            /**
+             * @description User email
+             * @example user@example.com
+             */
+            email: string;
+            /**
+             * @description Username
+             * @example cool_user
+             */
+            username: string;
+            /**
+             * @description Profile bio placeholder until Profile storage is introduced
+             * @example null
+             */
+            aboutMe?: string | null;
+        };
         SessionViewModel: {
             /**
              * @description IP address of the device
@@ -550,30 +634,20 @@ export interface components {
         CreatePostResponseDto: {
             post: components["schemas"]["PostResponseDto"];
         };
-        GetFeedResponseDto: {
-            posts: components["schemas"]["PostResponseDto"][];
-            /**
-             * @description Opaque Base64 cursor for the next page
-             * @example eyJjcmVhdGVkQXQiOiIyMDI2LTA1LTEyVDEwOjAwOjAwLjAwMFoiLCJpZCI6InBvc3QtaWQifQ==
-             */
-            nextCursor?: string;
-            /** @example true */
-            hasMore: boolean;
-        };
-        GenerateUploadUrlDto: {
+        GeneratePostImageUploadUrlDto: {
             /**
              * @description Physical file extension required for S3 bucket routing and Content-Type generation. MUST include the leading dot.
              * @example .webp
              * @enum {string}
              */
-            fileExtension: GenerateUploadUrlDtoFileExtension;
+            fileExtension: GeneratePostImageUploadUrlDtoFileExtension;
             /**
              * @description File size in bytes
              * @example 524288
              */
             fileSize: number;
         };
-        GenerateUploadUrlResponseDto: {
+        GeneratePostImageUploadUrlResponseDto: {
             /**
              * @description The exact URL where the frontend should make the multipart/form-data POST request.
              * @example https://storage.nymbi.org/signed-upload-url
@@ -592,10 +666,68 @@ export interface components {
                 [key: string]: string;
             };
             /**
-             * @description The internal ID of the file created in the database. Use this ID when attaching the file to a Post or Profile.
+             * @description The internal ID of the file created in the database. Use this ID when attaching the file to a Post.
              * @example f47ac10b-58cc-4372-a567-0e02b2c3d479
              */
             fileId: string;
+        };
+        GetFeedResponseDto: {
+            posts: components["schemas"]["PostResponseDto"][];
+            /**
+             * @description Opaque Base64 cursor for the next page
+             * @example eyJjcmVhdGVkQXQiOiIyMDI2LTA1LTEyVDEwOjAwOjAwLjAwMFoiLCJpZCI6InBvc3QtaWQifQ==
+             */
+            nextCursor?: string;
+            /** @example true */
+            hasMore: boolean;
+        };
+        FileDataViewType: {
+            id: string;
+            fileId: string;
+            url: string;
+            order: number;
+        };
+        PostViewType: {
+            /**
+             * @description Post identifier
+             * @example 5f7b9c8e-1d1d-4d1d-9d1d-5f7b9c8e1d1d
+             */
+            id: string;
+            /**
+             * @description Owner identifier
+             * @example 5f7b9c8e-1d1d-4d1d-9d1d-5f7b9c8e1d1d
+             */
+            ownerId: string;
+            /**
+             * @description Post description
+             * @example This is a post description
+             */
+            description: string;
+            /**
+             * @description Images of the post
+             * @example {
+             *       "id": "5f7b9c8e-1d1d-4d1d-9d1d-5f7b9c8e1d1d",
+             *       "fileId": "5f7b9c8e-1d1d-4d1d-9d1d-5f7b9c8e1d1d",
+             *       "url": "https://example.com/file.jpg",
+             *       "order": 1
+             *     }
+             */
+            images: components["schemas"]["FileDataViewType"][];
+            /**
+             * Format: date-time
+             * @description Post creation date
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Post update date
+             * @example 2021-01-01T00:00:00.000Z
+             */
+            updatedAt: string;
+        };
+        UpdatePostDto: {
+            description: string;
         };
     };
     responses: never;
@@ -611,14 +743,18 @@ export type SchemaLoginResponseDto = components['schemas']['LoginResponseDto'];
 export type SchemaPasswordRecoveryDto = components['schemas']['PasswordRecoveryDto'];
 export type SchemaChangePasswordDto = components['schemas']['ChangePasswordDTO'];
 export type SchemaGoogleLoginDto = components['schemas']['GoogleLoginDto'];
+export type SchemaUserMeResponseDto = components['schemas']['UserMeResponseDto'];
 export type SchemaSessionViewModel = components['schemas']['SessionViewModel'];
 export type SchemaCreatePostDto = components['schemas']['CreatePostDto'];
 export type SchemaPostImageResponseDto = components['schemas']['PostImageResponseDto'];
 export type SchemaPostResponseDto = components['schemas']['PostResponseDto'];
 export type SchemaCreatePostResponseDto = components['schemas']['CreatePostResponseDto'];
+export type SchemaGeneratePostImageUploadUrlDto = components['schemas']['GeneratePostImageUploadUrlDto'];
+export type SchemaGeneratePostImageUploadUrlResponseDto = components['schemas']['GeneratePostImageUploadUrlResponseDto'];
 export type SchemaGetFeedResponseDto = components['schemas']['GetFeedResponseDto'];
-export type SchemaGenerateUploadUrlDto = components['schemas']['GenerateUploadUrlDto'];
-export type SchemaGenerateUploadUrlResponseDto = components['schemas']['GenerateUploadUrlResponseDto'];
+export type SchemaFileDataViewType = components['schemas']['FileDataViewType'];
+export type SchemaPostViewType = components['schemas']['PostViewType'];
+export type SchemaUpdatePostDto = components['schemas']['UpdatePostDto'];
 export type $defs = Record<string, never>;
 export interface operations {
     testLog: {
@@ -1040,6 +1176,56 @@ export interface operations {
             };
         };
     };
+    getMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current user profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserMeResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 401,
+                     *       "message": "Unauthorized"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description User not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 404,
+                     *       "message": "User was not found"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
     checkUsername: {
         parameters: {
             query: {
@@ -1082,6 +1268,28 @@ export interface operations {
                      *     }
                      */
                     "application/json": unknown;
+                };
+            };
+        };
+    };
+    count: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Count of active users */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        totalCount?: number;
+                    };
                 };
             };
         };
@@ -1295,6 +1503,75 @@ export interface operations {
             };
         };
     };
+    generateUploadUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GeneratePostImageUploadUrlDto"];
+            };
+        };
+        responses: {
+            /** @description Signed upload URL generated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeneratePostImageUploadUrlResponseDto"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 400,
+                     *       "message": "Validation failed: Invalid file extension (must be one of the supported image formats like .jpeg, .png, .webp) OR file size exceeds the allowed limits."
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 401,
+                     *       "message": "Unauthorized"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description File service unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 503,
+                     *       "message": "Service unavailable"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
     getFeed: {
         parameters: {
             query?: {
@@ -1446,41 +1723,29 @@ export interface operations {
             };
         };
     };
-    generateUploadUrl: {
+    updatePost: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @description Post identifier */
+                postId: string;
+            };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GenerateUploadUrlDto"];
+                "application/json": components["schemas"]["UpdatePostDto"];
             };
         };
         responses: {
-            /** @description Signed upload URL generated successfully */
+            /** @description Post updated successfully */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GenerateUploadUrlResponseDto"];
-                };
-            };
-            /** @description Validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    /**
-                     * @example {
-                     *       "statusCode": 400,
-                     *       "message": "Validation failed: Invalid file extension (must be one of the supported formats like .jpeg, .pdf, .mp4) OR file size exceeds the allowed limits."
-                     *     }
-                     */
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["CreatePostResponseDto"];
                 };
             };
             /** @description Unauthorized */
@@ -1498,7 +1763,75 @@ export interface operations {
                     "application/json": unknown;
                 };
             };
-            /** @description File service unavailable */
+            /** @description Forbidden to edit another user post */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 403,
+                     *       "message": "Forbidden"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description Post not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 404,
+                     *       "message": "Not Found"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+            /** @description Post service unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "statusCode": 503,
+                     *       "message": "Service unavailable"
+                     *     }
+                     */
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    getLatestPosts: {
+        parameters: {
+            query?: {
+                /** @description Maximum number of posts to return */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return posts with images urls succsessfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostViewType"][];
+                };
+            };
+            /** @description Post service unavailable */
             503: {
                 headers: {
                     [name: string]: unknown;
@@ -1516,14 +1849,9 @@ export interface operations {
         };
     };
 }
-export enum GenerateUploadUrlDtoFileExtension {
+export enum GeneratePostImageUploadUrlDtoFileExtension {
     _jpeg = ".jpeg",
     _jpg = ".jpg",
     _png = ".png",
-    _gif = ".gif",
-    _webp = ".webp",
-    _pdf = ".pdf",
-    _mp4 = ".mp4",
-    _mp3 = ".mp3",
-    _webm = ".webm"
+    _webp = ".webp"
 }
