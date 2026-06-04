@@ -1,0 +1,115 @@
+.dialog {
+  background: #333; /* Более светлый серый оттенок подложки из макета */
+  border: 1px solid #4c4c4c;
+  color: white;
+  padding: 0;
+  width: 492px;
+  height: 564px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  border-radius: 2px;
+  box-shadow: 0 4px 20px rgb(0 0 0 / 50%);
+}
+
+.dialog::backdrop {
+  background: rgb(0 0 0 / 60%);
+  backdrop-filter: blur(2px);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  border-bottom: 1px solid #4c4c4c;
+  height: 60px;
+  box-sizing: border-box;
+}
+
+.title {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.closeButton:hover {
+  opacity: 0.7;
+}
+
+.content {
+  padding: 24px;
+  height: calc(100% - 60px);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 60px; /* Отступ между центральной иконкой и кнопками */
+}
+
+.imagePlaceholder {
+  width: 222px;
+  height: 228px;
+  background-color: #171717; /* Темное поле для картинки */
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imageIcon {
+  width: 48px;
+  height: 48px;
+  color: #fff;
+}
+
+.actionsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 222px; /* Выравниваем ширину кнопок по ширине темного поля */
+}
+
+.primaryBtn,
+.draftBtn {
+  width: 100%;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Стили для кастомной кнопки-ссылки "Open Draft", если её свойства отличаются в UI-ките */
+.draftBtn {
+  background: transparent;
+  color: #397fff; /* Синий цвет текста для кнопки драфта из макета */
+  border: none;
+}
+
+.draftBtn:hover {
+  background: rgb(57 127 255 / 10%);
+}
+
+/* Адаптивность для мобильных экранов */
+@media (width <= 540px) {
+  .dialog {
+    width: calc(100% - 32px);
+    height: auto;
+    min-height: 450px;
+  }
+}
