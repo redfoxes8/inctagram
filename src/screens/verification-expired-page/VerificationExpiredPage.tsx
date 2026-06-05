@@ -10,6 +10,7 @@ import { Input } from "@/shared/ui/Input"
 import { ConfirmEmailError } from "@/features/auth/types"
 import { useEmailResendMutation } from "@/features/auth/api/use-email-resending"
 import { useRouter } from "next/navigation"
+import { PAGES } from "@/shared/config/pages.config"
 
 type VerificationFormInputs = {
   email: string
@@ -74,14 +75,18 @@ export function VerificationExpiredPage() {
             type="submit"
             disabled={!isValid || isPending}
             className={s.button}
-            onClick={() => router.push("/login")}
+            onClick={() => router.push(PAGES.LOGIN)}
           >
             {isPending ? "Sending..." : "Resend verification link"}
           </Button>
         </div>
 
         <Image className={s.rafiki_img} src={"/rafiki_web.png"} alt="rafiki" width={1000} height={1000} priority />
-        <Button disabled={!isValid || isPending} className={s.button_mobileOnly} onClick={() => router.push("/login")}>
+        <Button
+          disabled={!isValid || isPending}
+          className={s.button_mobileOnly}
+          onClick={() => router.push(PAGES.LOGIN)}
+        >
           {isPending ? "Sending..." : "Resend verification link"}
         </Button>
       </form>

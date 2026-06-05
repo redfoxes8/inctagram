@@ -1,5 +1,6 @@
 "use client"
 
-export default function Page() {
-  return <div>profile</div>
+// такого пути нет, но next требует заглушку
+export default function ProfilePage() {
+  return null
 }

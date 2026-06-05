@@ -15,6 +15,7 @@ import { Icon } from "@/shared/ui/Icon"
 import { Input } from "@/shared/ui/Input"
 import { Checkbox } from "@/shared/ui/Checkbox"
 import { Button } from "@/shared/ui/Button"
+import { PAGES } from "@/shared/config/pages.config"
 
 export function RegistrationForm() {
   const router = useRouter()
@@ -210,7 +211,7 @@ export function RegistrationForm() {
             type="button"
             variant="outlined"
             className={s.outlined_button_conf}
-            onClick={() => router.push("/login")}
+            onClick={() => router.push(PAGES.LOGIN)}
           >
             Sign In
           </Button>
@@ -218,7 +219,7 @@ export function RegistrationForm() {
       </form>
       <Modal isOpen={isOpen} onClose={handleClick} title="Email sent" confirmText="OK">
         <>
-          <span className="regular_text_16">We have sent a link to confirm your email to:</span>
+          <span className="regular_text_16">We have sent a link to confirm your email to: </span>
           <span className={"regular_text_16"}> {emailValue} </span>
         </>
       </Modal>

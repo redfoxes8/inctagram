@@ -13,7 +13,8 @@ import { Input } from "@/shared/ui/Input"
 
 import s from "./LoginForm.module.css"
 import { useLoginMutation } from "@/features/auth/api/use-login.mutation"
-import { LoginRequestPayload } from "@/features/auth/api/auth.type"
+import { LoginRequestPayload } from "@/features/auth/types"
+import { PAGES } from "@/shared/config/pages.config"
 
 const UNAUTHORIZED_ERROR = "Unauthorized"
 
@@ -42,7 +43,7 @@ export function LoginForm() {
 
     try {
       await loginMutation(data)
-      router.push("/profile")
+      router.replace(PAGES.PROFILE)
     } catch {
       setServerError(UNAUTHORIZED_ERROR)
     }
@@ -102,7 +103,7 @@ export function LoginForm() {
         </Button>
         <span className={clsx("regular_text_16", s.registration_prompt)}>Don’t have an account?</span>
         <Button asChild variant="outlined" className={s.outlined_button_conf}>
-          <Link href="/register">Sign Up</Link>
+          <Link href={PAGES.REGISTRATION}>Sign Up</Link>
         </Button>
       </div>
     </form>
