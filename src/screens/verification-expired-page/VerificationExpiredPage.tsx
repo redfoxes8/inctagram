@@ -7,7 +7,7 @@ import { Button } from "@/shared/ui/Button"
 import clsx from "clsx"
 import { useForm } from "react-hook-form"
 import { Input } from "@/shared/ui/Input"
-import { ConfirmEmailError } from "@/features/auth/types/auth-api.types"
+import { ConfirmEmailError } from "@/features/auth/types"
 import { useEmailResendMutation } from "@/features/auth/api/use-email-resending"
 import { useRouter } from "next/navigation"
 

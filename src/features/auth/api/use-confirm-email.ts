@@ -1,6 +1,6 @@
 import { client } from "@/shared/api/client"
 import { useMutation } from "@tanstack/react-query"
-import { ConfirmEmailError } from "../types/auth-api.types"
+import { ConfirmEmailError } from "../types"
 
 export const useConfirmEmail = () => {
   return useMutation({

@@ -1,6 +1,6 @@
 import { client } from "@/shared/api/client"
 import { useMutation } from "@tanstack/react-query"
-import { RegistrationEmailResendingPayload } from "./auth.type"
+import { RegistrationEmailResendingPayload } from "@/features/auth/types"
 
 export const useEmailResendMutation = () => {
   return useMutation({
