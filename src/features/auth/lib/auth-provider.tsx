@@ -20,8 +20,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       {user && <Sidebar onLogout={() => setShowConfirm(true)} onCreateClick={openCreateModal} />}
       <main style={{ flex: 1 }}>{children}</main>
 
-      <CreatePostWizard />
-
       <Modal
         title="Log Out"
         isOpen={showConfirm}
