@@ -13,13 +13,16 @@ export function useAuthRedirect(user: MeResponse | null | undefined, isLoading: 
   useEffect(() => {
     if (isLoading) return
 
-    const isProtectedPage = (PROTECTED_PAGES as readonly string[]).includes(pathname)
+    const isProtectedPage = PROTECTED_PAGES.includes(pathname) || pathname.startsWith("/settings")
     const isAuthPage = AUTH_PAGES.includes(pathname)
 
     if (user) {
       if (pathname === PAGES.PROFILE || isAuthPage) {
         router.replace(PAGES.TO_PROFILE(`${user.userId}`))
         return
+      }
+      if (pathname === "/settings") {
+        router.replace(PAGES.SETTINGS())
       }
     } else {
       if (pathname === PAGES.PROFILE) {

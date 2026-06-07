@@ -1,5 +1,5 @@
 "use client"
 
 export default function Page() {
-  return <div>feed</div>
+  return <div style={{ paddingTop: "80px", paddingLeft: "300px" }}>feed</div>
 }
