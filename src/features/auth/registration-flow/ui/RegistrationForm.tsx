@@ -71,22 +71,31 @@ export function RegistrationForm() {
   //Инициализацию OAuth регистрации через Google или GitHub
   //ФУНКЦИЯ-ОБРАБОТЧИК OAuth РЕГИСТРАЦИИ, если пользователь пришел со страницы регистрации
   const handleOAuthSignUp = (provider: "google" | "github") => {
-    const redirectUri = `${window.location.origin}/oauth/callback` //URL ДЛЯ РЕДИРЕКТА ПОСЛЕ АУТЕНТИФИКАЦИИ
+    // Путь, который ожидает бэкенд
+    let redirectUri = ""
+    if (provider === "google") {
+      redirectUri = `${window.location.origin}/auth/google/callback`
+    } else {
+      redirectUri = `${window.location.origin}/auth/github/callback`
+    }
+
     // Переменная для хранения URL аутентификации провайдера
     let authUrl = ""
     //ФОРМИРОВАНИЕ URL ДЛЯ КОНКРЕТНОГО ПРОВАЙДЕРА
     if (provider === "google") {
       authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=email%20profile`
-      // Идентификатор приложения в Googl, куда вернуться после входа, запрашиваем временный код, запрашиваем доступ к email и профилю
+      // Идентификатор приложения в Google, куда вернуться после входа, запрашиваем временный код, запрашиваем доступ к email и профилю
     } else {
       authUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${redirectUri}&scope=user:email`
       // `client_id'- id приложения,`&redirect_uri=${redirectUri}`- куда вернуться после входа, `&scope=user:email` - запрашиваем доступ к email
     }
-    // Сохраняем в sessionStorage - будут использованы на странице /oauth/callback после возврата от провайдера
+    // Сохраняем в sessionStorage - будут использованы на странице /auth/:provider/callback после возврата от провайдера
     sessionStorage.setItem("oauth_provider", provider)
     sessionStorage.setItem("oauth_from_register", "true")
+    sessionStorage.setItem("oauth_username", "") // Добавляем пустой username для передачи бэкенду
     window.location.href = authUrl // Пользователь переходит на Google/GitHub
   }
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className={s.container}>

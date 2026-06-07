@@ -1,132 +1,141 @@
+// features/auth/api/use-oauth.mutation.ts
+
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useRouter } from "next/navigation" // для редиректа
-// Импортируем настроенный экземпляр API клиента (для типизированных запросов)
-import { client } from "@/shared/api/client"
+import { useRouter } from "next/navigation"
+import {
+  localStorageKeys,
+  OAuthLoginPayload,
+  OAuthResponse,
+  OAuthProvider,
+  LinkProviderPayload,
+  LinkProviderResponse,
+} from "./auth.type"
 
-// Импортируем типы и константы, необходимые для OAuth
-// localStorageKeys - ключи для хранения данных в localStorage
-// OAuthLoginPayload - тип данных, которые отправляем на бэкенд
-// OAuthResponse - тип данных, которые получаем с бэкенда
-// OAuthProvider - тип для провайдера ("google" | "github")
-import { localStorageKeys, OAuthLoginPayload, OAuthResponse, OAuthProvider } from "./auth.type"
-
-// Описываем структуру ошибки, которую может вернуть бэкенд
-type ApiError = {
-  statusCode: number // HTTP статус код (400, 401, 409 и т.д.)
-  message: string // Текст ошибки
-  errorsMessages?: {
-    // Детализированные ошибки по полям (опционально)
-    message: string
-    field: string
-  }[]
-}
-
-// Создаем специальный класс ошибки для ситуации
+// Класс ошибки для конфликта email
 export class EmailExistsWithoutProviderError extends Error {
-  public email: string // Email, который уже существует в системе
-  public provider: OAuthProvider // Провайдер, через который пытаются войти
+  public email: string
+  public provider: OAuthProvider
 
   constructor(email: string, provider: OAuthProvider) {
-    // Вызываем конструктор родительского класса Error с сообщением
     super(`User with email ${email} already exists but ${provider} account is not linked`)
-
-    // Устанавливаем имя ошибки
     this.name = "EmailExistsWithoutProviderError"
-
-    // Сохраняем email и провайдера в свойствах экземпляра
     this.email = email
     this.provider = provider
   }
 }
 
-// Хук используется для входа/регистрации через Google или GitHub
+// Генерация username
+const generateUsername = (): string => {
+  return "user_" + Math.random().toString(36).substring(2, 8)
+}
+
+// Базовый URL бэкенда
+const getBaseUrl = (): string => {
+  return process.env.NEXT_PUBLIC_BASE_URL || "https://main-gateway-service.nymbi.org"
+}
+
+// Хук для OAuth входа
 export const useOAuthMutation = () => {
-  // Получаем экземпляр QueryClient для управления кэшем React Query
   const queryClient = useQueryClient()
-  // Получаем роутер для программной навигации (редирект на /profile)
   const router = useRouter()
 
-  // OAuthResponse - что возвращает бэкенд, Error - тип ошибки, OAuthLoginPayload - что передаем
   return useMutation<OAuthResponse, Error, OAuthLoginPayload>({
-    // ФУНКЦИЯ ОТПРАВКИ ЗАПРОСА
     mutationFn: async (payload: OAuthLoginPayload) => {
-      // Деструктурируем payload, чтобы получить provider и code отдельно
       const { provider, code } = payload
-      // Отправляем POST запрос на бэкенд, URL формируется из переменной окружения NEXT_PUBLIC_BASE_URL
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/auth/oauth`, {
-        method: "POST", // HTTP метод
-        headers: {
-          "Content-Type": "application/json", // Отправляем JSON
-        },
-        body: JSON.stringify({
-          // Тело запроса в JSON
-          provider, // "google" или "github"
-          code, // Временный код от провайдера
-        }),
-      })
 
-      // ОБРАБОТКА ОШИБОК ОТ БЭКЕНДА
+      // Формируем endpoint и redirectUri
+      const endpoint =
+        provider === "google" ? `${getBaseUrl()}/api/v1/auth/google/login` : `${getBaseUrl()}/api/v1/auth/github/login`
 
-      // Если статус ответа не 2xx (не OK)
-      if (!response.ok) {
-        // Пытаемся распарсить тело ошибки как JSON
-        // Если не получается - подставляем пустой объект
-        const errorData = await response.json().catch(() => ({}))
+      const redirectUri = `${window.location.origin}/auth/${provider}/callback`
 
-        // Статус 409 - Означает, что email уже существует, но провайдер не привязан
-        if (response.status === 409) {
-          // Извлекаем email из сообщения ошибки
-          const emailMatch = errorData.message?.match(/email:?\s*([^\s,]+@[^\s,]+)/i)
-          // Если нашли email - берем его, иначе пустая строка
-          const email = emailMatch ? emailMatch[1] : ""
-
-          // Выбрасываем ошибку, фронтенд перехватит её и покажет форму для привязки провайдера
-          throw new EmailExistsWithoutProviderError(email, provider)
-        }
-
-        // ОБРАБОТКА ОСТАЛЬНЫХ ОШИБОК (400, 401, 500 и т.д.)
-        const errorMessage =
-          errorData.errorsMessages?.[0]?.message || // Ошибка по конкретному полю
-          errorData.message || // Общее сообщение об ошибке
-          `${provider} authentication failed` // Дефолтное сообщение
-
-        // Выбрасываем обычную ошибку
-        throw new Error(errorMessage)
+      // Получаем или генерируем username
+      let username = sessionStorage.getItem("oauth_username") || ""
+      if (!username) {
+        username = generateUsername()
+        sessionStorage.setItem("oauth_username", username)
       }
 
-      // УСПЕШНЫЙ ОТВЕТ ОТ БЭКЕНДА, если response.ok === true, парсим JSON ответ
-      const data = await response.json()
+      // Отправляем запрос на бэкенд
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, username, redirectUri }),
+      })
 
-      // Возвращаем данные, типизированные как OAuthResponse - accessToken, isNewUser?, email?, username?
+      const data = await response.json().catch(() => ({}))
+
+      // Обработка ошибок
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Invalid authorization code")
+        }
+        if (response.status === 404) {
+          throw new Error("Endpoint not found")
+        }
+        if (response.status === 409) {
+          const email = data.message?.match(/([^\s,]+@[^\s,]+)/)?.[1] || ""
+          throw new EmailExistsWithoutProviderError(email, provider)
+        }
+        throw new Error(data.message || `${provider} authentication failed`)
+      }
+
+      // Очищаем временные данные
+      sessionStorage.removeItem("oauth_username")
+      sessionStorage.removeItem("oauth_provider")
+      sessionStorage.removeItem("oauth_from_register")
+
       return data as OAuthResponse
     },
 
-    // onSuccess - КОЛБЭК - data - то, что вернул mutationFn, variables - исходные переменные (provider, code)
-    onSuccess: async (data, variables) => {
-      // СОХРАНЕНИЕ ТОКЕНА
-      // Бэкенд вернул accessToken, сохраняем его в localStorage, использ. для авторизации последующих запросов
+    onSuccess: async (data) => {
       if (data.accessToken) {
         localStorage.setItem(localStorageKeys.accessToken, data.accessToken)
       }
-
-      // ИНВАЛИДАЦИЯ КЭША REACT QUERY - обновить состояние авторизации во всем приложении
       await queryClient.invalidateQueries()
-
-      // ЛОГИРОВАНИЕ НОВОГО ПОЛЬЗОВАТЕЛЯ бэкенд вернул флаг isNewUser === true, значит пользователь
-      // только что зарегистрировался через OAuth (ему сгенерирован username)
-      if (data.isNewUser) {
-        // Выводим в консоль информацию о новом пользователе
-        console.log(`New user registered via ${variables.provider}: ${data.email} (username: ${data.username})`)
-      }
-
-      // РЕДИРЕКТ НА СТРАНИЦУ ПРОФИЛЯ ПОСЛЕ УСПЕШНОГО ВХОДА
-      router.push("/profile")
+      router.push("/profile") // Редирект в профиль
     },
 
-    // onError - КОЛБЭК ПРИ ОШИБКЕ- вызывается, если mutationFn выбросил ошибку
     onError: (error) => {
-      // Логируем ошибку для отладки
-      console.error("OAuth authentication error:", error.message)
+      console.error("OAuth error:", error.message)
+    },
+  })
+}
+
+// Хук для привязки провайдера
+export const useLinkProviderMutation = () => {
+  const queryClient = useQueryClient()
+  const router = useRouter()
+
+  return useMutation<LinkProviderResponse, Error, LinkProviderPayload>({
+    mutationFn: async (payload: LinkProviderPayload) => {
+      const { provider, code, email, password } = payload
+      const endpoint = `${getBaseUrl()}/api/v1/auth/link-provider`
+      const redirectUri = `${window.location.origin}/auth/${provider}/callback`
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ provider, code, email, password, redirectUri }),
+      })
+
+      const data = await response.json().catch(() => ({}))
+
+      if (!response.ok) {
+        if (response.status === 401) throw new Error("Invalid credentials")
+        throw new Error(data.message || "Failed to link provider")
+      }
+
+      return data as LinkProviderResponse
+    },
+
+    onSuccess: async (data) => {
+      if (data.accessToken) localStorage.setItem(localStorageKeys.accessToken, data.accessToken)
+      sessionStorage.removeItem("oauth_link_email")
+      sessionStorage.removeItem("oauth_link_provider")
+      sessionStorage.removeItem("oauth_link_code")
+      await queryClient.invalidateQueries()
+      router.push("/profile")
     },
   })
 }
