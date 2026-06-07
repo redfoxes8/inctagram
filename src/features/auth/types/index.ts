@@ -22,6 +22,34 @@ export type ChangePasswordPayload = components["schemas"]["ChangePasswordDTO"]
 
 export type MeResponse = components["schemas"]["UserMeResponseDto"]
 
+// ============ Добавлено для OAuth ============
+export type OAuthProvider = "google" | "github"
+
+export type OAuthLoginPayload = {
+  provider: OAuthProvider
+  code: string
+}
+
+export type OAuthResponse = {
+  accessToken: string
+  isNewUser?: boolean
+  email?: string
+  username?: string
+}
+
+export type LinkProviderPayload = {
+  provider: OAuthProvider
+  code: string
+  email: string
+  password: string
+}
+
+export type LinkProviderResponse = {
+  accessToken: string
+  message: string
+}
+// ===================================
+
 // export type RegisterUserPayload = {
 //   username: string
 //   email: string
