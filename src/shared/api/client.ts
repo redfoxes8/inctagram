@@ -1,9 +1,9 @@
 import createClient, { Middleware } from "openapi-fetch"
 import { paths } from "@/shared/api/schema"
-import { localStorageKeys } from "@/features/auth/types/auth-api.types"
+import { localStorageKeys } from "@/features/auth/api/auth.type"
 
 export const client = createClient<paths>({
-  baseUrl: `${process.env.NEXT_PUBLIC_BASE_URL}`,
+  baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
 })
 
 const authMiddleware: Middleware = {
