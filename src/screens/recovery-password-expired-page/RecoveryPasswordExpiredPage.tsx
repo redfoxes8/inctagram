@@ -6,7 +6,7 @@ import clsx from "clsx"
 import s from "./RecoveryPasswordExpiredPage.module.css"
 import { Button, Container, FlexWrapper, Modal, Recaptcha } from "@/shared/ui"
 import { useForgotPasswordMutation } from "@/features/auth/api/use-password-recovery.mutation"
-import { localStorageKeys } from "@/features/auth/api/auth.type"
+import { localStorageKeys } from "@/features/auth/types"
 
 export const RecoveryPasswordExpiredPage = () => {
   const [isOpen, setIsOpen] = useState(false)

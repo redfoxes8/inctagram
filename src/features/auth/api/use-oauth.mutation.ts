@@ -3,13 +3,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import {
-  localStorageKeys,
-  OAuthLoginPayload,
-  OAuthResponse,
-  OAuthProvider,
   LinkProviderPayload,
   LinkProviderResponse,
-} from "./auth.type"
+  localStorageKeys,
+  OAuthLoginPayload,
+  OAuthProvider,
+  OAuthResponse,
+} from "@/features/auth/types"
 
 // Класс ошибки для конфликта email
 export class EmailExistsWithoutProviderError extends Error {

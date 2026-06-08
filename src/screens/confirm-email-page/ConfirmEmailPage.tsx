@@ -8,6 +8,7 @@ import clsx from "clsx"
 import { useSearchParams, useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { useConfirmEmail } from "@/features/auth/api/use-confirm-email"
+import { PAGES } from "@/shared/config/pages.config"
 
 export function ConfirmEmailPage() {
   const router = useRouter()
@@ -18,7 +19,7 @@ export function ConfirmEmailPage() {
 
   useEffect(() => {
     if (!code) {
-      router.replace("/register")
+      router.replace(PAGES.REGISTRATION)
       return
     }
     mutate(code)
@@ -26,7 +27,7 @@ export function ConfirmEmailPage() {
 
   useEffect(() => {
     if (isError) {
-      router.replace("/verification-expired")
+      router.replace(PAGES.VERIFICATION)
     }
   }, [isError, router])
 
@@ -39,12 +40,12 @@ export function ConfirmEmailPage() {
           <span className={`h2`}>Congratulations!</span>
           <span className={clsx(`regular_text_16`, s.confirmed)}>Your email has been confirmed</span>
 
-          <Button className={s.button} onClick={() => router.push("/login")}>
+          <Button className={s.button} onClick={() => router.push(PAGES.LOGIN)}>
             Sign In
           </Button>
 
           <Image className={s.bro_img} src={"/bro.png"} alt="bro" width={330} height={230} loading="eager" />
-          <Button className={s.button_mobileOnly} onClick={() => router.push("/login")}>
+          <Button className={s.button_mobileOnly} onClick={() => router.push(PAGES.LOGIN)}>
             Sign In
           </Button>
         </div>

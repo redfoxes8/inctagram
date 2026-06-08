@@ -4,6 +4,7 @@ import { Header } from "@/widgets/header"
 
 import "./globals.css"
 import { QueryProvider } from "@/app/providers/query-provider"
+import { AuthProvider } from "@/features/auth/lib/auth-provider"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,7 +26,7 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <Header />
-          {children}
+          <AuthProvider>{children}</AuthProvider>
         </QueryProvider>
       </body>
     </html>
