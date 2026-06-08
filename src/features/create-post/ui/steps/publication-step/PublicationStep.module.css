@@ -1,0 +1,233 @@
+.container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background: var(--dark-500);
+}
+
+.media_side {
+  position: relative;
+  flex: 1;
+  background: var(--dark-900);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.main_image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.arrow_btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgb(33 33 33 / 60%);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  color: var(--light-100);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition);
+}
+
+.arrow_btn:hover {
+  background: rgb(33 33 33 / 90%);
+}
+
+.arrow_left {
+  left: 12px;
+}
+
+.arrow_right {
+  right: 12px;
+}
+
+.dots_container {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  background: rgb(0 0 0 / 30%);
+  padding: 6px 10px;
+  border-radius: 20px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--light-900);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.dot:hover {
+  background: var(--light-100);
+}
+
+.dot_active {
+  background: var(--accent-500);
+}
+
+.info_side {
+  width: 300px;
+  border-left: 1px solid var(--dark-300);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-sizing: border-box;
+}
+
+.profile_header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar_placeholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--dark-300);
+  overflow: hidden;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--light-100);
+}
+
+.field_group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 12px;
+  color: var(--light-900);
+}
+
+.textarea_wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.textarea {
+  width: 100%;
+  height: 120px;
+  background: var(--dark-500);
+  border: 1px solid var(--dark-300);
+  border-radius: 4px;
+  color: var(--light-100);
+  padding: 12px;
+  padding-bottom: 28px;
+  resize: none;
+  font-family: inherit;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color var(--transition);
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--dark-100);
+}
+
+.textarea::placeholder {
+  color: var(--light-900);
+}
+
+.char_counter {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: 11px;
+  color: var(--dark-100);
+}
+
+.input_wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  background: var(--dark-500);
+  border: 1px solid var(--dark-300);
+  border-radius: 4px;
+  color: var(--light-100);
+  padding: 12px;
+  padding-right: 36px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color var(--transition);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--dark-100);
+}
+
+.input::placeholder {
+  color: var(--light-900);
+}
+
+.pin_icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--light-900);
+  pointer-events: none;
+}
+
+.suggestions_list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--dark-500);
+  border: 1px solid var(--dark-300);
+  border-radius: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  z-index: 10;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.suggestion_item {
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: background var(--transition);
+}
+
+.suggestion_item:hover {
+  background: var(--dark-400);
+}
+
+.suggestion_main {
+  font-size: 14px;
+  color: var(--light-100);
+}
+
+.suggestion_sub {
+  font-size: 11px;
+  color: var(--light-900);
+}
