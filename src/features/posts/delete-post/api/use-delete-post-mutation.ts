@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { DeletePostPayload } from "@/features/posts/types/delete-post.types"
+import { DeletePostPayload } from "@/features/posts/delete-post/api/delete-post.types"
 import { client } from "@/shared/api/client"
 
 export const useDeletePostMutation = () => {
@@ -18,7 +18,7 @@ export const useDeletePostMutation = () => {
       }
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries()
+      await queryClient.invalidateQueries({ queryKey: ["posts"] })
     },
   })
 }
