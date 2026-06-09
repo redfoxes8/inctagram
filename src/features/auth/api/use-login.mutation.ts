@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { client } from "@/shared/api/client"
-import { localStorageKeys, LoginRequestPayload, LoginResponse } from "@/features/auth/api/auth.type"
+import { localStorageKeys, LoginRequestPayload, LoginResponse } from "../types"
+import { queryClient } from "@/shared/api/query-client"
 
 export const useLoginMutation = () => {
   return useMutation<LoginResponse, Error, LoginRequestPayload>({
@@ -19,6 +20,8 @@ export const useLoginMutation = () => {
 
     onSuccess: async (data) => {
       localStorage.setItem(localStorageKeys.accessToken, data.accessToken)
+      // Запрашиваем данные пользователя сразу после логина
+      await queryClient.invalidateQueries({ queryKey: ["me"] })
     },
   })
 }

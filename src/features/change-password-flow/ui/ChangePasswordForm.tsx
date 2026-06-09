@@ -7,9 +7,10 @@ import { useForm } from "react-hook-form"
 import { Button, Input } from "@/shared/ui"
 import { Icon } from "@/shared/ui/Icon"
 import s from "./ChangePasswordForm.module.css"
-import { ChangePasswordPayload } from "@/features/auth/api/auth.type"
 import { useChangePasswordMutation } from "@/features/auth/api/use-change-password.mutation"
 import { confirmPasswordValidation, passwordValidation } from "@/shared/lib/validation/password.validation"
+import { ChangePasswordPayload } from "@/features/auth/types"
+import { PAGES } from "@/shared/config/pages.config"
 
 type ChangePasswordFormValues = {
   password: string
@@ -67,7 +68,7 @@ export function ChangePasswordForm() {
         const message = e.message.toLowerCase()
 
         if (message.includes("expired") || message.includes("invalid") || message.includes("already used")) {
-          router.replace("/password-recovery-expired")
+          router.replace(PAGES.PASSWORD_RECOVERY_EXPIRED)
 
           return
         }

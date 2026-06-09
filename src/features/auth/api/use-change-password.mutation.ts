@@ -1,8 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 
 import { client } from "@/shared/api/client"
-
-import { ChangePasswordPayload, localStorageKeys } from "@/features/auth/api/auth.type"
+import { ChangePasswordPayload, localStorageKeys } from "@/features/auth/types"
 
 type ApiError = {
   statusCode: number
