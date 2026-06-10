@@ -25,7 +25,7 @@
 
 .dropzone_active {
   border-color: var(--accent-500);
-  background-color: rgba(57, 127, 255, 0.05);
+  background-color: rgb(57 127 255 / 5%);
 }
 
 .image_placeholder {
@@ -36,7 +36,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 72px 0 60px 0;
+  margin: 72px 0 60px;
   flex-shrink: 0;
 }
 

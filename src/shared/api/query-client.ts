@@ -7,6 +7,8 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      //gcTime: 10000 // если нет подписчиков - удалить всё нафик...
       staleTime: 5 * 60 * 1000,
       retry: false, // в useMeQuery не отрабатывает
     },

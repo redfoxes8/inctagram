@@ -3,7 +3,7 @@ import { paths } from "@/shared/api/schema"
 import { localStorageKeys } from "@/features/auth/types"
 
 export const client = createClient<paths>({
-  baseUrl: `${process.env.NEXT_PUBLIC_BASE_URL}`,
+  baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
 })
 
 const authMiddleware: Middleware = {

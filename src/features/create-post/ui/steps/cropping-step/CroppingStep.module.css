@@ -84,9 +84,9 @@
   width: 36px;
   height: 36px;
   border-radius: 2px;
-  background: rgba(23, 23, 23, 0.8);
+  background: rgb(23 23 23 / 80%);
   border: none;
-  color: #ffffff;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,21 +96,21 @@
 
 .icon_trigger:hover,
 .icon_trigger_active {
-  background: #333333;
+  background: #333;
   color: #397fff;
 }
 
 .popover {
   position: absolute;
   bottom: 44px;
-  background: rgba(23, 23, 23, 0.9);
+  background: rgb(23 23 23 / 90%);
   backdrop-filter: blur(4px);
   border-radius: 4px;
   padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 50%);
   z-index: 20;
 }
 
@@ -137,8 +137,8 @@
 }
 
 .aspect_btn:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  background: rgb(255 255 255 / 5%);
 }
 
 .aspect_btn_active {
@@ -164,14 +164,13 @@
   height: 106px;
   width: max-content;
   max-width: 380px;
-  background: rgba(23, 23, 23, 0.95);
+  background: rgb(23 23 23 / 95%);
   backdrop-filter: blur(4px);
   border-radius: 4px;
   padding: 12px;
   box-sizing: border-box;
   z-index: 20;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-
+  box-shadow: 0 4px 12px rgb(0 0 0 / 50%);
   display: flex;
   flex-direction: row !important;
   align-items: center;
@@ -182,8 +181,9 @@
 .gallery_popover::-webkit-scrollbar {
   height: 4px;
 }
+
 .gallery_popover::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgb(255 255 255 / 20%);
   border-radius: 2px;
 }
 
@@ -215,10 +215,10 @@
   right: 4px;
   width: 18px;
   height: 18px;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgb(0 0 0 / 85%);
   border: none;
   border-radius: 50%;
-  color: #ffffff;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -250,8 +250,8 @@
 }
 
 .add_photo_btn:hover {
-  border-color: #ffffff;
-  color: #ffffff;
+  border-color: #fff;
+  color: #fff;
 }
 
 .hidden_input {
