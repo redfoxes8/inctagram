@@ -1,60 +1,49 @@
 import { useMutation } from "@tanstack/react-query"
-import { CreatePostPayload, UploadUrlResponse } from "../model/types"
-
-const getAccessToken = () => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("accessToken")
-  }
-  return null
-}
+import { client } from "@/shared/api/client"
+import { paths } from "@/shared/api/schema"
 
 export const useUploadPostImages = () => {
   return useMutation({
     mutationFn: async (images: File[]): Promise<string[]> => {
-      const token = getAccessToken()
-
       const uploadSingleImage = async (file: File): Promise<string> => {
-        const urlResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/posts/images/upload-url`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            accept: "application/json",
-            ...(token && { Authorization: `Bearer ${token}` }),
-          },
-          body: JSON.stringify({
-            fileExtension: `.${file.name.split(".").pop()?.toLowerCase()}`,
+        const ext = file.name.split(".").pop()?.toLowerCase()
+        const normalizedExt = ext === "jpg" ? "jpeg" : ext
+
+        type AllowedExtension =
+          paths["/api/v1/posts/images/upload-url"]["post"]["requestBody"]["content"]["application/json"]["fileExtension"]
+        const fileExtension = `.${normalizedExt}` as AllowedExtension
+
+        const { data, error } = await client.POST("/api/v1/posts/images/upload-url", {
+          body: {
+            fileExtension: fileExtension,
             fileSize: file.size,
-          }),
+          },
         })
 
-        if (!urlResponse.ok) {
-          throw new Error(`Не удалось получить URL для файла ${file.name}`)
-        }
-
-        const data: UploadUrlResponse = await urlResponse.json()
-
-        if (!data.uploadUrl || !data.fileId) {
-          throw new Error("Бэкенд вернул некорректные данные для загрузки")
+        if (error || !data || !data.uploadUrl || !data.fileId) {
+          throw new Error(`Бэкенд не отдал ссылку для: ${file.name}`)
         }
 
         const s3FormData = new FormData()
-
         if (data.uploadFields) {
           Object.entries(data.uploadFields).forEach(([key, value]) => {
-            s3FormData.append(key, value as string)
+            if (key !== "file") s3FormData.append(key, value as string)
           })
         }
-
         s3FormData.append("file", file)
 
         const s3Response = await fetch(data.uploadUrl, {
           method: "POST",
           body: s3FormData,
+          mode: "cors",
         })
 
         if (!s3Response.ok) {
-          throw new Error(`Ошибка загрузки файла ${file.name} в облачное хранилище`)
+          const errTxt = await s3Response.text().catch(() => "")
+          throw new Error(`AWS S3 вернул ошибку ${s3Response.status}. Файл НЕ загружен!`)
         }
+
+        await new Promise((resolve) => setTimeout(resolve, 1500))
 
         return data.fileId
       }
@@ -66,25 +55,16 @@ export const useUploadPostImages = () => {
 
 export const useCreatePost = () => {
   return useMutation({
-    mutationFn: async (payload: CreatePostPayload) => {
-      const token = getAccessToken()
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/posts`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-        body: JSON.stringify(payload),
+    mutationFn: async (payload: { description: string; fileIds: string[] }) => {
+      const { data, error } = await client.POST("/api/v1/posts", {
+        body: payload,
       })
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || "Ошибка при создании поста")
+      if (error) {
+        throw new Error("Ошибка при создании поста на бэкенде")
       }
 
-      return response.json()
+      return data
     },
   })
 }

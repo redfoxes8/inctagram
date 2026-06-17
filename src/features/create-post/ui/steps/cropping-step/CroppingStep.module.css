@@ -20,29 +20,29 @@
 .crop_frame {
   position: relative;
   overflow: hidden;
-  width: 100%;
-  height: 100%;
-  transition:
-    width 0.2s ease,
-    height 0.2s ease;
+  background: var(--dark-300);
+  margin: auto;
 }
 
 .crop_frame_square {
   aspect-ratio: 1 / 1;
-  width: 100%;
-  height: 100%;
+  width: min(100%, 100vh);
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .crop_frame_portrait {
   aspect-ratio: 4 / 5;
   height: 100%;
   width: auto;
+  max-width: 100%;
 }
 
 .crop_frame_landscape {
   aspect-ratio: 16 / 9;
   width: 100%;
   height: auto;
+  max-height: 100%;
 }
 
 .source_image {
@@ -53,6 +53,9 @@
   cursor: grab;
   user-select: none;
   -webkit-user-drag: none;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
   max-width: none;
   max-height: none;
 }
@@ -84,26 +87,26 @@
   width: 36px;
   height: 36px;
   border-radius: 2px;
-  background: rgb(23 23 23 / 80%);
+  background: var(--dark-500);
   border: none;
-  color: #fff;
+  color: var(--light-100);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background var(--transition);
 }
 
 .icon_trigger:hover,
 .icon_trigger_active {
-  background: #333;
-  color: #397fff;
+  background: var(--dark-300);
+  color: var(--accent-500);
 }
 
 .popover {
   position: absolute;
   bottom: 44px;
-  background: rgb(23 23 23 / 90%);
+  background: var(--dark-500);
   backdrop-filter: blur(4px);
   border-radius: 4px;
   padding: 12px;
@@ -122,7 +125,7 @@
 .aspect_btn {
   background: transparent;
   border: none;
-  color: #8c8c8c;
+  color: var(--light-900);
   padding: 6px 12px;
   font-size: 14px;
   font-weight: 500;
@@ -133,16 +136,16 @@
   justify-content: space-between;
   gap: 16px;
   border-radius: 2px;
-  transition: all 0.2s;
+  transition: all var(--transition);
 }
 
 .aspect_btn:hover {
-  color: #fff;
+  color: var(--light-100);
   background: rgb(255 255 255 / 5%);
 }
 
 .aspect_btn_active {
-  color: #397fff;
+  color: var(--accent-500);
 }
 
 .zoom_popover {
@@ -153,7 +156,7 @@
 
 .slider {
   width: 100%;
-  accent-color: #397fff;
+  accent-color: var(--accent-500);
   cursor: pointer;
 }
 
@@ -164,7 +167,7 @@
   height: 106px;
   width: max-content;
   max-width: 380px;
-  background: rgb(23 23 23 / 95%);
+  background: var(--dark-500);
   backdrop-filter: blur(4px);
   border-radius: 4px;
   padding: 12px;
@@ -183,7 +186,7 @@
 }
 
 .gallery_popover::-webkit-scrollbar-thumb {
-  background: rgb(255 255 255 / 20%);
+  background: var(--dark-100);
   border-radius: 2px;
 }
 
@@ -202,11 +205,11 @@
   border-radius: 2px;
   border: 2px solid transparent;
   box-sizing: border-box;
-  transition: border-color 0.2s;
+  transition: border-color var(--transition);
 }
 
 .thumb_img_active {
-  border-color: #397fff;
+  border-color: var(--accent-500);
 }
 
 .remove_thumb_btn {
@@ -215,10 +218,10 @@
   right: 4px;
   width: 18px;
   height: 18px;
-  background: rgb(0 0 0 / 85%);
+  background: var(--dark-900);
   border: none;
   border-radius: 50%;
-  color: #fff;
+  color: var(--light-100);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -226,11 +229,11 @@
   padding: 0;
   font-size: 10px;
   z-index: 5;
-  transition: background 0.2s;
+  transition: background var(--transition);
 }
 
 .remove_thumb_btn:hover {
-  background: #ff3b30;
+  background: var(--danger-500);
 }
 
 .add_photo_btn {
@@ -238,22 +241,37 @@
   height: 82px;
   flex-shrink: 0;
   border-radius: 2px;
-  border: 1px dashed #4c4c4c;
+  border: 1px dashed var(--dark-100);
   background: transparent;
-  color: #8c8c8c;
+  color: var(--light-900);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   box-sizing: border-box;
-  transition: all 0.2s;
+  transition: all var(--transition);
 }
 
 .add_photo_btn:hover {
-  border-color: #fff;
-  color: #fff;
+  border-color: var(--light-100);
+  color: var(--light-100);
 }
 
 .hidden_input {
   display: none;
+}
+
+.crop_frame_original {
+  width: 100%;
+  height: 100%;
+}
+
+.source_image_original {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  cursor: default;
 }

@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import clsx from "clsx"
 import s from "./CreatePostWizard.module.css"
 import { useCreatePostStore } from "@/features/create-post/model/store"
@@ -8,6 +9,7 @@ import { SelectStep } from "../steps/select-step/SelectStep"
 import { CroppingStep } from "../steps/cropping-step/CroppingStep"
 import { Button } from "@/shared/ui"
 import { Icon } from "@/shared/ui/Icon"
+import { Modal } from "@/shared/ui/Modal"
 import { useUploadPostImages, useCreatePost } from "../../api/useCreatePost"
 
 const FiltersStepPlaceholder = () => {
@@ -24,6 +26,7 @@ const FiltersStepPlaceholder = () => {
 
 export const CreatePostWizard = () => {
   const { isOpen, step, setStep, reset, data, closeModal } = useCreatePostStore()
+  const [showCloseConfirm, setShowCloseConfirm] = useState(false)
 
   const { mutateAsync: uploadImages, isPending: isUploading } = useUploadPostImages()
   const { mutateAsync: createPost, isPending: isCreating } = useCreatePost()
@@ -84,13 +87,18 @@ export const CreatePostWizard = () => {
       if (step === "SELECT") {
         reset()
       } else {
-        const shouldClose = window.confirm("Are you sure you want to close? Your draft will be saved.")
-
-        if (shouldClose) {
-          closeModal()
-        }
+        setShowCloseConfirm(true)
       }
     }
+  }
+
+  const handleConfirmClose = () => {
+    setShowCloseConfirm(false)
+    closeModal()
+  }
+
+  const handleCancelClose = () => {
+    setShowCloseConfirm(false)
   }
 
   return (
@@ -117,19 +125,19 @@ export const CreatePostWizard = () => {
 
           {step === "CROP" && (
             <Button className={s.nav_button} onClick={() => setStep("FILTERS")}>
-              Next
+              <span className={s.next_step_btn}>Next</span>
             </Button>
           )}
 
           {step === "FILTERS" && (
             <Button className={s.nav_button} onClick={() => setStep("PUBLICATION")}>
-              Next
+              <span className={s.next_step_btn}>Next</span>
             </Button>
           )}
 
           {step === "PUBLICATION" && (
             <Button className={s.nav_button} onClick={handlePublish} disabled={isLoading}>
-              {isLoading ? "Publishing..." : "Publish"}
+              {isLoading ? "Publishing..." : <span className={s.next_step_btn}>Publish</span>}
             </Button>
           )}
         </div>
@@ -141,6 +149,26 @@ export const CreatePostWizard = () => {
           {step === "PUBLICATION" && <PublicationStep />}
         </div>
       </dialog>
+
+      <Modal
+        isOpen={showCloseConfirm}
+        onClose={handleCancelClose}
+        onConfirm={handleConfirmClose}
+        onCancel={handleCancelClose}
+        title="Close Post"
+        confirmText="Save draft"
+        cancelText="Discard"
+        showCancelButton={true}
+        size="s"
+        buttonsClassName={s.confirm_buttons}
+      >
+        <div className={s.confirm_content}>
+          <p className={clsx("regular_text_16", s.confirm_title)}>
+            Do you really want to close the creation of a publication?
+          </p>
+          <p className={clsx("regular_text_16", s.confirm_subtitle)}>If you close everything will be deleted</p>
+        </div>
+      </Modal>
     </>
   )
 }
