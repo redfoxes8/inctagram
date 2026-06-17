@@ -20,7 +20,7 @@ export const queryClient = new QueryClient({
       // Обработка ошибки /me — чистим сессию
       if (queryKey[0] === "me" && error?.status === 401) {
         localStorage.removeItem(localStorageKeys.accessToken)
-        queryClient.removeQueries({ queryKey: ["me"] })
+        // queryClient.removeQueries({ queryKey: ["me"] })
       }
 
       // Сюда можно добавлять другие кейсы

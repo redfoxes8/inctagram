@@ -3,7 +3,6 @@
 import { Modal, Sidebar } from "@/shared/ui"
 import { useMeQuery } from "@/features/auth/api/use-me"
 import { useCreatePostStore } from "@/features/create-post/model/store"
-import { CreatePostWizard } from "@/features/create-post/ui/post-wizard/CreatePostWizard"
 import { useAuthRedirect } from "@/features/auth/lib/use-auth-redirect"
 import { useLogoutHandler } from "@/features/auth/lib/use-logout-handler"
 

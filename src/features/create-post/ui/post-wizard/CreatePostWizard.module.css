@@ -19,6 +19,10 @@
   width: 792px;
 }
 
+.next_step_btn {
+  color: var(--accent-500);
+}
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -40,6 +44,7 @@
 
 .header_title {
   font-weight: 700;
+  color: var(--light-100);
 }
 
 .nav_button {
@@ -102,4 +107,45 @@
 
 .placeholder_button:hover {
   background: var(--accent-700);
+}
+
+.confirm_content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  width: 100%;
+}
+
+.confirm_title {
+  margin: 0;
+  text-align: left;
+}
+
+.confirm_subtitle {
+  margin: 0;
+  text-align: left;
+}
+
+.confirm_buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.confirm_buttons button {
+  width: auto;
+  min-width: 100px;
+}
+
+@media (width <= 767px) {
+  .confirm_buttons {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .confirm_buttons button {
+    flex: 1;
+    max-width: 48%;
+  }
 }

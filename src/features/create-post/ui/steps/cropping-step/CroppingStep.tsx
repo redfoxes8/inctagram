@@ -1,15 +1,16 @@
 "use client"
 
-import { useState, useRef, MouseEvent, ChangeEvent } from "react"
+import { useState, useRef, MouseEvent, ChangeEvent, useEffect } from "react"
 import clsx from "clsx"
 import { Icon } from "@/shared/ui/Icon"
 import s from "./CroppingStep.module.css"
 import { useCreatePostStore } from "@/features/create-post/model/store"
+import { useCropLogic } from "@/features/create-post/model/useCropLogic"
 
-type AspectType = "1:1" | "4:5" | "16:9"
+type AspectType = "Original" | "1:1" | "4:5" | "16:9"
 
 export const CroppingStep = () => {
-  const { data, updateImageItem, setCurrentImageIndex } = useCreatePostStore()
+  const { data, setCurrentImageIndex } = useCreatePostStore()
   const { images, currentImageIndex } = data
   const currentItem = images[currentImageIndex]
 
@@ -17,17 +18,35 @@ export const CroppingStep = () => {
   const [isZoomOpen, setIsZoomOpen] = useState(false)
   const [isGalleryOpen, setIsGalleryOpen] = useState(false)
 
-  const [aspect, setAspect] = useState<AspectType>("1:1")
-  const [zoom, setZoom] = useState<number>(1)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [isDragging, setIsDragging] = useState(false)
+  const {
+    aspect,
+    zoom,
+    position,
+    isDragging,
+    dragStart,
+    cropContainerRef,
+    cropFrameRef,
+    setAspect,
+    setZoom,
+    setPosition,
+    setIsDragging,
+    applyCropAndSave,
+  } = useCropLogic(currentImageIndex)
 
-  const dragStart = useRef({ x: 0, y: 0 })
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    applyCropAndSave()
+
+    return () => {
+      applyCropAndSave()
+    }
+  }, [])
 
   if (!currentItem) return null
 
   const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
+    if (aspect === "Original") return
     e.preventDefault()
     setIsDragging(true)
     dragStart.current = {
@@ -37,11 +56,12 @@ export const CroppingStep = () => {
   }
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (!isDragging) return
-    setPosition({
+    if (!isDragging || aspect === "Original") return
+    const newPosition = {
       x: e.clientX - dragStart.current.x,
       y: e.clientY - dragStart.current.y,
-    })
+    }
+    setPosition(newPosition)
   }
 
   const handleMouseUp = () => {
@@ -52,13 +72,17 @@ export const CroppingStep = () => {
     if (!e.target.files || e.target.files.length === 0) return
 
     const newFiles = Array.from(e.target.files)
-    const newImageItems = newFiles.map((file, index) => ({
-      id: `${file.name}-${index}-${Date.now()}`,
-      file,
-      croppedImage: URL.createObjectURL(file),
-      cropArea: null,
-      filter: null,
-    }))
+    const newImageItems = newFiles.map((file, index) => {
+      const originalImage = URL.createObjectURL(file)
+      return {
+        id: `${file.name}-${index}-${Date.now()}`,
+        file,
+        originalImage,
+        croppedImage: originalImage,
+        cropArea: null,
+        filter: null,
+      }
+    })
 
     useCreatePostStore.setState((state) => ({
       data: {
@@ -68,10 +92,16 @@ export const CroppingStep = () => {
     }))
   }
 
-  const handleRemoveImage = (e: MouseEvent, indexToRemove: number) => {
+  const handleRemoveImage = (e: React.MouseEvent, indexToRemove: number) => {
     e.stopPropagation()
 
-    if (images[indexToRemove]?.croppedImage) {
+    if (images[indexToRemove]?.originalImage) {
+      URL.revokeObjectURL(images[indexToRemove].originalImage)
+    }
+    if (
+      images[indexToRemove]?.croppedImage &&
+      images[indexToRemove]?.croppedImage !== images[indexToRemove]?.originalImage
+    ) {
       URL.revokeObjectURL(images[indexToRemove].croppedImage)
     }
 
@@ -97,9 +127,25 @@ export const CroppingStep = () => {
   }
 
   const getAspectClass = () => {
+    if (aspect === "Original") return s.crop_frame_original
     if (aspect === "4:5") return s.crop_frame_portrait
     if (aspect === "16:9") return s.crop_frame_landscape
     return s.crop_frame_square
+  }
+
+  const getImageStyle = () => {
+    if (aspect === "Original") {
+      return {
+        width: "100%",
+        height: "100%",
+        objectFit: "contain" as const,
+        transform: "none",
+      }
+    }
+
+    return {
+      transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px)) scale(${zoom})`,
+    }
   }
 
   return (
@@ -108,30 +154,26 @@ export const CroppingStep = () => {
         ref={fileInputRef}
         type="file"
         multiple
-        accept="image/jpeg, image/png, image/jpg"
+        accept="image/jpeg, image/png, image/jpg, image/webp"
         className={s.hidden_input}
         onChange={handleAddFiles}
       />
 
-      <div
-        className={s.viewport}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-      >
-        <div className={clsx(s.crop_frame, getAspectClass())}>
+      <div ref={cropContainerRef} className={s.viewport}>
+        <div
+          ref={cropFrameRef}
+          className={clsx(s.crop_frame, getAspectClass())}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
           <img
-            src={currentItem.croppedImage || ""}
+            src={currentItem.originalImage}
             alt="Crop target"
-            className={s.source_image}
-            style={{
-              transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px)) scale(${zoom})`,
-              width: aspect === "16:9" ? "100%" : "auto",
-              height: aspect === "4:5" ? "100%" : "auto",
-              minWidth: aspect === "1:1" ? "100%" : "none",
-              minHeight: aspect === "1:1" ? "100%" : "none",
-            }}
+            className={clsx(s.source_image, aspect === "Original" && s.source_image_original)}
+            style={getImageStyle()}
+            draggable={false}
           />
         </div>
       </div>
@@ -153,14 +195,13 @@ export const CroppingStep = () => {
 
             {isAspectOpen && (
               <div className={clsx(s.popover, s.aspect_popover)}>
-                {(["1:1", "4:5", "16:9"] as AspectType[]).map((type) => (
+                {(["Original", "1:1", "4:5", "16:9"] as AspectType[]).map((type) => (
                   <button
                     key={type}
                     type="button"
                     className={clsx(s.aspect_btn, aspect === type && s.aspect_btn_active)}
                     onClick={() => {
                       setAspect(type)
-                      setPosition({ x: 0, y: 0 })
                       setIsAspectOpen(false)
                     }}
                   >
@@ -172,36 +213,39 @@ export const CroppingStep = () => {
             )}
           </div>
 
-          <div style={{ position: "relative" }}>
-            <button
-              type="button"
-              className={clsx(s.icon_trigger, isZoomOpen && s.icon_trigger_active)}
-              onClick={() => {
-                setIsZoomOpen(!isZoomOpen)
-                setIsAspectOpen(false)
-                setIsGalleryOpen(false)
-              }}
-            >
-              <Icon name="maximize-outline" />
-            </button>
+          {aspect !== "Original" && (
+            <div style={{ position: "relative" }}>
+              <button
+                type="button"
+                className={clsx(s.icon_trigger, isZoomOpen && s.icon_trigger_active)}
+                onClick={() => {
+                  setIsZoomOpen(!isZoomOpen)
+                  setIsAspectOpen(false)
+                  setIsGalleryOpen(false)
+                }}
+              >
+                <Icon name="maximize-outline" />
+              </button>
 
-            {isZoomOpen && (
-              <div className={clsx(s.popover, s.zoom_popover)}>
-                <input
-                  type="range"
-                  min={1}
-                  max={3}
-                  step={0.05}
-                  value={zoom}
-                  onChange={(e) => setZoom(Number(e.target.value))}
-                  className={s.slider}
-                />
-              </div>
-            )}
-          </div>
+              {isZoomOpen && (
+                <div className={clsx(s.popover, s.zoom_popover)}>
+                  <input
+                    type="range"
+                    min={1}
+                    max={3}
+                    step={0.05}
+                    value={zoom}
+                    onChange={(e) => setZoom(Number(e.target.value))}
+                    className={s.slider}
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className={s.right_controls}>
+          {/* Gallery Button */}
           <div style={{ position: "relative" }}>
             <button
               type="button"
@@ -220,7 +264,7 @@ export const CroppingStep = () => {
                 {images.map((img, idx) => (
                   <div key={img.id} className={s.thumb_wrapper} onClick={() => setCurrentImageIndex(idx)}>
                     <img
-                      src={img.croppedImage || ""}
+                      src={img.croppedImage || img.originalImage}
                       alt="thumbnail"
                       className={clsx(s.thumb_img, idx === currentImageIndex && s.thumb_img_active)}
                     />

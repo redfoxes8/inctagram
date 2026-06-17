@@ -17,8 +17,14 @@ export interface CropArea {
 export interface ImageItem {
   id: string
   file: File
-  croppedImage: string | null
-  cropArea: CropArea | null
+  originalImage: string
+  croppedImage: string
+  cropArea: {
+    aspect: "Original" | "1:1" | "4:5" | "16:9"
+    zoom: number
+    positionX: number
+    positionY: number
+  } | null
   filter: string | null
 }
 

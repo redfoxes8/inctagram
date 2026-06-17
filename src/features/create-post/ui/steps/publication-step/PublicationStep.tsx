@@ -27,11 +27,40 @@ export const PublicationStep = () => {
   }
 
   const currentImage = images[currentImageIndex]?.croppedImage || ""
+  const currentCropArea = images[currentImageIndex]?.cropArea
+
+  const getContainerStyle = () => {
+    const baseStyle = {
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }
+
+    if (!currentCropArea) return baseStyle
+
+    const { aspect } = currentCropArea
+
+    switch (aspect) {
+      case "1:1":
+        return { ...baseStyle, aspectRatio: "1 / 1" }
+      case "4:5":
+        return { ...baseStyle, aspectRatio: "4 / 5" }
+      case "16:9":
+        return { ...baseStyle, aspectRatio: "16 / 9" }
+      case "Original":
+      default:
+        return { ...baseStyle, width: "auto", height: "auto", maxWidth: "100%", maxHeight: "100%" }
+    }
+  }
 
   return (
     <div className={s.container}>
       <div className={s.media_side}>
-        <img src={currentImage} alt={`Slide ${currentImageIndex + 1}`} className={s.main_image} />
+        <div className={s.image_container} style={getContainerStyle()}>
+          <img src={currentImage} alt={`Slide ${currentImageIndex + 1}`} className={s.main_image} />
+        </div>
 
         {currentImageIndex > 0 && (
           <button type="button" className={clsx(s.arrow_btn, s.arrow_left)} onClick={handlePrevImage}>

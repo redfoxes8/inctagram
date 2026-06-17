@@ -43,10 +43,12 @@ export const useCreatePostStore = create<CreatePostState>((set) => ({
       return new Promise<ImageItem>((resolve) => {
         const reader = new FileReader()
         reader.onloadend = () => {
+          const base64 = reader.result as string
           resolve({
             id: `${file.name}-${index}-${Date.now()}`,
             file,
-            croppedImage: reader.result as string, //записываем чистую Base64 строку она никогда не пропадёт при закрытии модалки
+            originalImage: base64,
+            croppedImage: base64,
             cropArea: null,
             filter: null,
           })
