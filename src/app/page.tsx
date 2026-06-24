@@ -1,197 +1,50 @@
-"use client"
-import { Icon } from "@/shared/ui/Icon"
-import styles from "./page.module.css"
-import Image from "next/image"
-import { Checkbox } from "@/shared/ui/Checkbox"
-import { Button } from "@/shared/ui/Button"
-import { Input } from "@/shared/ui/Input"
-import { Recaptcha } from "@/shared/ui/Recaptcha"
-import { Tabs } from "@/shared/ui/Tabs"
-import { TextArea } from "@/shared/ui/TextArea"
-import { useState } from "react"
-import { SelectOption } from "@/shared/ui/SelectBox/SelectBox.types"
-import { SelectBox } from "@/shared/ui/SelectBox"
-import { DateRangePicker } from "@/shared/ui/DateRangePicker"
-import { RadioGroup } from "@/shared/ui/RadioGroup"
-import { Scroll } from "@/shared/ui/Scroll"
-import { Modal } from "@/shared/ui"
+import { MainScreen } from "@/screens/main-page"
+import { SidebarWidget } from "@/widgets/sidebar-widget"
 
-const mockFetch = () => {
-  return new Promise((resolve, reject) => {
-    console.log("Запрос отправлен...")
+export const revalidate = 60
 
-    setTimeout(() => {
-      const isSuccess = Math.random() > 0.5
-
-      if (isSuccess) {
-        resolve({ status: 200, data: "Успешные данные" })
-      } else {
-        reject({ status: 500, message: "Ошибка сервера" })
-      }
-    }, 1000)
+//Почитай за ISR, Танстак нам тут не нужен
+async function getUsersCount(): Promise<number> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/users/count`, {
+    next: { revalidate: 60 },
   })
+
+  if (!res.ok) throw new Error("Failed to fetch users count")
+
+  const data = await res.json()
+  return data.count ?? data
 }
 
-export default function Home() {
-  const [selectValue, setSelectValue] = useState("1")
-  const numbers = [1, 2, 3, 4]
-  console.log(numbers)
-  const [selectedDate, setSelectedDate] = useState<Date>()
-  const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>()
-  const [selectedDates, setSelectedDates] = useState<Date[] | undefined>([])
+async function getLatestPosts() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/posts/latest`, {
+    next: { revalidate: 60 },
+  })
 
-  const [isOpen, setIsOpen] = useState(true)
+  if (!res.ok) throw new Error("Failed to fetch latest posts")
 
-  const options: SelectOption[] = [
-    { value: "1", label: "Option 1", icon: "search-outline" },
-    { value: "2", label: "Option 2", icon: "settings-outline" },
-    { value: "3", label: "Option 3", icon: "person-outline" },
-    { value: "4", label: "Option 4", icon: "home" },
-  ]
+  return res.json()
+}
 
-  const TAGS = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`) // Содержимое для скрола
+export default async function Home() {
+  let totalUsers = 1348
+  let posts = []
+
+  try {
+    const [fetchedUsersCount, fetchedPosts] = await Promise.all([getUsersCount(), getLatestPosts()])
+
+    totalUsers = fetchedUsersCount
+    posts = fetchedPosts
+  } catch (error) {
+    console.error("Бэкенд недоступен, Next.js использует фолбек-данные:", error)
+  }
 
   return (
-    <div className={styles.container}>
-      <h1 className="h1">h1</h1>
-      <p className="large">large</p>
-      <p className="regular_text_16">regular_text_16</p>
-      <p className={`medium_text_14 ${styles.mediumText}`}>medium_text_14 with accent 500</p>
-      <a className="regular_link">Regular-Link</a>
-      {/* Ниже указан вариант работы с 83 иконками, включая иконку github, каждый SVG файл был модифицирован,
-      теперь мы можем менять цвет иконок, решил сделать такой вариант, чтобы не засорять public огромным кол-ом svg иконок
-      (там их 83 ч/б), самописный компонент Icon сами его посмотрите в shared/ui/Icon.tsx ничего сложного нет, 
-      создал UnionType чтобы никто не ошибся случайно (могут быть баги) Доработки и фиксы приветствуются*/}
-      <Icon name="Outline bell" style={{ color: "red" }} />
-      {/* Классический компонент next - Image, который принимает /icons/...svg эти картинки имеют цвет,
-      поэтому они не попали в sprite с ними работаем в обычном формате, 
-      можно конечно на каждую создать отдельный компонент в shared/ui/Icons/... но не вижу в этом смысла(пока что),
-      но если кому нечем будет заняться пожалуйста создавайте таску в Jira через PM и делайте */}
-      <Image src="/icons/facebook-svgrepo-com.svg" alt="Russian" width={24} height={16} />
-      <Checkbox id={"1"} />
-      <RadioGroup
-        options={[
-          { label: "2", value: "2" },
-          { label: "3", value: "3" },
-        ]}
-      />
-      <Scroll style={{ width: "200px", height: "225px", border: "2px solid #ccc" }}>
-        <div style={{ padding: "15px 20px" }}>
-          <div>Tags</div>
+    <div style={{ display: "flex", minHeight: "100vh" }}>
+      <SidebarWidget />
 
-          {TAGS.map((tag) => (
-            <div key={tag}>{tag}</div>
-          ))}
-        </div>
-      </Scroll>
-      {/*Если эта страница или компонент должны быть интерактивными, добавь сверху: "use client" потом нужно будет убрать*/}
-      <Button variant={"primary"} type={"button"}>
-        Click
-      </Button>
-
-      {/* Input */}
-      {/* Active */}
-      <div>
-        <Input
-          label="Email"
-          placeholder="example@mail.com"
-          autoFocus
-          rightIcon={<Icon name="eye-outline" />}
-          onRightIconClick={() => console.log("клик по глазу")}
-        />
-      </div>
-      {/* Error */}
-      <Input
-        label="Email"
-        error="Error text"
-        rightIcon={<Icon name="eye-outline" />}
-        onRightIconClick={() => console.log("клик по глазу")}
-      />
-      {/* Disabled */}
-      <div>
-        <p style={{ color: "#ccc", marginBottom: "0.5rem" }}>Disabled</p>
-        <Input label="Email" disabled rightIcon={<Icon name="eye-outline" />} />
-      </div>
-      {/* Пример с иконкой поиска (Search Bar) */}
-      <div>
-        <Input label="Поиск" leftIcon={<Icon name="search-outline" />} placeholder="Input search" />
-      </div>
-
-      {/*Tabs*/}
-      <div style={{ display: "flex", flexDirection: "column", gap: "2rem", marginTop: "2rem" }}>
-        <div>
-          <p style={{ color: "#666", marginBottom: "0.5rem" }}></p>
-          <Tabs defaultValue="tab" items={[{ label: "Tabs", value: "tab" }]} />
-        </div>
-        <div>
-          <p style={{ color: "#ccc", marginBottom: "0.5rem" }}>Disabled</p>
-          <Tabs items={[{ label: "Tabs", value: "tab", disabled: true }]} />
-        </div>
-      </div>
-      {/* Text-area */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-        <div>
-          <TextArea label="Text-area" placeholder="Tell your story..." autoFocus />
-        </div>
-        <div>
-          <TextArea label="Text-area" error="Error text" placeholder="Tell your story..." />
-        </div>
-        <div>
-          <p style={{ color: "#ccc", marginBottom: "0.5rem" }}>Disabled</p>
-          <TextArea label="Text-area" disabled placeholder="Tell your story..." />
-        </div>
-      </div>
-      {/* SelectBox */}
-      <SelectBox
-        label="Select"
-        value={selectValue}
-        onChange={setSelectValue}
-        options={options}
-        placeholder="Choose option"
-      />
-
-      <Modal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        onConfirm={() => console.log("YES")}
-        onCancel={() => console.log("NO")}
-        title="Delete post?"
-        confirmText="Yes"
-        cancelText="No"
-        showCancelButton
-      >
-        <p className="regular_text_16 ">Are you sure you want to delete this post?</p>
-      </Modal>
-
-      {/* <Modal
-  isOpen={isOpen}
-  onClose={() => setIsOpen(false)}
-  title="Email sent"
->
-  <p className="regular_text_16 ">
-    We have sent a confirmation link
-    to your email
-  </p>
-</Modal> */}
-
-      {/* DateRangePicker*/}
-      <div>
-        <DateRangePicker mode="single" value={selectedDate} onChange={setSelectedDate} label="Date" />
-
-        <DateRangePicker mode="range" value={dateRange} onChange={setDateRange} label="Date range" />
-
-        <DateRangePicker
-          mode="range"
-          value={dateRange}
-          onChange={setDateRange}
-          label="Date range"
-          error={"Error, select current month or last month"}
-        />
-
-        <DateRangePicker mode="range" value={dateRange} onChange={setDateRange} label="Date range" disabled />
-
-        {/* <DateRangePicker mode="multiple" value={selectedDates} onChange={setSelectedDates} label="Dates multiple " /> */}
-      </div>
+      <main style={{ flex: 1 }}>
+        <MainScreen totalUsers={totalUsers} serverPosts={posts} />
+      </main>
     </div>
   )
 }

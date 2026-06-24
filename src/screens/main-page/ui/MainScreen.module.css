@@ -1,0 +1,49 @@
+.wrapper {
+  padding: 84px 94px 0;
+}
+
+.head {
+  min-width: 100%;
+  min-height: 72px;
+  padding: 0 24px;
+  background-color: var(--dark-500);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 2px;
+  border: 1px solid var(--dark-300);
+}
+
+.counter {
+  display: flex;
+  background-color: var(--dark-700);
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--dark-300);
+}
+
+.digitBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 36px;
+  background-color: transparent;
+}
+
+.digitBox:not(:last-child) {
+  border-right: 1px solid var(--dark-300);
+}
+
+.content {
+  padding-top: 36px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+}
+
+.card {
+  min-width: 234px;
+  min-height: 391px;
+  background-color: var(--dark-300);
+}
