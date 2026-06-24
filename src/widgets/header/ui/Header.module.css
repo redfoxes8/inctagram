@@ -9,39 +9,15 @@
   border-bottom: 1px solid var(--dark-300);
 }
 
-/* .controls { */
+.controls {
+  display: flex;
+  gap: 36px;
+}
 
-/*  display: flex; */
-
-/*  align-items: center; */
-
-/*  gap: 24px; */
-
-/* } */
-
-/* .menuIcon { */
-
-/*  width: 24px; */
-
-/*  height: 24px; */
-
-/*  display: inline-flex; */
-
-/*  align-items: center; */
-
-/*  justify-content: center; */
-
-/* } */
-
-/* .menuSvg { */
-
-/*  width: 24px; */
-
-/*  height: 24px; */
-
-/*  color: var(--light-100); */
-
-/* } */
+.btn_group {
+  display: flex;
+  gap: 24px;
+}
 
 @media screen and (width >= 769px) {
   .menuIcon {
