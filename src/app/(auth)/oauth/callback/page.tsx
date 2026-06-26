@@ -3,9 +3,10 @@
 import { useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useOAuthMutation, EmailExistsWithoutProviderError } from "@/features/auth/api/use-oauth.mutation"
+import { Suspense } from "react"
 
-// Путь: /oauth/callback - Google/GitHub перенаправляют сюда после успешного входа пользователя
-export default function OAuthCallbackPage() {
+function OAuthCallbackContent() {
+  // Путь: /oauth/callback - Google/GitHub перенаправляют сюда после успешного входа пользователя
   // Хук для навигации - router.push("/profile") - переходит на страницу профиля
   const router = useRouter()
   // Хук для чтения параметров из URL строки
@@ -91,5 +92,13 @@ export default function OAuthCallbackPage() {
       {/* Дополнительный мелкий текст для информирования */}
       <div style={{ marginTop: "16px", fontSize: "14px", color: "#666" }}>Пожалуйста, подождите</div>
     </div>
+  )
+}
+
+export default function OAuthCallbackPage() {
+  return (
+    <Suspense fallback={<div>Загрузка...</div>}>
+      <OAuthCallbackContent />
+    </Suspense>
   )
 }
