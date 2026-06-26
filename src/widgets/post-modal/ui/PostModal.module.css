@@ -1,0 +1,647 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgb(0 0 0 / 60%);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes overlayShow {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.dialogContent {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--dark-300);
+  width: 90vw;
+  max-width: 1024px;
+  max-height: 90vh;
+  overflow: hidden;
+  z-index: 1001;
+  box-shadow: 0 24px 48px rgb(0 0 0 / 50%);
+  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  background: rgb(0 0 0 / 50%);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--light-100);
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+
+.closeButton:hover {
+  background: rgb(255 255 255 / 10%);
+  transform: scale(1.1);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.contentWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 700px;
+  height: 100%;
+  overflow: hidden;
+  flex: 1;
+}
+
+.imageBlock {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  overflow: hidden;
+  background: var(--dark-500);
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.imagePlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: var(--dark-300);
+  color: var(--light-900);
+}
+
+.imagePlaceholder svg {
+  width: 48px;
+  height: 48px;
+}
+
+.rightSide {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  height: 100%;
+  padding: 0;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 40px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--dark-100);
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.actionsTrigger {
+  margin-left: auto;
+}
+
+.userName {
+  color: var(--light-100);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.avatarRoot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--dark-500);
+  flex-shrink: 0;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: var(--dark-500);
+  color: var(--light-900);
+}
+
+.existingDescription {
+  display: flex;
+  gap: 12px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--dark-100);
+  flex-shrink: 0;
+}
+
+.existingDescription .userName {
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.existingDescription .descriptionText {
+  color: var(--light-100);
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+
+.commentsList {
+  flex: 1;
+  padding: 12px 24px;
+  overflow-y: auto;
+  min-height: 120px;
+  max-height: 300px;
+}
+
+.commentItem {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--dark-100);
+}
+
+.commentItem:last-child {
+  border-bottom: none;
+}
+
+.commentContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.commentHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.commentUserName {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--light-100);
+}
+
+.commentTime {
+  font-size: 11px;
+  color: var(--light-900);
+}
+
+.commentText {
+  font-size: 14px;
+  color: var(--light-100);
+  line-height: 1.4;
+  overflow-wrap: break-word;
+}
+
+.commentActions {
+  display: flex;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.commentActions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--light-900);
+  font-size: 12px;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.commentActions button:hover {
+  color: var(--light-100);
+}
+
+.noComments {
+  padding: 24px;
+  text-align: center;
+  color: var(--light-900);
+  font-size: 14px;
+}
+
+.likesInfo {
+  padding: 4px 24px 8px;
+  color: var(--light-100);
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.dateInfo {
+  padding: 2px 24px 8px;
+  color: var(--light-900);
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 16px;
+  padding: 8px 24px;
+  flex-shrink: 0;
+}
+
+.actionButtons button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--light-100);
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+  font-size: 14px;
+}
+
+.actionButtons button:hover {
+  background: var(--dark-100);
+  transform: scale(1.05);
+}
+
+.actionButtons button:active {
+  transform: scale(0.95);
+}
+
+.actionButtons button svg {
+  width: 22px;
+  height: 22px;
+}
+
+.textarea {
+  padding: 12px 24px 16px;
+  border-top: 1px solid var(--dark-100);
+  flex-shrink: 0;
+}
+
+.textarea textarea {
+  width: 100%;
+  min-height: 40px;
+  padding: 10px 12px;
+  background: var(--dark-500);
+  border: 1px solid var(--dark-100);
+  border-radius: 8px;
+  color: var(--light-100);
+  font-size: 14px;
+  resize: vertical;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.textarea textarea:focus {
+  outline: none;
+  border-color: var(--accent-500);
+}
+
+.textarea textarea::placeholder {
+  color: var(--light-900);
+}
+
+.textareaActions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 8px;
+  gap: 12px;
+}
+
+.charCount {
+  font-size: 12px;
+  color: var(--light-900);
+}
+
+.textareaActions button {
+  padding: 6px 16px;
+  font-size: 14px;
+}
+
+.textareaActions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loader,
+.error,
+.empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  gap: 16px;
+  color: var(--light-900);
+}
+
+.loader span {
+  font-size: 16px;
+}
+
+.error {
+  color: var(--danger-500);
+}
+
+.error button,
+.empty button {
+  padding: 8px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.error button {
+  background: var(--danger-500);
+  color: white;
+}
+
+.error button:hover {
+  background: var(--danger-700);
+}
+
+.empty button {
+  background: var(--accent-500);
+  color: white;
+}
+
+.empty button:hover {
+  background: var(--accent-700);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (width <=1024px) {
+  .dialogContent {
+    width: 95vw;
+    max-height: 95vh;
+    border-radius: 8px;
+  }
+
+  .contentWrapper {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    max-height: none;
+  }
+
+  .imageBlock {
+    min-height: 200px;
+    max-height: 320px;
+  }
+
+  .rightSide {
+    overflow-y: visible;
+    height: auto;
+    max-height: 500px;
+  }
+
+  .user {
+    padding: 12px 16px;
+  }
+
+  .commentsList {
+    padding: 8px 16px;
+    max-height: 200px;
+    min-height: 80px;
+  }
+
+  .existingDescription {
+    padding: 12px 16px;
+  }
+
+  .likesInfo {
+    padding: 4px 16px 6px;
+  }
+
+  .dateInfo {
+    padding: 2px 16px 6px;
+  }
+
+  .actionButtons {
+    padding: 6px 16px;
+  }
+
+  .textarea {
+    padding: 8px 16px 12px;
+  }
+
+  .closeButton {
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (width <=768px) {
+  .dialogContent {
+    width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+    top: 0;
+    left: 0;
+    transform: none;
+  }
+
+  .contentWrapper {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .imageBlock {
+    min-height: 200px;
+    max-height: 300px;
+  }
+
+  .rightSide {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .user {
+    padding: 10px 14px;
+  }
+
+  .userInfo {
+    gap: 8px;
+  }
+
+  .avatarRoot {
+    width: 30px;
+    height: 30px;
+  }
+
+  .commentsList {
+    padding: 6px 14px;
+    max-height: 150px;
+    min-height: 60px;
+  }
+
+  .existingDescription {
+    padding: 10px 14px;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .likesInfo {
+    padding: 2px 14px 4px;
+    font-size: 13px;
+  }
+
+  .dateInfo {
+    padding: 2px 14px 4px;
+    font-size: 10px;
+  }
+
+  .actionButtons {
+    padding: 4px 14px;
+    gap: 10px;
+  }
+
+  .actionButtons button {
+    font-size: 12px;
+  }
+
+  .actionButtons button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .textarea {
+    padding: 6px 14px 10px;
+  }
+
+  .textarea textarea {
+    min-height: 36px;
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .textareaActions {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .charCount {
+    font-size: 11px;
+  }
+
+  .textareaActions button {
+    padding: 4px 14px;
+    font-size: 13px;
+  }
+
+  .loader,
+  .error,
+  .empty {
+    min-height: 250px;
+  }
+
+  .loader span {
+    font-size: 14px;
+  }
+
+  .noComments {
+    padding: 16px;
+    font-size: 13px;
+  }
+
+  .commentItem {
+    padding: 6px 0;
+  }
+
+  .commentUserName {
+    font-size: 12px;
+  }
+
+  .commentText {
+    font-size: 13px;
+  }
+
+  .commentTime {
+    font-size: 10px;
+  }
+
+  .commentActions button {
+    font-size: 11px;
+  }
+
+  .closeButton {
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+  }
+}
