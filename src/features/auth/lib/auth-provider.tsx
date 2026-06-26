@@ -7,7 +7,7 @@ import { useAuthRedirect } from "@/features/auth/lib/use-auth-redirect"
 import { useLogoutHandler } from "@/features/auth/lib/use-logout-handler"
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { data: user = true, isLoading } = useMeQuery()
+  const { data: user, isLoading } = useMeQuery()
   const { mounted } = useAuthRedirect(user, isLoading)
   const { showConfirm, setShowConfirm, handleLogout, isPending } = useLogoutHandler()
   const openCreateModal = useCreatePostStore((state) => state.openModal)
