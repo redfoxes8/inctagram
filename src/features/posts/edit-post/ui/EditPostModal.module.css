@@ -170,13 +170,11 @@
     padding: 0;
   }
 
-  /* TextArea */
   .textarea textarea {
     min-height: 100px;
     padding: 12px;
   }
 
-  /* Кнопки */
   .desktopSaveButton {
     display: none;
   }
