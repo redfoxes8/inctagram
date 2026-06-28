@@ -2,7 +2,7 @@
 
 import { useFeedPosts } from "@/entities/post/api/use-feed-posts"
 import { useMeQuery } from "@/features/auth/api/use-me"
-import { Spinner } from "@radix-ui/themes"
+import { Spinner, VisuallyHidden } from "@radix-ui/themes"
 import Image from "next/image"
 import { useState, useCallback, useMemo } from "react"
 import { useRouter } from "next/navigation"
@@ -122,6 +122,9 @@ export const PostModal = ({
         <Dialog.Overlay className={s.overlay} />
 
         <Dialog.Content className={s.dialogContent}>
+          <VisuallyHidden asChild>
+            <Dialog.Title>My post</Dialog.Title>
+          </VisuallyHidden>
           <Dialog.Close asChild>
             <button className={s.closeButton} onClick={handleClose}>
               <Icon name="close-outline" />
