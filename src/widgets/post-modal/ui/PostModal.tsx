@@ -121,7 +121,8 @@ export const PostModal = ({
       <Dialog.Portal>
         <Dialog.Overlay className={s.overlay} />
 
-        <Dialog.Content className={s.dialogContent}>
+        <Dialog.Content className={s.dialogContent} aria-describedby="dialog-desc">
+          <p id="dialog-desc"> Post details and actions</p>
           <VisuallyHidden asChild>
             <Dialog.Title>My post</Dialog.Title>
           </VisuallyHidden>
