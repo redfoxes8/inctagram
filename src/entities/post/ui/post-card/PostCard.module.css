@@ -1,0 +1,109 @@
+.card {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+  overflow: hidden;
+  background-color: var(--color-light-300);
+  border-radius: 0;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.embla {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.emblaContainer {
+  display: flex;
+  height: 100%;
+  touch-action: pan-y pinch-zoom;
+}
+
+.emblaSlide {
+  flex: 0 0 100%;
+  min-width: 0;
+  height: 100%;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.image {
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.image.loading {
+  opacity: 0;
+}
+
+.image.loaded {
+  opacity: 1;
+}
+
+.carouselIndicators {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  z-index: 10;
+}
+
+.carouselDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: rgb(255 255 255 / 50%);
+  transition: background-color 0.3s ease;
+}
+
+.carouselDot.active {
+  background-color: rgb(255 255 255 / 100%);
+}
+
+.emptyCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-light-200);
+  color: var(--color-light-500);
+  font-size: 14px;
+}
+
+@media (width >= 768px) {
+  .card {
+    border-radius: 4px;
+  }
+}
+
+@media (width >= 1024px) {
+  .card {
+    border-radius: 8px;
+  }
+}
+
+@media (width <= 480px) {
+  .carouselIndicators {
+    bottom: 4px;
+  }
+
+  .carouselDot {
+    width: 4px;
+    height: 4px;
+  }
+
+  .emptyCard {
+    font-size: 12px;
+  }
+}

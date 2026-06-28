@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form"
 import { useUpdatePostMutation } from "../api/use-edit-post"
 import { EditPostData } from "./edit-post.types"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 type FormValues = {
   description: string
@@ -17,40 +18,16 @@ type UseEditPostFormProps = {
   onConfirm?: () => void
 }
 
-const useWindowSize = () => {
-  const [windowSize, setWindowSize] = useState({
-    width: typeof window !== "undefined" ? window.innerWidth : 1024,
-  })
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowSize({
-        width: window.innerWidth,
-      })
-    }
-
-    window.addEventListener("resize", handleResize)
-    handleResize()
-
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
-
-  return windowSize
-}
-
 export const useEditPostForm = ({ isOpen, data, onClose, onConfirm }: UseEditPostFormProps) => {
-  const { width } = useWindowSize()
-  const modalSize: "s" | "m" | "l" = width >= 1024 ? "l" : width >= 768 ? "m" : "s"
+  const [showConfirm, setShowConfirm] = useState(false)
+  const { mutateAsync, isPending } = useUpdatePostMutation()
 
   const imageUrl = data.post.images[0]?.url
   const initialDescription = data.post.description
   const userName = data.user.username
   const avatarUrl = data.user.avatarUrl
-  const id = data.post.id
+  const postId = data.post.id
   const maxLength = 500
-
-  const [showConfirm, setShowConfirm] = useState(false)
-  const { mutateAsync, isPending } = useUpdatePostMutation()
 
   const {
     register,
@@ -90,15 +67,17 @@ export const useEditPostForm = ({ isOpen, data, onClose, onConfirm }: UseEditPos
 
     try {
       await mutateAsync({
-        postId: id,
+        postId: postId,
         payload: {
           description: data.description,
         },
       })
+      toast.success("Post updated successfully!")
       onClose()
       onConfirm?.()
     } catch (error) {
       console.error("Failed to update post:", error)
+      toast.error("Failed to update post. Please try again.")
     }
   }
 
@@ -111,18 +90,17 @@ export const useEditPostForm = ({ isOpen, data, onClose, onConfirm }: UseEditPos
     isDirty,
     isPending,
     showConfirm,
-    modalSize,
     isDescriptionValid: !errors.description,
     descriptionError: errors.description?.message,
-    handleSubmit: handleSubmit(onSubmit),
-    handleRequestClose,
-    handleDiscardChanges,
-    setShowConfirm,
     register: register("description", {
       maxLength: {
         value: maxLength,
         message: `Maximum ${maxLength} characters allowed`,
       },
     }),
+    handleSubmit: handleSubmit(onSubmit),
+    handleRequestClose,
+    handleDiscardChanges,
+    setShowConfirm,
   }
 }

@@ -19,14 +19,7 @@ type Props = {
   onConfirm?: () => void
 }
 
-export const EditPostModal = ({
-  isOpen,
-  onClose,
-  data,
-  confirmText = "Save Changes",
-
-  onConfirm,
-}: Props) => {
+export const EditPostModal = ({ isOpen, onClose, data, confirmText = "Save Changes", onConfirm }: Props) => {
   const {
     imageUrl,
     userName,
@@ -36,7 +29,6 @@ export const EditPostModal = ({
     isDirty,
     isPending,
     showConfirm,
-    modalSize,
     isDescriptionValid,
     descriptionError,
     register,
@@ -62,7 +54,7 @@ export const EditPostModal = ({
         showFooter={false}
         className={s.modal}
         title="Edit Post"
-        size={modalSize}
+        size="l"
         contentClassName={s.noPaddingContent}
         dialogClassName={s.dialogClassName}
         fullscreenOnMobile={true}
@@ -89,11 +81,21 @@ export const EditPostModal = ({
         </div>
 
         <div className={s.wrapper}>
-          <div className={s.imageBlock}>{imageUrl && <Image src={imageUrl} alt="post" className={s.image} fill />}</div>
+          <div className={s.imageBlock}>
+            {imageUrl && (
+              <Image src={imageUrl} alt="post" className={s.image} fill sizes="(max-width: 768px) 100vw, 50vw" />
+            )}
+          </div>
 
           <div className={s.rightSide}>
             <div className={s.user}>
-              {avatarUrl && <Image src={avatarUrl} alt={userName} className={s.avatar} width={36} height={36} />}
+              {avatarUrl ? (
+                <Image src={avatarUrl} alt={userName} className={s.avatar} width={36} height={36} />
+              ) : (
+                <div className={s.avatarPlaceholder}>
+                  <Icon name="person-outline" />
+                </div>
+              )}
               <span className={clsx(s.userName, "h3")}>{userName}</span>
             </div>
 

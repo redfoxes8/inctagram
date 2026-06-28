@@ -3,7 +3,6 @@ import { SidebarWidget } from "@/widgets/sidebar-widget"
 
 export const revalidate = 60
 
-//Почитай за ISR, Танстак нам тут не нужен
 async function getUsersCount(): Promise<number> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/users/count`, {
     next: { revalidate: 60 },

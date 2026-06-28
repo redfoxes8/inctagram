@@ -5,6 +5,7 @@ import { Header } from "@/widgets/header"
 import "./globals.css"
 import { QueryProvider } from "@/app/providers/query-provider"
 import { AuthProvider } from "@/features/auth/lib/auth-provider"
+import { Toaster } from "sonner"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,6 +28,10 @@ export default function RootLayout({
         <QueryProvider>
           <Header />
           {children}
+          <AuthProvider>
+            {/* {children} */}
+            <Toaster position="bottom-left" richColors closeButton duration={3000} visibleToasts={5} />
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>
