@@ -46,6 +46,18 @@
   --background: var(--dark-700);
   --foreground: var(--light-100);
 
+  /* Layout */
+  --header-height: 60px;
+  --app-shell-max-width: 1280px;
+  --app-shell-left: max(0px, calc((100% - var(--app-shell-max-width)) / 2));
+  --app-page-gutter: 24px;
+  --app-page-gutter-mobile: 16px;
+  --sidebar-width: 220px;
+  --content-gap: 24px;
+  --content-offset: calc(var(--sidebar-width) + var(--content-gap));
+  --app-main-left: calc(var(--app-shell-left) + var(--content-offset));
+  --app-main-max-width: calc(var(--app-shell-max-width) - var(--content-offset));
+
   /* Animations */
   --transition: 0.2s ease-in-out;
 }

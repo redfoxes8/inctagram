@@ -1,9 +1,9 @@
 .sidebar {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 260px;
-  height: 100vh;
+  top: var(--header-height);
+  left: var(--app-shell-left);
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--header-height));
   background-color: var(--dark-700);
   border-right: 1px solid var(--dark-300);
   display: flex;
@@ -47,35 +47,44 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+}
+
+.navigationRoot > div {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .navigationList {
-  height: 100vh;
+  width: 136px;
+  flex: 1;
+  height: 100%;
   min-height: 100%;
   display: flex;
   flex-direction: column;
   list-style: none;
-  margin: 0;
+  padding-top: 64px;
+  margin: 0 0 0 52px;
 }
 
 .mainNavGroup {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-top: 60px;
-  margin-bottom: 60px;
+  gap: 8px;
+  margin-bottom: 44px;
 }
 
 .secondaryNavGroup {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 8px;
 }
 
 .logoutGroup {
   margin-top: auto;
-  margin-bottom: 60px;
+  margin-bottom: 102px;
 }
 
 .navigationItem {
@@ -225,6 +234,10 @@
 }
 
 @media (width <= 768px) {
+  .navigationRoot {
+    align-items: center;
+  }
+
   .sidebar {
     width: 240px;
     transform: translateX(-100%);
@@ -238,6 +251,7 @@
   }
 
   .navigationList {
+    margin-left: 0;
     padding: 20px 12px;
   }
 }

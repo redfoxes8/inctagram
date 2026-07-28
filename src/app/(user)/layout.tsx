@@ -15,7 +15,9 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
     <>
       <div className={styles.userShell}>
         <Sidebar onLogout={() => setShowConfirm(true)} onCreateClick={openCreateModal} />
-        <main className={styles.userMain}>{children}</main>
+        <main className={styles.userMain}>
+          <div className={styles.contentContainer}>{children}</div>
+        </main>
       </div>
 
       <CreatePostWizard />
