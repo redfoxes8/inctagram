@@ -1,0 +1,9 @@
+.userShell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.userMain {
+  flex: 1;
+  min-width: 0;
+}

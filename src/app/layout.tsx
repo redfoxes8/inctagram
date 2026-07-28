@@ -27,11 +27,8 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <Header />
-          {children}
-          <AuthProvider>
-            {/* {children} */}
-            <Toaster position="bottom-left" richColors closeButton duration={3000} visibleToasts={5} />
-          </AuthProvider>
+          <AuthProvider>{children}</AuthProvider>
+          <Toaster position="bottom-left" richColors closeButton duration={3000} visibleToasts={5} />
         </QueryProvider>
       </body>
     </html>
