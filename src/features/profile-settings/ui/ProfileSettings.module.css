@@ -1,0 +1,194 @@
+.page {
+  min-height: calc(100vh - 60px);
+  padding: 36px 64px 48px 244px;
+  background: var(--dark-700);
+}
+
+.content {
+  width: min(972px, 100%);
+}
+
+.tabs {
+  --settings-tab-width: 243px;
+}
+
+.tabs > div {
+  gap: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.tabs > div:hover,
+.tabs > div:focus-within {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.tabs button {
+  flex: 0 0 var(--settings-tab-width);
+  height: 36px;
+  padding: 6px 12px;
+  color: var(--dark-100);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.tabs button:hover:not(:disabled),
+.tabs button[data-state="active"] {
+  color: var(--accent-500);
+}
+
+.tabs button span {
+  bottom: 0;
+}
+
+.divider,
+.bottomDivider {
+  height: 1px;
+  background: var(--dark-300);
+}
+
+.divider {
+  width: 100%;
+}
+
+.form {
+  position: relative;
+  display: grid;
+  grid-template-columns: 192px 1fr;
+  column-gap: 40px;
+  padding-top: 24px;
+  padding-bottom: 86px;
+}
+
+.avatarColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-start;
+  padding-top: 24px;
+}
+
+.avatarPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 192px;
+  height: 192px;
+  border-radius: 50%;
+  background: var(--dark-500);
+}
+
+.avatarIcon {
+  width: 48px;
+  height: 48px;
+  color: var(--light-100);
+}
+
+.photoButton {
+  width: 192px;
+  padding-right: 12px;
+  padding-left: 12px;
+}
+
+.fieldsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: min(740px, 100%);
+}
+
+.fullField {
+  max-width: none;
+}
+
+.fullField textarea {
+  min-height: 84px;
+  resize: none;
+}
+
+.fullField > div,
+.locationField > div {
+  border-color: var(--dark-100);
+  border-radius: 2px;
+  background: var(--dark-500);
+}
+
+.locationFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 358px));
+  gap: 24px;
+}
+
+.locationField {
+  max-width: none;
+}
+
+.dateOfBirthField {
+  width: 100%;
+}
+
+.linkedFieldError {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  color: var(--danger-500);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.fieldErrorLink {
+  text-decoration: underline;
+}
+
+.bottomDivider {
+  position: absolute;
+  right: 0;
+  bottom: 60px;
+  left: 0;
+}
+
+.saveButton {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+@media (width <= 1024px) {
+  .page {
+    padding-right: 24px;
+    padding-left: 244px;
+  }
+
+  .tabs {
+    overflow-x: auto;
+  }
+
+  .form {
+    grid-template-columns: 1fr;
+    row-gap: 32px;
+  }
+
+  .fieldsColumn {
+    width: 100%;
+  }
+}
+
+@media (width <= 768px) {
+  .page {
+    padding: 24px 16px 40px;
+  }
+
+  .locationFields {
+    grid-template-columns: 1fr;
+  }
+
+  .saveButton {
+    right: 0;
+    left: 0;
+    width: 100%;
+  }
+}

@@ -30,6 +30,10 @@
   transition: color 0.2s ease;
 }
 
+.requiredMark {
+  color: var(--danger-500);
+}
+
 .inputWrapper {
   display: flex;
   align-items: center;
