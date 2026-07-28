@@ -1,6 +1,6 @@
 .page {
   min-height: calc(100vh - 60px);
-  padding: 36px 64px 48px 244px;
+  padding: 36px 0 48px;
   background: var(--dark-700);
 }
 
@@ -10,6 +10,8 @@
 
 .tabs {
   --settings-tab-width: 243px;
+
+  overflow-x: auto;
 }
 
 .tabs > div {
@@ -158,18 +160,19 @@
 }
 
 @media (width <= 1024px) {
-  .page {
-    padding-right: 24px;
-    padding-left: 244px;
-  }
-
-  .tabs {
-    overflow-x: auto;
-  }
-
   .form {
     grid-template-columns: 1fr;
     row-gap: 32px;
+  }
+
+  .avatarColumn {
+    align-items: center;
+    justify-self: center;
+    width: min(100%, 240px);
+  }
+
+  .photoButton {
+    width: 100%;
   }
 
   .fieldsColumn {
@@ -179,7 +182,7 @@
 
 @media (width <= 768px) {
   .page {
-    padding: 24px 16px 40px;
+    padding: 24px 0 40px;
   }
 
   .locationFields {

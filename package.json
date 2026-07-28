@@ -16,7 +16,8 @@
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "api-client-gen": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-typescript https://main-gateway-service.nymbi.org/api/v1-json -o ./src/shared/api/schema.ts --root-types --enum --enum-values --dedupe-enums"
+    "api-client-gen": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-typescript https://main-gateway-service.nymbi.org/api/v1-json -o ./src/shared/api/schema.ts --root-types --enum --enum-values --dedupe-enums",
+    "api-client-gen:local": "openapi-typescript http://localhost:4278/api/v1-json -o ./src/shared/api/schema.ts --root-types --enum --enum-values --dedupe-enums"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

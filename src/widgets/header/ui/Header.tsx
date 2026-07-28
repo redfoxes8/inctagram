@@ -16,7 +16,7 @@ export const Header = () => {
   const pathname = usePathname()
   return (
     <header className={s.header}>
-      <Container>
+      <Container className={s.headerContainer}>
         <FlexWrapper justify={"space-between"} align={"center"}>
           <Logo />
           <div className={s.controls}>

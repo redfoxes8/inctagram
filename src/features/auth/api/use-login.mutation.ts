@@ -11,8 +11,12 @@ export const useLoginMutation = () => {
         credentials: "include",
       })
 
-      if (error || !data) {
-        throw new Error("Login failed")
+      if (error) {
+        throw new Error(JSON.stringify(error))
+      }
+
+      if (!data) {
+        throw new Error("Backend returned no data")
       }
 
       return data as LoginResponse

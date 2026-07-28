@@ -1,19 +1,18 @@
 .container {
-    max-width: 1200px;
-    margin: 60px auto 0;
-    margin-left: 250px;
-    padding: 36px 64px 0 24px;
+  max-width: 972px;
+  margin: 0 auto;
+  padding: 36px 0 0;
 }
 
-@media (max-width: 768px) {
-    .container {
-         margin: 60px auto 0;
-        padding: 24px 16px 0;
-    }
+@media (width <= 768px) {
+  .container {
+    margin: 0 auto;
+    padding: 24px 0 0;
+  }
 }
 
-@media (max-width: 480px) {
-    .container {
-       padding: 24px 6px 0;
-    }
+@media (width <= 480px) {
+  .container {
+    padding: 24px 0 0;
+  }
 }
