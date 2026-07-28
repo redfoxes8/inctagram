@@ -11,12 +11,14 @@ import { Icon } from "@/shared/ui/Icon"
 
 import s from "./ProfileHeader.module.css"
 
+// Расширяем тип из Swagger: делаем email необязательным,
+// так как для чужих профилей его не будет, а в верстке он не используется
 type ProfileHeaderProps = {
-  user: SchemaUserMeResponseDto
-  isOwner?: boolean
+  user: Omit<SchemaUserMeResponseDto, "email"> & { email?: string | null }
+  isOwner: boolean // Убираем знак ?, флаг должен передаваться явно со страницы
 }
 
-export const ProfileHeader = ({ user, isOwner = true }: ProfileHeaderProps) => {
+export const ProfileHeader = ({ user, isOwner }: ProfileHeaderProps) => {
   const router = useRouter()
 
   const stats = {
@@ -55,6 +57,7 @@ export const ProfileHeader = ({ user, isOwner = true }: ProfileHeaderProps) => {
             </div>
           </div>
 
+          {/* Кнопка отрендерится только если вы зашли на свою страницу */}
           {isOwner && (
             <Button type="button" variant="secondary" className="h3" onClick={handleSettingsClick}>
               Profile Settings

@@ -5,33 +5,17 @@ import { formatDistanceToNow } from "date-fns"
 import clsx from "clsx"
 import { Icon } from "@/shared/ui/Icon"
 import s from "./PostCard.module.css"
-
-interface PostImage {
-  id: string
-  fileId: string
-  url: string
-  order: number
-}
-
-interface PostOwner {
-  id: string
-  username: string
-  avatarUrl?: string
-}
+import { useRouter } from "next/navigation"
+import { PostItem } from "@/entities/post/model/post.types"
+import { useProfileStore } from "@/entities/user/model/profile-store"
 
 export type PostCardProps = {
-  post: {
-    id: string
-    ownerId: string
-    description: string
-    images: PostImage | PostImage[]
-    createdAt: string
-    updatedAt: string
-    owner?: PostOwner
-  }
+  post: PostItem
 }
 
 export const PostCard = ({ post }: PostCardProps) => {
+  const navigate = useRouter()
+  const setCachedProfile = useProfileStore((state) => state.setCachedProfile)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -50,6 +34,12 @@ export const PostCard = ({ post }: PostCardProps) => {
     if (currentImageIndex < imagesList.length - 1) {
       setCurrentImageIndex((prev) => prev + 1)
     }
+  }
+
+  const handleClick = () => {
+    if (!post.owner?.id) return
+    setCachedProfile(post.owner)
+    navigate.push(`/profile/${post.owner.id}`)
   }
 
   const TEXT_LIMIT = 90
@@ -127,7 +117,7 @@ export const PostCard = ({ post }: PostCardProps) => {
       </div>
 
       <div className={s.info_side}>
-        <div className={s.profile_header}>
+        <div className={s.profile_header} onClick={() => handleClick()}>
           <div className={s.avatar_wrapper}>
             {post.owner?.avatarUrl ? (
               <img src={post.owner.avatarUrl} alt="avatar" className={s.avatar} />

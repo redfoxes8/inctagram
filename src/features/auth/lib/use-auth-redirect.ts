@@ -13,29 +13,32 @@ export function useAuthRedirect(user: MeResponse | null | undefined, isLoading: 
   useEffect(() => {
     if (isLoading) return
 
-    const isProtectedPage = PROTECTED_PAGES.includes(pathname) || pathname.startsWith("/settings")
+    // Проверяем динамический роут профиля /profile/[userId]
+    const isProfilePage = pathname.startsWith("/profile")
+    const isSettingsPage = pathname.startsWith("/settings")
+    const isProtectedPage = PROTECTED_PAGES.includes(pathname) || isSettingsPage
     const isAuthPage = AUTH_PAGES.includes(pathname)
 
     if (user) {
-      if (pathname === PAGES.PROFILE || isAuthPage) {
+      // Если авторизован и зашел на страницу логина/регистрации — редиректим в его профиль
+      if (isAuthPage) {
         router.replace(PAGES.TO_PROFILE(`${user.userId}`))
         return
       }
-      if (pathname === "/settings") {
+      if (isSettingsPage) {
         router.replace(PAGES.SETTINGS())
-      }
-    } else {
-      if (pathname === PAGES.PROFILE) {
-        router.replace(PAGES.HOME)
         return
       }
+    } else {
+      // Если НЕ авторизован и пытается зайти на защищенную страницу
       if (isProtectedPage) {
         router.replace(PAGES.LOGIN)
         return
       }
     }
 
-    setMounted(true) // это самый рабочий и простой способ, хоть плоховатый
+    // Включаем mounted только если не произошло никаких редиректов
+    setMounted(true)
   }, [isLoading, user, pathname, router])
 
   return { mounted }

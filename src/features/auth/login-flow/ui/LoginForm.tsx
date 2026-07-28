@@ -22,7 +22,6 @@ export function LoginForm() {
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [serverError, setServerError] = useState("")
-  const [login, setLogin] = useState<string | null>("chelbik@google.com")
 
   const { mutateAsync: loginMutation, isPending } = useLoginMutation()
 
@@ -33,8 +32,8 @@ export function LoginForm() {
   } = useForm<LoginRequestPayload>({
     mode: "onBlur",
     defaultValues: {
-      usernameOrEmail: "chelbik@google.com",
-      password: "Chelbik1!",
+      usernameOrEmail: "redfoxes333@gmail.com",
+      password: "Rf123456!",
     },
   })
 

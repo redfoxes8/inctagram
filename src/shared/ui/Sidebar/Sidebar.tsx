@@ -23,13 +23,16 @@ type Props = {
   className?: string
   onLogout?: () => void
   onCreateClick?: () => void
+  currentUserId?: string
 } & ComponentPropsWithoutRef<"aside">
 
-export const Sidebar = ({ className = "", onLogout, onCreateClick, ...rest }: Props) => {
+export const Sidebar = ({ className = "", onLogout, onCreateClick, currentUserId, ...rest }: Props) => {
   const pathname = usePathname()
 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
   const [focusedItem, setFocusedItem] = useState<string | null>(null)
+
+  const myProfileHref = currentUserId ? `profile/${currentUserId}` : "/profile"
 
   const mainNavItems: SidebarItem[] = [
     { id: "feed", href: "/", icon: "home-outline", iconSolid: "home", label: "Feed" },

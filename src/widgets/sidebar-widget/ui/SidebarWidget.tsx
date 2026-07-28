@@ -17,7 +17,11 @@ export function SidebarWidget() {
 
   return (
     <>
-      <Sidebar onLogout={() => setShowConfirm(true)} onCreateClick={openCreateModal} />
+      <Sidebar
+        currentUserId={user.userId || ""}
+        onLogout={() => setShowConfirm(true)}
+        onCreateClick={openCreateModal}
+      />
 
       <Modal
         title="Log Out"

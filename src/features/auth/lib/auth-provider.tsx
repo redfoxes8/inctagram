@@ -7,16 +7,26 @@ import { useAuthRedirect } from "@/features/auth/lib/use-auth-redirect"
 import { useLogoutHandler } from "@/features/auth/lib/use-logout-handler"
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { data: user, isLoading } = useMeQuery()
+  const { data: user, isLoading, isError } = useMeQuery()
   const { mounted } = useAuthRedirect(user, isLoading)
   const { showConfirm, setShowConfirm, handleLogout, isPending } = useLogoutHandler()
   const openCreateModal = useCreatePostStore((state) => state.openModal)
 
-  if (isLoading || !mounted) return null
+  // 1. Показываем лоадер вместо пустого экрана, пока идет первичная проверка
+  if (isLoading || !mounted) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <p>Loading app...</p>
+      </div>
+    )
+  }
 
+  // 2. Рендерим интерфейс приложения
   return (
     <div style={{ display: "flex" }}>
+      {/* Сидбар показываем ТОЛЬКО если юзер авторизован */}
       {user && <Sidebar onLogout={() => setShowConfirm(true)} onCreateClick={openCreateModal} />}
+
       <main style={{ flex: 1 }}>{children}</main>
 
       <Modal
