@@ -22,7 +22,6 @@ export function LoginForm() {
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [serverError, setServerError] = useState("")
-  const [login, setLogin] = useState<string | null>("chelbik@google.com")
 
   const { mutateAsync: loginMutation, isPending } = useLoginMutation()
 
