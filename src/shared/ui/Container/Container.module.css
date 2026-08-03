@@ -1,13 +1,13 @@
 .container {
   width: 100%;
   min-height: 100%;
-  padding: 0 15px;
+  padding: 0 var(--app-page-gutter-mobile);
   margin: 0 auto;
 }
 
 @media (width >= 769px) {
   .container {
-    max-width: 1280px;
-    padding: 0 60px;
+    max-width: var(--app-main-max-width);
+    padding: 0 var(--app-page-gutter);
   }
 }

@@ -1,8 +1,7 @@
 export type SettingsTab = "info" | "devices" | "subscriptions" | "payments"
 
 export const PAGES = {
-  // Публичные
-  HOME: "/",
+  // Публичные (если корень теперь защищен, здесь остаются только гостевые, либо оставляем пустую секцию)
 
   // Auth
   CONFIRM_EMAIL: "/confirm-email",
@@ -14,7 +13,7 @@ export const PAGES = {
   VERIFICATION: "/verification-expired",
 
   // Личные
-  FEED: "/feed",
+  FEED: "/", // <-- ИЗМЕНИЛИ: Теперь главная лента доступна прямо по корню сайта!
   CREATE: "/create",
   MESSENGER: "/messenger",
   SEARCH: "/search",
@@ -32,7 +31,6 @@ export const PAGES = {
 export const AUTH_PAGES = [PAGES.LOGIN, PAGES.REGISTRATION, PAGES.FORGOT_PASSWORD, PAGES.VERIFICATION] as string[]
 
 export const PROTECTED_PAGES = [
-  PAGES.FEED,
   PAGES.CREATE,
   PAGES.MESSENGER,
   PAGES.SEARCH,

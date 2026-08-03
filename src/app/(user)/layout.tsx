@@ -1,39 +1,25 @@
 "use client"
 
-import { useLogoutHandler } from "@/features/auth/lib/use-logout-handler"
+import { useMeQuery } from "@/features/auth/api/use-me"
+import { SidebarWidget } from "@/widgets/sidebar-widget"
 import { CreatePostWizard } from "@/features/create-post/ui/post-wizard/CreatePostWizard"
-import { useCreatePostStore } from "@/features/create-post/model/store"
-import { Modal, Sidebar } from "@/shared/ui"
-
+import clsx from "clsx"
 import styles from "./layout.module.css"
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
-  const { showConfirm, setShowConfirm, handleLogout, isPending } = useLogoutHandler()
-  const openCreateModal = useCreatePostStore((state) => state.openModal)
+  const { data: user } = useMeQuery()
 
   return (
     <>
       <div className={styles.userShell}>
-        <Sidebar onLogout={() => setShowConfirm(true)} onCreateClick={openCreateModal} />
-        <main className={styles.userMain}>
-          <div className={styles.contentContainer}>{children}</div>
+        <SidebarWidget />
+
+        <main className={clsx(styles.userMain, !user && styles.userMain_guest)}>
+          <div className={clsx(styles.contentContainer, !user && styles.contentContainer_guest)}>{children}</div>
         </main>
       </div>
 
       <CreatePostWizard />
-
-      <Modal
-        title="Log Out"
-        isOpen={showConfirm}
-        onClose={() => setShowConfirm(false)}
-        onConfirm={handleLogout}
-        confirmText={isPending ? "Logging out..." : "Yes"}
-        onCancel={() => setShowConfirm(false)}
-        cancelText="No"
-        showCancelButton
-      >
-        <p>Are you really want to log out?</p>
-      </Modal>
     </>
   )
 }

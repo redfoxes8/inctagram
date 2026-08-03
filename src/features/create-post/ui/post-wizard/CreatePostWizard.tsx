@@ -25,7 +25,13 @@ const FiltersStepPlaceholder = () => {
 }
 
 export const CreatePostWizard = () => {
-  const { isOpen, step, setStep, reset, data, closeModal } = useCreatePostStore()
+  const isOpen = useCreatePostStore((state) => state.isOpen)
+  const step = useCreatePostStore((state) => state.step)
+  const setStep = useCreatePostStore((state) => state.setStep)
+  const reset = useCreatePostStore((state) => state.reset)
+  const data = useCreatePostStore((state) => state.data)
+  const closeModal = useCreatePostStore((state) => state.closeModal)
+
   const [showCloseConfirm, setShowCloseConfirm] = useState(false)
 
   const { mutateAsync: uploadImages, isPending: isUploading } = useUploadPostImages()

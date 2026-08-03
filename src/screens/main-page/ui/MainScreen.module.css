@@ -1,9 +1,12 @@
 .wrapper {
-  padding: 84px 94px 0;
+  /* 84px сверху (как на макете), 24px по бокам из дизайн-системы, 0 снизу */
+  padding: 84px var(--app-page-gutter) 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .head {
-  min-width: 100%;
+  width: 100%;
   min-height: 72px;
   padding: 0 24px;
   background-color: var(--dark-500);
@@ -12,6 +15,7 @@
   justify-content: space-between;
   border-radius: 2px;
   border: 1px solid var(--dark-300);
+  box-sizing: border-box;
 }
 
 .counter {
@@ -37,13 +41,9 @@
 
 .content {
   padding-top: 36px;
-  display: flex;
-  flex-wrap: nowrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-}
-
-.card {
-  min-width: 234px;
-  min-height: 391px;
-  background-color: var(--dark-300);
+  width: 100%;
+  box-sizing: border-box;
 }

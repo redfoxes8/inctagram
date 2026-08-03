@@ -1,6 +1,7 @@
 .userShell {
   display: flex;
   min-height: 100vh;
+  height: auto;
 }
 
 .userMain {
@@ -9,17 +10,28 @@
   padding-top: var(--header-height);
   padding-right: max(var(--app-shell-left), var(--app-page-gutter));
   padding-left: var(--app-main-left);
+
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  min-height: calc(100vh - var(--header-height));
 }
 
 .contentContainer {
   width: 100%;
-  max-width: var(--app-main-max-width);
-  margin-inline: auto;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: auto;
 }
 
-@media (width <= 768px) {
-  .userMain {
-    padding-right: var(--app-page-gutter-mobile);
-    padding-left: var(--app-page-gutter-mobile);
-  }
+.userMain_guest {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-inline: auto !important;
+}
+
+.contentContainer_guest {
+  max-width: var(--app-main-max-width) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }

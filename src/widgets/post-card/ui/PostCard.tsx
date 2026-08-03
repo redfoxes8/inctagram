@@ -37,9 +37,19 @@ export const PostCard = ({ post }: PostCardProps) => {
   }
 
   const handleClick = () => {
-    if (!post.owner?.id) return
-    setCachedProfile(post.owner)
-    navigate.push(`/profile/${post.owner.id}`)
+    console.log("CKICK")
+    const targetId = post.owner?.id || (post.owner as any)?.userId
+
+    if (!targetId) {
+      console.warn("⚠️ Не удалось найти ID пользователя в объекте owner:", post.owner)
+      return
+    }
+
+    if (setCachedProfile && post.owner) {
+      setCachedProfile(post.owner)
+    }
+
+    navigate.push(`/profile/${targetId}`)
   }
 
   const TEXT_LIMIT = 90

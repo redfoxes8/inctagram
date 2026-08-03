@@ -1,22 +1,8 @@
-import { PostItem, PostOwner, UsersCountResponse } from "@/entities/post/model/post.types"
+import { PostItem, UsersCountResponse } from "@/entities/post/model/post.types"
 import { MainScreen } from "@/screens/main-page"
-import { SidebarWidget } from "@/widgets/sidebar-widget"
 
 export const revalidate = 60
 const BASE_URL = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL
-
-const fallbackOwner: Omit<PostOwner, "id"> = {
-  username: "fallbackOwner",
-  firstName: "fallbackOwner",
-  lastName: "fallbackOwner",
-  country: "USA",
-  city: "New York",
-  aboutMe: "nothing this is fallback",
-  avatarUrl: "https://masterpiecer-images.s3.yandex.net/32e1e1c4617a11ee9fec3a7ca4cc1bdc:upscaled",
-  followersCount: 32,
-  followingCount: 44,
-  postsCount: 3,
-}
 
 async function getUsersCount(): Promise<number> {
   const res = await fetch(`${BASE_URL}/api/v1/users/count`)
@@ -52,11 +38,11 @@ async function getLatestPostsWithOwners(limit: number = 4): Promise<PostItem[]> 
   return posts.map((post) => ({
     ...post,
     images: Array.isArray(post.images) ? post.images : post.images ? [post.images] : [],
-    owner: ownersMap.get(post.ownerId) || { ...fallbackOwner, id: post.ownerId },
+    owner: ownersMap.get(post.ownerId),
   })) as PostItem[]
 }
 
-export default async function Home() {
+export default async function HomePage() {
   let totalUsers: UsersCountResponse = { totalCount: 0 }
   let posts: PostItem[] = []
 
@@ -68,12 +54,5 @@ export default async function Home() {
     console.error("Ошибка при сборке главной страницы:", error)
   }
 
-  return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      <SidebarWidget />
-      <main style={{ flex: 1 }}>
-        <MainScreen totalUsers={totalUsers} serverPosts={posts} />
-      </main>
-    </div>
-  )
+  return <MainScreen totalUsers={totalUsers} serverPosts={posts} />
 }

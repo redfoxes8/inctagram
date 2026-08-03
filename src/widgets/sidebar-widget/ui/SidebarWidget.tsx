@@ -3,13 +3,16 @@
 import { useMeQuery } from "@/features/auth/api/use-me"
 import { useCreatePostStore } from "@/features/create-post/model/store"
 import { useLogoutHandler } from "@/features/auth/lib/use-logout-handler"
-
 import { Modal, Sidebar } from "@/shared/ui"
 
 export function SidebarWidget() {
-  const { data: user } = useMeQuery()
+  const { data: user, isLoading } = useMeQuery()
   const { showConfirm, setShowConfirm, handleLogout, isPending } = useLogoutHandler()
   const openCreateModal = useCreatePostStore((state) => state.openModal)
+
+  if (isLoading) {
+    return <div style={{ width: "220px" }} />
+  }
 
   if (!user) {
     return null

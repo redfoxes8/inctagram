@@ -32,12 +32,12 @@ export const Sidebar = ({ className = "", onLogout, onCreateClick, currentUserId
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
   const [focusedItem, setFocusedItem] = useState<string | null>(null)
 
-  const myProfileHref = currentUserId ? `profile/${currentUserId}` : "/profile"
+  const myProfileHref = currentUserId ? `/profile/${currentUserId}` : "/profile"
 
   const mainNavItems: SidebarItem[] = [
     { id: "feed", href: "/", icon: "home-outline", iconSolid: "home", label: "Feed" },
     { id: "create", href: "#", icon: "plus-circle-outline", iconSolid: "plus-circle", label: "Create" },
-    { id: "profile", href: "/profile", icon: "person-outline", iconSolid: "person", label: "My Profile" },
+    { id: "profile", href: myProfileHref, icon: "person-outline", iconSolid: "person", label: "My Profile" },
     {
       id: "messenger",
       href: "/messenger",
