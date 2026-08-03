@@ -24,6 +24,7 @@ export const Input = ({
   disabled,
   id,
   className,
+  required,
   ...props
 }: InputProps) => {
   const inputId = id || label?.toLowerCase().replace(/\s/g, "-")
@@ -33,6 +34,7 @@ export const Input = ({
       {label && (
         <Label.Root htmlFor={inputId} className={clsx(s.label, "regular_text_14")}>
           {label}
+          {required && <span className={s.requiredMark}>*</span>}
         </Label.Root>
       )}
       <div className={clsx(s.inputWrapper, error && s.error, disabled && s.disabled)}>
@@ -51,6 +53,7 @@ export const Input = ({
           id={inputId}
           className={clsx(s.input, "regular_text_16")}
           disabled={disabled}
+          required={required}
           aria-invalid={!!error}
           aria-describedby={error ? `${inputId}-error` : undefined}
           {...props}

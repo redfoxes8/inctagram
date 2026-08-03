@@ -1,4 +1,4 @@
-type SettingsTab = "info" | "devices" | "subscriptions" | "payments"
+export type SettingsTab = "info" | "devices" | "subscriptions" | "payments"
 
 export const PAGES = {
   // Публичные

@@ -9,6 +9,10 @@
   border-bottom: 1px solid var(--dark-300);
 }
 
+.header .headerContainer {
+  padding-inline: var(--app-page-gutter-mobile);
+}
+
 .controls {
   display: flex;
   gap: 36px;
@@ -20,7 +24,17 @@
 }
 
 @media screen and (width >= 769px) {
+  .header .headerContainer {
+    padding-inline: var(--app-page-gutter);
+  }
+
   .menuIcon {
     display: none;
+  }
+}
+
+@media screen and (width >= 1280px) {
+  .header .headerContainer {
+    padding-inline: 60px;
   }
 }

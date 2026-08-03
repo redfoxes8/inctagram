@@ -294,6 +294,106 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  "/api/v1/profile/{userId}": {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get public profile
+     * @description Retrieves public profile details of a user, along with the posts count.
+     */
+    get: operations["getProfile"]
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  "/api/v1/profile/update": {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Update profile info
+     * @description Update whole profile info with received data
+     */
+    put: operations["updateProfile"]
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  "/api/v1/profile/avatar/upload-url": {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Generate signed upload URL for avatar
+     * @description Requests a signed upload URL from File-MS for the AVATAR file type. The ownerId is extracted from the JWT token.
+     */
+    post: operations["getAvatarUploadUrl"]
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  "/api/v1/profile/avatar/confirm": {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Confirm avatar upload
+     * @description Validates the uploaded avatar file and saves avatarFileId and avatarUrl to the user profile.
+     */
+    put: operations["confirmAvatar"]
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  "/api/v1/profile/avatar": {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /**
+     * Delete profile avatar
+     * @description Deletes user profile avatar and triggers S3 file deletion.
+     */
+    delete: operations["deleteAvatar"]
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/api/v1/sessions/my-devices": {
     parameters: {
       query?: never
@@ -422,7 +522,11 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get?: never
+    /**
+     * Get post by ID
+     * @description Retrieves a single post by its identifier.
+     */
+    get: operations["getPostById"]
     put?: never
     post?: never
     /**
@@ -453,6 +557,132 @@ export interface paths {
     get: operations["getLatestPosts"]
     put?: never
     post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  "/api/v1/users/{userId}/posts": {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get user posts
+     * @description Returns posts of a specific user with cursor-based pagination.
+     */
+    get: operations["getUserPosts"]
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  "/api/v1/file/status-batch": {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * get files status
+     * @description Get status of files by file ids
+     */
+    post: operations["getFileStatusBatch"]
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  "/api/v1/payments/history": {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get payment history */
+    get: operations["getPaymentHistory"]
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  "/api/v1/payments/subscriptions": {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations["getSubscriptions"]
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  "/api/v1/payments/checkout": {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Create checkout session */
+    post: operations["createCheckoutSession"]
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  "/api/v1/payments/subscriptions/{subscriptionId}/auto-renew": {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    /**
+     * Toggle auto renew
+     * @description Enables or disables subscription auto renewal.
+     */
+    patch: operations["toggleAutoRenew"]
+    trace?: never
+  }
+  "/api/v1/payments/webhook/stripe": {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations["stripeWebhook"]
     delete?: never
     options?: never
     head?: never
@@ -547,13 +777,13 @@ export interface components {
     }
     UserMeResponseDto: {
       /**
-       * @description Profile user identifier placeholder until Profile storage is introduced
-       * @example null
+       * @description Profile user identifier
+       * @example d9f482a5-072a-4467-8e1d-85f269df16a7
        */
       userId?: string | null
       /**
-       * @description Avatar image URL placeholder until Avatar storage is introduced
-       * @example null
+       * @description Avatar image URL
+       * @example s3.eu-central-1://avatars/images/avatar.jpg
        */
       avatarUrl?: string | null
       /**
@@ -567,10 +797,169 @@ export interface components {
        */
       username: string
       /**
-       * @description Profile bio placeholder until Profile storage is introduced
-       * @example null
+       * @description Profile bio
+       * @example Big developer 228
        */
       aboutMe?: string | null
+      /**
+       * @description Account type
+       * @example PERSONAL
+       * @enum {string}
+       */
+      accountType: UserMeResponseDtoAccountType
+    }
+    GetProfileResponseDto: {
+      /**
+       * @description User identifier
+       * @example user-id
+       */
+      id: string
+      /**
+       * @description Username
+       * @example cool_user
+       */
+      username: string
+      /**
+       * @description First name
+       * @example John
+       */
+      firstName?: string | null
+      /**
+       * @description Last name
+       * @example Doe
+       */
+      lastName?: string | null
+      /**
+       * @description Date of birth
+       * @example 2026-07-04T12:30:00Z
+       */
+      dateOfBirth?: string | null
+      /**
+       * @description Country
+       * @example USA
+       */
+      country?: string | null
+      /**
+       * @description City
+       * @example New York
+       */
+      city?: string | null
+      /**
+       * @description About me bio
+       * @example Web Developer
+       */
+      aboutMe?: string | null
+      /**
+       * @description Avatar URL
+       * @example https://cdn.nymbi.org/avatars/file-id.jpg
+       */
+      avatarUrl?: string | null
+      /**
+       * @description Number of followers (Follow MS is not implemented yet)
+       * @example 0
+       */
+      followersCount: number
+      /**
+       * @description Number of accounts followed (Follow MS is not implemented yet)
+       * @example 0
+       */
+      followingCount: number
+      /**
+       * @description Number of posts
+       * @example 42
+       */
+      postsCount: number
+      /**
+       * @description Account type
+       * @example PERSONAL
+       * @enum {string}
+       */
+      accountType: UserMeResponseDtoAccountType
+    }
+    UpdateProfileDto: {
+      /**
+       * @description Username
+       * @example barbiturate23
+       */
+      username: string
+      /**
+       * @description First name
+       * @example Alex
+       */
+      firstName: string
+      /**
+       * @description Last name
+       * @example Obama
+       */
+      lastName: string
+      /**
+       * @description Date of birth
+       * @example 16.12.2001
+       */
+      dateOfBirth?: string | null
+      /**
+       * @description Country
+       * @example Belarus
+       */
+      country?: string | null
+      /**
+       * @description City
+       * @example Minsk
+       */
+      city?: string | null
+      /**
+       * @description Info about user
+       * @example Chill guy!
+       */
+      aboutMe?: string | null
+    }
+    GetAvatarUploadUrlRequestDto: {
+      /**
+       * @description File size in bytes
+       * @example 524288
+       */
+      fileSize: number
+      /**
+       * @description File extension without leading dot
+       * @example webp
+       * @enum {string}
+       */
+      fileExtension: GetAvatarUploadUrlRequestDtoFileExtension
+    }
+    UploadFieldDto: {
+      /** @example key */
+      name: string
+      /** @example avatar/user-id/123_photo.webp */
+      value: string
+    }
+    GetAvatarUploadUrlResponseDto: {
+      /**
+       * @description The exact URL where the frontend should upload the file.
+       * @example https://storage.nymbi.org/signed-upload-url
+       */
+      uploadUrl: string
+      /**
+       * @description The internal ID of the file created in the database.
+       * @example f47ac10b-58cc-4372-a567-0e02b2c3d479
+       */
+      fileId: string
+      /** @description Form fields that must be appended before uploading the file. */
+      uploadFields: components["schemas"]["UploadFieldDto"][]
+    }
+    ConfirmAvatarRequestDto: {
+      /**
+       * Format: uuid
+       * @description The file ID returned from the upload-url endpoint.
+       * @example f47ac10b-58cc-4372-a567-0e02b2c3d479
+       */
+      fileId: string
+    }
+    ConfirmAvatarResponseDto: {
+      /**
+       * @description The public URL of the confirmed avatar.
+       * @example https://storage.nymbi.org/avatars/user-id/photo.webp
+       */
+      avatarUrl: string
     }
     SessionViewModel: {
       /**
@@ -729,6 +1118,24 @@ export interface components {
     UpdatePostDto: {
       description: string
     }
+    GetFileStatusBatchRequestDto: {
+      fileIds: string[]
+    }
+    GetFileStatusBatchResponseDto: {
+      filesStatus: Record<string, never>[]
+    }
+    GetPaymentHistoryResponseDto: Record<string, never>
+    CreateCheckoutSessionDto: {
+      /** Format: uuid */
+      productId: string
+      /** @enum {string} */
+      provider: CreateCheckoutSessionDtoProvider
+    }
+    CreateCheckoutSessionResponseDto: Record<string, never>
+    ToggleAutoRenewDto: {
+      /** @description Enable or disable auto renewal */
+      enabled: boolean
+    }
   }
   responses: never
   parameters: never
@@ -744,6 +1151,13 @@ export type SchemaPasswordRecoveryDto = components["schemas"]["PasswordRecoveryD
 export type SchemaChangePasswordDto = components["schemas"]["ChangePasswordDTO"]
 export type SchemaGoogleLoginDto = components["schemas"]["GoogleLoginDto"]
 export type SchemaUserMeResponseDto = components["schemas"]["UserMeResponseDto"]
+export type SchemaGetProfileResponseDto = components["schemas"]["GetProfileResponseDto"]
+export type SchemaUpdateProfileDto = components["schemas"]["UpdateProfileDto"]
+export type SchemaGetAvatarUploadUrlRequestDto = components["schemas"]["GetAvatarUploadUrlRequestDto"]
+export type SchemaUploadFieldDto = components["schemas"]["UploadFieldDto"]
+export type SchemaGetAvatarUploadUrlResponseDto = components["schemas"]["GetAvatarUploadUrlResponseDto"]
+export type SchemaConfirmAvatarRequestDto = components["schemas"]["ConfirmAvatarRequestDto"]
+export type SchemaConfirmAvatarResponseDto = components["schemas"]["ConfirmAvatarResponseDto"]
 export type SchemaSessionViewModel = components["schemas"]["SessionViewModel"]
 export type SchemaCreatePostDto = components["schemas"]["CreatePostDto"]
 export type SchemaPostImageResponseDto = components["schemas"]["PostImageResponseDto"]
@@ -755,6 +1169,12 @@ export type SchemaGetFeedResponseDto = components["schemas"]["GetFeedResponseDto
 export type SchemaFileDataViewType = components["schemas"]["FileDataViewType"]
 export type SchemaPostViewType = components["schemas"]["PostViewType"]
 export type SchemaUpdatePostDto = components["schemas"]["UpdatePostDto"]
+export type SchemaGetFileStatusBatchRequestDto = components["schemas"]["GetFileStatusBatchRequestDto"]
+export type SchemaGetFileStatusBatchResponseDto = components["schemas"]["GetFileStatusBatchResponseDto"]
+export type SchemaGetPaymentHistoryResponseDto = components["schemas"]["GetPaymentHistoryResponseDto"]
+export type SchemaCreateCheckoutSessionDto = components["schemas"]["CreateCheckoutSessionDto"]
+export type SchemaCreateCheckoutSessionResponseDto = components["schemas"]["CreateCheckoutSessionResponseDto"]
+export type SchemaToggleAutoRenewDto = components["schemas"]["ToggleAutoRenewDto"]
 export type $defs = Record<string, never>
 export interface operations {
   testLog: {
@@ -1209,7 +1629,11 @@ export interface operations {
           "application/json": unknown
         }
       }
-      /** @description User not found */
+      /**
+       * @description Profile not found
+       *
+       *     User not found
+       */
       404: {
         headers: {
           [name: string]: unknown
@@ -1290,6 +1714,327 @@ export interface operations {
           "application/json": {
             totalCount?: number
           }
+        }
+      }
+    }
+  }
+  getProfile: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description User identifier */
+        userId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Public profile retrieved successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": components["schemas"]["GetProfileResponseDto"]
+        }
+      }
+      /** @description Profile not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 404,
+           *       "message": "Profile was not found"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+      /** @description Service unavailable */
+      503: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 503,
+           *       "message": "Service unavailable"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+    }
+  }
+  updateProfile: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateProfileDto"]
+      }
+    }
+    responses: {
+      /** @description Profile updated successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Provided username already taken */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 400,
+           *       "message": "Username already taken"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 401,
+           *       "message": "Unauthorized"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+      /** @description User profile not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 404,
+           *       "message": "User profile not found"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+    }
+  }
+  getAvatarUploadUrl: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GetAvatarUploadUrlRequestDto"]
+      }
+    }
+    responses: {
+      /** @description Signed upload URL generated successfully */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": components["schemas"]["GetAvatarUploadUrlResponseDto"]
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 401,
+           *       "message": "Unauthorized"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+      /** @description File service unavailable */
+      503: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 503,
+           *       "message": "Service unavailable"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+    }
+  }
+  confirmAvatar: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ConfirmAvatarRequestDto"]
+      }
+    }
+    responses: {
+      /** @description Avatar confirmed successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": components["schemas"]["ConfirmAvatarResponseDto"]
+        }
+      }
+      /** @description Validation error */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 400,
+           *       "message": "Validation failed or file is not in UPLOADED status"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 401,
+           *       "message": "Unauthorized"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 403,
+           *       "message": "Forbidden"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+      /** @description Profile not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 404,
+           *       "message": "Profile not found"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+      /** @description File service unavailable */
+      503: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 503,
+           *       "message": "Service unavailable"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+    }
+  }
+  deleteAvatar: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Avatar deleted successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 401,
+           *       "message": "Unauthorized"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+      /** @description Profile not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 404,
+           *       "message": "Profile not found"
+           *     }
+           */
+          "application/json": unknown
         }
       }
     }
@@ -1642,6 +2387,59 @@ export interface operations {
       }
     }
   }
+  getPostById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description Post identifier */
+        postId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Post retrieved successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": components["schemas"]["PostResponseDto"]
+        }
+      }
+      /** @description Post not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 404,
+           *       "message": "Not Found"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+      /** @description Post service unavailable */
+      503: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 503,
+           *       "message": "Service unavailable"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+    }
+  }
   deletePost: {
     parameters: {
       query?: never
@@ -1848,10 +2646,283 @@ export interface operations {
       }
     }
   }
+  getUserPosts: {
+    parameters: {
+      query?: {
+        /** @description Opaque Base64 cursor returned by the previous response */
+        cursor?: string
+        /** @description Number of posts to return */
+        pageSize?: number
+      }
+      header?: never
+      path: {
+        /** @description User identifier */
+        userId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description User posts retrieved successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": components["schemas"]["GetFeedResponseDto"]
+        }
+      }
+      /** @description User not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 404,
+           *       "message": "User was not found"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+      /** @description Post service unavailable */
+      503: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 503,
+           *       "message": "Service unavailable"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+    }
+  }
+  getFileStatusBatch: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GetFileStatusBatchRequestDto"]
+      }
+    }
+    responses: {
+      /** @description Files status */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": components["schemas"]["GetFileStatusBatchResponseDto"]
+        }
+      }
+      /** @description Files not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 404,
+           *       "message": "Files not found"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+      /** @description File service unavailable */
+      503: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 503,
+           *       "message": "Service unavailable"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+    }
+  }
+  getPaymentHistory: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": components["schemas"]["GetPaymentHistoryResponseDto"]
+        }
+      }
+    }
+  }
+  getSubscriptions: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": Record<string, never>
+        }
+      }
+    }
+  }
+  createCheckoutSession: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateCheckoutSessionDto"]
+      }
+    }
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": components["schemas"]["CreateCheckoutSessionResponseDto"]
+        }
+      }
+    }
+  }
+  toggleAutoRenew: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        subscriptionId: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ToggleAutoRenewDto"]
+      }
+    }
+    responses: {
+      /** @description Auto renew updated successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 401,
+           *       "message": "Unauthorized"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+      /** @description Subscription not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 404,
+           *       "message": "Not Found"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+      /** @description Payment service unavailable */
+      503: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          /**
+           * @example {
+           *       "statusCode": 503,
+           *       "message": "Service unavailable"
+           *     }
+           */
+          "application/json": unknown
+        }
+      }
+    }
+  }
+  stripeWebhook: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+}
+export enum UserMeResponseDtoAccountType {
+  PERSONAL = "PERSONAL",
+  BUSINESS = "BUSINESS",
+}
+export enum GetAvatarUploadUrlRequestDtoFileExtension {
+  jpg = "jpg",
+  jpeg = "jpeg",
+  png = "png",
+  webp = "webp",
 }
 export enum GeneratePostImageUploadUrlDtoFileExtension {
   _jpeg = ".jpeg",
   _jpg = ".jpg",
   _png = ".png",
   _webp = ".webp",
+}
+export enum CreateCheckoutSessionDtoProvider {
+  STRIPE = "STRIPE",
+  PAYPAL = "PAYPAL",
 }
