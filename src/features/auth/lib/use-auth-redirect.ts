@@ -13,29 +13,30 @@ export function useAuthRedirect(user: MeResponse | null | undefined, isLoading: 
   useEffect(() => {
     if (isLoading) return
 
-    const isProtectedPage = PROTECTED_PAGES.includes(pathname) || pathname.startsWith("/settings")
+    const isProfilePage = pathname.startsWith("/profile")
+    const isSettingsPage = pathname.startsWith("/settings")
     const isAuthPage = AUTH_PAGES.includes(pathname)
 
+    const isProtectedPage = (PROTECTED_PAGES.includes(pathname) || isSettingsPage) && !isProfilePage
+
     if (user) {
-      if (pathname === PAGES.PROFILE || isAuthPage) {
+      if (isAuthPage) {
         router.replace(PAGES.TO_PROFILE(`${user.userId}`))
         return
       }
+
       if (pathname === "/settings") {
         router.replace(PAGES.SETTINGS())
-      }
-    } else {
-      if (pathname === PAGES.PROFILE) {
-        router.replace(PAGES.HOME)
         return
       }
+    } else {
       if (isProtectedPage) {
         router.replace(PAGES.LOGIN)
         return
       }
     }
 
-    setMounted(true) // это самый рабочий и простой способ, хоть плоховатый
+    setMounted(true)
   }, [isLoading, user, pathname, router])
 
   return { mounted }

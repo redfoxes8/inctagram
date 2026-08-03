@@ -10,11 +10,9 @@ interface CreatePostState {
   openModal: () => void
   closeModal: () => void
   setStep: (step: CreatePostStep) => void
-
   setFiles: (files: File[]) => void
   setCurrentImageIndex: (index: number) => void
   updateImageItem: (index: number, updatedFields: Partial<Omit<ImageItem, "id">>) => void
-
   setDescription: (text: string) => void
   setLocation: (location: string) => void
   reset: () => void
@@ -33,9 +31,7 @@ export const useCreatePostStore = create<CreatePostState>((set) => ({
   data: initialData,
 
   openModal: () => set({ isOpen: true, step: "SELECT" }),
-
   closeModal: () => set({ isOpen: false }),
-
   setStep: (step) => set({ step }),
 
   setFiles: (files) => {
@@ -74,7 +70,7 @@ export const useCreatePostStore = create<CreatePostState>((set) => ({
       data: { ...state.data, currentImageIndex: index },
     })),
 
-  updateImageItem: (index, updatedFields: Partial<Omit<ImageItem, "id">>) =>
+  updateImageItem: (index, updatedFields) =>
     set((state) => {
       const updatedImages = [...state.data.images]
       if (updatedImages[index]) {

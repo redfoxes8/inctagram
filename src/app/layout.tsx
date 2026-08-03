@@ -26,8 +26,10 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable}`}>
       <body>
         <QueryProvider>
-          <Header />
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <Header />
+            {children}
+          </AuthProvider>
           <Toaster position="bottom-left" richColors closeButton duration={3000} visibleToasts={5} />
         </QueryProvider>
       </body>

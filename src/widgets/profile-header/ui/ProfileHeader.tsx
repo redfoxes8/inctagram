@@ -5,18 +5,18 @@ import Link from "next/link"
 import * as Avatar from "@radix-ui/react-avatar"
 import clsx from "clsx"
 
-import { SchemaUserMeResponseDto } from "@/shared/api/schema"
 import { Button } from "@/shared/ui"
 import { Icon } from "@/shared/ui/Icon"
 
 import s from "./ProfileHeader.module.css"
+import { ProfileResponse } from "@/entities/user/model/profile.type"
 
 type ProfileHeaderProps = {
-  user: SchemaUserMeResponseDto
-  isOwner?: boolean
+  user: ProfileResponse
+  isOwner: boolean
 }
 
-export const ProfileHeader = ({ user, isOwner = true }: ProfileHeaderProps) => {
+export const ProfileHeader = ({ user, isOwner }: ProfileHeaderProps) => {
   const router = useRouter()
 
   const stats = {

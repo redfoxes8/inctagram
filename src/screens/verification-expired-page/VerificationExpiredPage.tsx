@@ -21,7 +21,7 @@ export function VerificationExpiredPage() {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<VerificationFormInputs>({ mode: "all" })
   const router = useRouter()
   const { mutate: resendEmail, isPending } = useEmailResendMutation()
@@ -71,22 +71,13 @@ export function VerificationExpiredPage() {
               },
             })}
           />
-          <Button
-            type="submit"
-            disabled={!isValid || isPending}
-            className={s.button}
-            onClick={() => router.push(PAGES.LOGIN)}
-          >
+          <Button type="submit" disabled={isPending} className={s.button} onClick={() => router.push(PAGES.LOGIN)}>
             {isPending ? "Sending..." : "Resend verification link"}
           </Button>
         </div>
 
         <Image className={s.rafiki_img} src={"/rafiki_web.png"} alt="rafiki" width={1000} height={1000} priority />
-        <Button
-          disabled={!isValid || isPending}
-          className={s.button_mobileOnly}
-          onClick={() => router.push(PAGES.LOGIN)}
-        >
+        <Button disabled={isPending} className={s.button_mobileOnly} onClick={() => router.push(PAGES.LOGIN)}>
           {isPending ? "Sending..." : "Resend verification link"}
         </Button>
       </form>

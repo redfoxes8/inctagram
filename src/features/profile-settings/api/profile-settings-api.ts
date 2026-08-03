@@ -1,7 +1,8 @@
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { client } from "@/shared/api/client"
 import type { SchemaGetProfileResponseDto, SchemaUpdateProfileDto } from "@/shared/api/schema"
+import { useRouter } from "next/navigation"
 
 const PROFILE_QUERY_KEY = "profile-settings"
 export const SERVER_ERROR_MESSAGE = "Error! Server is not available!"
@@ -56,8 +57,18 @@ export const useProfileSettingsQuery = (userId: string | null | undefined) => {
   })
 }
 
-export const useUpdateProfileSettingsMutation = () => {
+export const useUpdateProfileSettingsMutation = (userId?: string | null) => {
+  const queryClient = useQueryClient()
+  const router = useRouter()
+
   return useMutation<void, ProfileSettingsApiError, SchemaUpdateProfileDto>({
     mutationFn: updateProfile,
+    onSuccess: async () => {
+      queryClient.invalidateQueries({
+        queryKey: getProfileSettingsQueryKey(userId),
+      })
+
+      router.refresh()
+    },
   })
 }

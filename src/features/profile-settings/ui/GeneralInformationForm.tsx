@@ -38,7 +38,7 @@ export const GeneralInformationForm = () => {
   const { data: currentUser } = useMeQuery()
   const userId = currentUser?.userId
   const { data: profile, isLoading: isProfileLoading } = useProfileSettingsQuery(userId)
-  const { mutateAsync: updateProfile, isPending: isUpdatePending } = useUpdateProfileSettingsMutation()
+  const { mutateAsync: updateProfile, isPending: isUpdatePending } = useUpdateProfileSettingsMutation(userId)
   const { mutateAsync: checkUsername, isPending: isUsernameChecking } = useCheckUsernameLazy()
 
   const {

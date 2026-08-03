@@ -1,116 +1,84 @@
-'use client';
+"use client"
 
-import { ProfileHeader } from '@/widgets/profile-header';
-import { PostFeed } from '@/widgets/post-feed';
-import { PostModal } from '@/widgets/post-modal/ui';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { useMeQuery } from '@/features/auth/api/use-me';
-import { useState, useEffect, useCallback } from 'react';
-import s from './ProfilePage.module.css';
+import { useCallback } from "react"
+import { useRouter, usePathname, useSearchParams } from "next/navigation"
+import { ProfileHeader } from "@/widgets/profile-header"
+import { PostFeed } from "@/widgets/post-feed"
+import { PostModal } from "@/widgets/post-modal/ui"
+import { useMeQuery } from "@/features/auth/api/use-me"
+import { useProfileQuery } from "@/entities/user/api/use-profile"
+import { ProfileResponse } from "@/entities/user/model/profile.type"
+import s from "./ProfilePage.module.css"
 
-type ProfilePageProps = {
-  userId: string;
-  postId?: string;
-};
+export type ProfilePageProps = {
+  userId: string
+  postId?: string
+  serverProfile: ProfileResponse
+}
 
-const TEST_POST_ID = '0215102c-af52-43e1-b0d2-e73d7f63bb97'  //удалить
+export const ProfilePage = ({ userId: propUserId, postId: initialPostId, serverProfile }: ProfilePageProps) => {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
-export const ProfilePage = ({
-  userId: propUserId,
-  postId: initialPostId,
-}: ProfilePageProps) => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const { data: me } = useMeQuery()
+  const isOwner = Boolean(me?.userId && propUserId && me.userId === propUserId)
 
-  const [selectedPostId, setSelectedPostId] = useState<string | undefined>(
-    initialPostId || searchParams.get('postId') || undefined
-  );
+  const { data: profile, isLoading } = useProfileQuery({
+    userId: propUserId,
+    initialData: serverProfile,
+  })
 
-  const { data: me, isLoading, error } = useMeQuery();
+  const selectedPostId = searchParams.get("postId") || initialPostId || undefined
 
-  useEffect(() => {
-    const postIdFromUrl = searchParams.get('postId');
-    if (postIdFromUrl && postIdFromUrl !== selectedPostId) {
-      setSelectedPostId(postIdFromUrl);
-    }
-  }, [searchParams, selectedPostId]);
-
-  const handlePostClick = useCallback((postId: string) => {
-    setSelectedPostId(postId);
-    router.push(`${pathname}?postId=${postId}`);
-  }, [pathname, router]);
+  const handlePostClick = useCallback(
+    (postId: string) => {
+      router.push(`${pathname}?postId=${postId}`, { scroll: false })
+    },
+    [pathname, router],
+  )
 
   const handlePostModalClose = useCallback(() => {
-    setSelectedPostId(undefined);
-    router.push(pathname);
-  }, [pathname, router]);
-
+    router.push(pathname, { scroll: false })
+  }, [pathname, router])
 
   if (isLoading) {
     return (
       <div className={s.loading}>
-        <div className="spinner">Loading...</div>
+        <h3 className="h3">Загрузка профиля...</h3>
       </div>
-    );
+    )
   }
 
-
-  if (error) {
+  if (!profile) {
     return (
       <div className={s.userNotFound}>
-        <h3 className='h3'>Please log in</h3>
-        <p>You need to be logged in to view this profile</p>
-        <button onClick={() => router.push('/login')}>Log in</button>
+        <h3 className="h3">Профиль не найден</h3>
+        <p>Не удалось получить данные для ID: {propUserId}</p>
       </div>
-    );
-  }
-
-
-  if (!me) {
-    return (
-      <div className={s.userNotFound}>
-        <h3 className='h3'>User not found</h3>
-        <p>The user you are looking for does not exist</p>
-      </div>
-    );
-  }
-
-  const userId = propUserId || me.userId;
-
-  if (!userId || !me.username) {
-    return (
-      <div className={s.userNotFound}>
-        <h3 className='h3'>Error</h3>
-      </div>
-    );
+    )
   }
 
   return (
     <div className={s.container}>
-      <ProfileHeader
-        user={me}
-        isOwner={true}
-      />
+      <ProfileHeader user={profile} isOwner={isOwner} />
 
       <PostFeed
-        userId={userId}
-        // user={me}  
-        isOwner={true}
+        userId={propUserId}
+        isOwner={isOwner}
         pageSize={8}
         onPostClick={handlePostClick}
-        useFeedEndpoint={true}
+        useFeedEndpoint={isOwner}
       />
 
       {selectedPostId && (
         <PostModal
-          postId={TEST_POST_ID}
-          // postId={selectedPostId} 
+          postId={selectedPostId}
           isOpen={!!selectedPostId}
           onClose={handlePostModalClose}
-          isOwnProfile={true}
+          isOwnProfile={isOwner}
         />
       )}
     </div>
-  );
-};
+  )
+}

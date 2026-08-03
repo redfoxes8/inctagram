@@ -32,8 +32,8 @@ export function LoginForm() {
   } = useForm<LoginRequestPayload>({
     mode: "onBlur",
     defaultValues: {
-      usernameOrEmail: "chelbik@google.com",
-      password: "Chelbik1!",
+      usernameOrEmail: "redfoxes333@gmail.com",
+      password: "Rf123456!",
     },
   })
 

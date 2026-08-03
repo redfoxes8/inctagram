@@ -1,64 +1,33 @@
-import { Container } from "@/shared/ui"
-import s from "./MainScreen.module.css"
-import clsx from "clsx"
 import { PostCard } from "@/widgets/post-card"
-
-type PostImage = {
-  id: string
-  fileId: string
-  url: string
-  order: number
-}
-
-type PostOwner = {
-  id: string
-  username: string
-  avatarUrl?: string
-}
-
-type PostItem = {
-  id: string
-  ownerId: string
-  description: string
-  images: PostImage | PostImage[]
-  createdAt: string
-  updatedAt: string
-  owner?: PostOwner
-}
+import s from "./MainScreen.module.css"
+import type { PostItem, UsersCountResponse } from "@/entities/post/model/post.types"
 
 type MainScreenProps = {
-  totalUsers: number
-  serverPosts?: PostItem[]
+  totalUsers: UsersCountResponse
+  serverPosts: PostItem[]
 }
 
-export function MainScreen({ totalUsers, serverPosts = [] }: MainScreenProps) {
-  const postsToRender: PostItem[] = Array.isArray(serverPosts) && serverPosts.length > 0 ? serverPosts : []
-
-  const digits = String(totalUsers).padStart(6, "0").split("")
+export function MainScreen({ totalUsers, serverPosts }: MainScreenProps) {
+  const digits = String(totalUsers.totalCount).padStart(6, "0").split("")
 
   return (
-    <>
-      <Container>
-        <div className={s.wrapper}>
-          <div className={s.head}>
-            <span className={clsx("h2")}>Registered users: </span>
-
-            <div className={s.counter}>
-              {digits.map((digit, index) => (
-                <div key={index} className={s.digitBox}>
-                  <span className="h2">{digit}</span>
-                </div>
-              ))}
+    <div className={s.wrapper}>
+      <div className={s.head}>
+        <span className="h2">Registered users: </span>
+        <div className={s.counter}>
+          {digits.map((digit, index) => (
+            <div key={index} className={s.digitBox}>
+              <span className="h2">{digit}</span>
             </div>
-          </div>
-
-          <div className={s.content}>
-            {postsToRender.slice(0, 4).map((post: PostItem) => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          </div>
+          ))}
         </div>
-      </Container>
-    </>
+      </div>
+
+      <div className={s.content}>
+        {serverPosts.map((post) => (
+          <PostCard key={post.id} post={post} />
+        ))}
+      </div>
+    </div>
   )
 }

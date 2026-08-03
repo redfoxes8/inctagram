@@ -8,6 +8,8 @@ import { toast } from "sonner"
 type UseFeedPostsParams = {
   pageSize?: number
   enabled?: boolean
+  userId?: string
+  useFeedEndpoint?: boolean
 }
 
 function handleFeedError(status?: number): never {
@@ -22,16 +24,24 @@ function handleFeedError(status?: number): never {
   throw new Error(errorMessage)
 }
 
-export function useFeedPosts({ pageSize = 8, enabled = true }: UseFeedPostsParams = {}) {
+export function useFeedPosts({
+  pageSize = 8,
+  enabled = true,
+  userId,
+  useFeedEndpoint = true,
+}: UseFeedPostsParams = {}) {
   return useInfiniteQuery({
-    queryKey: ["posts", "feed", { pageSize }],
+    queryKey: ["posts", { useFeedEndpoint, userId, pageSize }],
     queryFn: async ({ pageParam }) => {
-      const res = await client.GET("/api/v1/posts/feed", {
+      const endpoint = useFeedEndpoint ? "/api/v1/posts/feed" : "/api/v1/users/{userId}/posts"
+
+      const res = await client.GET(endpoint as any, {
         params: {
           query: {
             cursor: pageParam as string | undefined,
             pageSize,
           },
+          ...(!useFeedEndpoint && userId ? { path: { userId } } : {}),
         },
       })
 
@@ -54,7 +64,7 @@ export function useFeedPosts({ pageSize = 8, enabled = true }: UseFeedPostsParam
       }
       return undefined
     },
-    enabled,
+    enabled: enabled && (useFeedEndpoint || !!userId),
     staleTime: 60 * 1000,
   })
 }

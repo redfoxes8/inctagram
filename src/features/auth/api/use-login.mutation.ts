@@ -24,7 +24,6 @@ export const useLoginMutation = () => {
 
     onSuccess: async (data) => {
       localStorage.setItem(localStorageKeys.accessToken, data.accessToken)
-      // Запрашиваем данные пользователя сразу после логина
       await queryClient.invalidateQueries({ queryKey: ["me"] })
     },
   })

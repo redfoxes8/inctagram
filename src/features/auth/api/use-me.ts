@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { client } from "@/shared/api/client"
-import { localStorageKeys, MeResponse } from "@/features/auth/types"
+import { MeResponse } from "@/features/auth/types"
 
 export function useMeQuery() {
   return useQuery<MeResponse, Error>({
@@ -14,6 +14,9 @@ export function useMeQuery() {
 
       return response.data as MeResponse
     },
-    retry: false, // работает только локально
+    retry: false,
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   })
 }
