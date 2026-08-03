@@ -4,7 +4,6 @@ import Image from "next/image"
 import clsx from "clsx"
 import { SchemaPostResponseDto } from "@/shared/api/schema"
 import s from "./PostCard.module.css"
-import cat from "../../../../../public/Cat.jpg"
 import { useState } from "react"
 
 type PostCardProps = {

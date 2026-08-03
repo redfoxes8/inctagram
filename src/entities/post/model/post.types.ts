@@ -1,33 +1,26 @@
-export type PostImage = {
-  id: string
-  fileId: string
-  url: string
-  order: number
-}
-export type PostOwner = {
-  id: string
-  username: string
-  firstName: string | null
-  lastName: string | null
-  country: string | null
-  city: string | null
-  aboutMe: string | null
-  avatarUrl: string | null
-  followersCount: number
-  followingCount: number
-  postsCount: number
+import { components } from "@/shared/api/schema"
+
+export type PostImage = components["schemas"]["PostImageResponseDto"]
+export type PostOwner = components["schemas"]["GetProfileResponseDto"]
+export type PostItemBase = components["schemas"]["PostViewType"]
+
+export type PostItem = PostItemBase & {
+  owner?: PostOwner | null
 }
 
-export type PostItem = {
-  id: string
-  ownerId: string
-  description: string
-  images: PostImage[]
-  createdAt: string
-  updatedAt: string
-  owner: PostOwner
-}
+export type PostItemServer = PostItemBase
 
 export type UsersCountResponse = {
   totalCount: number
+}
+
+export type CreatePostRequest = components["schemas"]["CreatePostDto"]
+export type CreatePostResponse = components["schemas"]["CreatePostResponseDto"]
+export type UpdatePostRequest = components["schemas"]["UpdatePostDto"]
+export type GetFeedResponse = components["schemas"]["GetFeedResponseDto"]
+
+export type PostsResponse = {
+  posts: PostItem[]
+  nextCursor?: string
+  hasMore: boolean
 }

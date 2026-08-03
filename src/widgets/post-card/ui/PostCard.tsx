@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { formatDistanceToNow } from "date-fns"
 import clsx from "clsx"
 import { Icon } from "@/shared/ui/Icon"
 import s from "./PostCard.module.css"
 import { useRouter } from "next/navigation"
 import { PostItem } from "@/entities/post/model/post.types"
-import { useProfileStore } from "@/entities/user/model/profile-store"
 
 export type PostCardProps = {
   post: PostItem
@@ -15,11 +15,10 @@ export type PostCardProps = {
 
 export const PostCard = ({ post }: PostCardProps) => {
   const navigate = useRouter()
-  const setCachedProfile = useProfileStore((state) => state.setCachedProfile)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const imagesList = Array.isArray(post.images) ? post.images : post.images ? [post.images] : []
+  const imagesList = post.images || []
   const hasMultipleImages = imagesList.length > 1
 
   const handlePrevImage = (e: React.MouseEvent) => {
@@ -37,32 +36,38 @@ export const PostCard = ({ post }: PostCardProps) => {
   }
 
   const handleClick = () => {
-    console.log("CKICK")
-    const targetId = post.owner?.id || (post.owner as any)?.userId
+    const targetId = post.owner?.id || post.ownerId
 
     if (!targetId) {
-      console.warn("⚠️ Не удалось найти ID пользователя в объекте owner:", post.owner)
+      console.warn("Не удалось найти ID пользователя:", {
+        ownerId: post.ownerId,
+        owner: post.owner,
+      })
       return
-    }
-
-    if (setCachedProfile && post.owner) {
-      setCachedProfile(post.owner)
     }
 
     navigate.push(`/profile/${targetId}`)
   }
 
   const TEXT_LIMIT = 90
-  const isLongText = post.description.length > TEXT_LIMIT
+  const isLongText = (post.description?.length ?? 0) > TEXT_LIMIT
 
   const renderDescription = () => {
-    if (!isLongText) return post.description
+    const description = post.description || ""
+
+    if (!isLongText) return description
 
     if (isExpanded) {
       return (
         <>
-          {post.description}{" "}
-          <button onClick={() => setIsExpanded(false)} className={s.toggle_text_btn}>
+          {description}{" "}
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              setIsExpanded(false)
+            }}
+            className={s.toggle_text_btn}
+          >
             <span className="regular_link">Hide</span>
           </button>
         </>
@@ -71,8 +76,14 @@ export const PostCard = ({ post }: PostCardProps) => {
 
     return (
       <>
-        {post.description.slice(0, TEXT_LIMIT)}...{" "}
-        <button onClick={() => setIsExpanded(true)} className={s.toggle_text_btn}>
+        {description.slice(0, TEXT_LIMIT)}...{" "}
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            setIsExpanded(true)
+          }}
+          className={s.toggle_text_btn}
+        >
           <span className="regular_link">Show more</span>
         </button>
       </>
@@ -88,25 +99,38 @@ export const PostCard = ({ post }: PostCardProps) => {
       <div className={s.media_side}>
         <div className={s.image_container}>
           {imagesList.length > 0 ? (
-            <img
-              src={imagesList[currentImageIndex]?.url}
+            <Image
+              src={imagesList[currentImageIndex]?.url || ""}
               alt={`Post content ${currentImageIndex + 1}`}
               className={s.main_image}
-              loading="lazy"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              style={{ objectFit: "cover" }}
+              priority={currentImageIndex === 0}
             />
           ) : (
             <div className={s.image_placeholder}>No Image</div>
           )}
         </div>
 
-        {currentImageIndex > 0 && (
-          <button type="button" className={clsx(s.arrow_btn, s.arrow_left)} onClick={handlePrevImage}>
+        {hasMultipleImages && currentImageIndex > 0 && (
+          <button
+            type="button"
+            className={clsx(s.arrow_btn, s.arrow_left)}
+            onClick={handlePrevImage}
+            aria-label="Previous image"
+          >
             <Icon name="arrow-ios-back-outline" />
           </button>
         )}
 
-        {currentImageIndex < imagesList.length - 1 && (
-          <button type="button" className={clsx(s.arrow_btn, s.arrow_right)} onClick={handleNextImage}>
+        {hasMultipleImages && currentImageIndex < imagesList.length - 1 && (
+          <button
+            type="button"
+            className={clsx(s.arrow_btn, s.arrow_right)}
+            onClick={handleNextImage}
+            aria-label="Next image"
+          >
             <Icon name="arrow-ios-forward" />
           </button>
         )}
@@ -118,7 +142,10 @@ export const PostCard = ({ post }: PostCardProps) => {
                 key={index}
                 type="button"
                 className={clsx(s.dot, index === currentImageIndex && s.dot_active)}
-                onClick={() => setCurrentImageIndex(index)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setCurrentImageIndex(index)
+                }}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}
@@ -127,10 +154,10 @@ export const PostCard = ({ post }: PostCardProps) => {
       </div>
 
       <div className={s.info_side}>
-        <div className={s.profile_header} onClick={() => handleClick()}>
+        <div className={s.profile_header} onClick={handleClick}>
           <div className={s.avatar_wrapper}>
             {post.owner?.avatarUrl ? (
-              <img src={post.owner.avatarUrl} alt="avatar" className={s.avatar} />
+              <Image src={post.owner.avatarUrl} alt="avatar" className={s.avatar} width={40} height={40} />
             ) : (
               <div className={s.avatar_placeholder} />
             )}

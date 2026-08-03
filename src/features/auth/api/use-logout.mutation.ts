@@ -20,6 +20,8 @@ export const useLogoutMutation = () => {
       localStorage.removeItem(localStorageKeys.accessToken)
       queryClient.clear()
 
+      router.refresh()
+
       router.replace(PAGES.LOGIN)
     },
     onError: (error) => {

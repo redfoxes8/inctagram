@@ -1,21 +1,16 @@
-// screens/profile-page/ProfilePage.tsx
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useCallback } from "react"
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { ProfileHeader } from "@/widgets/profile-header"
 import { PostFeed } from "@/widgets/post-feed"
 import { PostModal } from "@/widgets/post-modal/ui"
 import { useMeQuery } from "@/features/auth/api/use-me"
-import { useQuery } from "@tanstack/react-query"
-import { client } from "@/shared/api/client"
-import { components } from "@/shared/api/schema"
+import { useProfileQuery } from "@/entities/user/api/use-profile"
+import { ProfileResponse } from "@/entities/user/model/profile.type"
 import s from "./ProfilePage.module.css"
 
-// ✅ ПРАВИЛЬНЫЙ ТИП!
-type ProfileResponse = components["schemas"]["GetProfileResponseDto"]
-
-type ProfilePageProps = {
+export type ProfilePageProps = {
   userId: string
   postId?: string
   serverProfile: ProfileResponse
@@ -27,54 +22,23 @@ export const ProfilePage = ({ userId: propUserId, postId: initialPostId, serverP
   const searchParams = useSearchParams()
 
   const { data: me } = useMeQuery()
-  const myId = me?.userId
+  const isOwner = Boolean(me?.userId && propUserId && me.userId === propUserId)
 
-  const isOwner = Boolean(myId && propUserId && myId === propUserId)
-
-  const { data: profile, isLoading } = useQuery<ProfileResponse>({
-    queryKey: ["userProfile", propUserId],
-    queryFn: async () => {
-      const { data, error } = await client.GET("/api/v1/profile/{userId}", {
-        params: {
-          path: { userId: propUserId },
-        },
-      })
-
-      if (error) {
-        throw new Error("Profile not found")
-      }
-
-      if (!data) {
-        throw new Error("No data received")
-      }
-
-      return data
-    },
+  const { data: profile, isLoading } = useProfileQuery({
+    userId: propUserId,
     initialData: serverProfile,
-    staleTime: 1000 * 60 * 5,
   })
 
-  const [selectedPostId, setSelectedPostId] = useState<string | undefined>(
-    initialPostId || searchParams.get("postId") || undefined,
-  )
-
-  useEffect(() => {
-    const postIdFromUrl = searchParams.get("postId")
-    if (postIdFromUrl && postIdFromUrl !== selectedPostId) {
-      setSelectedPostId(postIdFromUrl)
-    }
-  }, [searchParams, selectedPostId])
+  const selectedPostId = searchParams.get("postId") || initialPostId || undefined
 
   const handlePostClick = useCallback(
     (postId: string) => {
-      setSelectedPostId(postId)
       router.push(`${pathname}?postId=${postId}`, { scroll: false })
     },
     [pathname, router],
   )
 
   const handlePostModalClose = useCallback(() => {
-    setSelectedPostId(undefined)
     router.push(pathname, { scroll: false })
   }, [pathname, router])
 
@@ -89,13 +53,12 @@ export const ProfilePage = ({ userId: propUserId, postId: initialPostId, serverP
   if (!profile) {
     return (
       <div className={s.userNotFound}>
-        <h3 className="h3">⚠️ Профиль не найден</h3>
+        <h3 className="h3">Профиль не найден</h3>
         <p>Не удалось получить данные для ID: {propUserId}</p>
       </div>
     )
   }
 
-  // ✅ НЕТ НОРМАЛИЗАЦИИ! Используем данные как есть
   return (
     <div className={s.container}>
       <ProfileHeader user={profile} isOwner={isOwner} />

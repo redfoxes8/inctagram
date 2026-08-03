@@ -5,17 +5,15 @@ import Link from "next/link"
 import * as Avatar from "@radix-ui/react-avatar"
 import clsx from "clsx"
 
-import { SchemaUserMeResponseDto } from "@/shared/api/schema"
 import { Button } from "@/shared/ui"
 import { Icon } from "@/shared/ui/Icon"
 
 import s from "./ProfileHeader.module.css"
+import { ProfileResponse } from "@/entities/user/model/profile.type"
 
-// Расширяем тип из Swagger: делаем email необязательным,
-// так как для чужих профилей его не будет, а в верстке он не используется
 type ProfileHeaderProps = {
-  user: Omit<SchemaUserMeResponseDto, "email"> & { email?: string | null }
-  isOwner: boolean // Убираем знак ?, флаг должен передаваться явно со страницы
+  user: ProfileResponse
+  isOwner: boolean
 }
 
 export const ProfileHeader = ({ user, isOwner }: ProfileHeaderProps) => {
@@ -57,7 +55,6 @@ export const ProfileHeader = ({ user, isOwner }: ProfileHeaderProps) => {
             </div>
           </div>
 
-          {/* Кнопка отрендерится только если вы зашли на свою страницу */}
           {isOwner && (
             <Button type="button" variant="secondary" className="h3" onClick={handleSettingsClick}>
               Profile Settings

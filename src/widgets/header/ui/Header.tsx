@@ -8,12 +8,12 @@ import { Logo } from "@/shared/ui/Logo"
 import s from "./Header.module.css"
 import { useMeQuery } from "@/features/auth/api/use-me"
 import { Button } from "@/shared/ui"
-import { usePathname, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 export const Header = () => {
-  const { data: user } = useMeQuery()
+  const { data: user, isLoading } = useMeQuery()
   const router = useRouter()
-  const pathname = usePathname()
+
   return (
     <header className={s.header}>
       <Container className={s.headerContainer}>
@@ -21,7 +21,8 @@ export const Header = () => {
           <Logo />
           <div className={s.controls}>
             <LanguageSwitcher />
-            {!user && pathname === "/" && (
+
+            {!isLoading && !user && (
               <div className={s.btn_group}>
                 <Button variant="outlined" onClick={() => router.push("/login")}>
                   Login

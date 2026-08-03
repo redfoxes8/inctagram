@@ -1,6 +1,8 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { client } from "@/shared/api/client"
 import { paths } from "@/shared/api/schema"
+import { useRouter } from "next/navigation"
+import { useMeQuery } from "@/features/auth/api/use-me"
 
 export const useUploadPostImages = () => {
   return useMutation({
@@ -54,6 +56,10 @@ export const useUploadPostImages = () => {
 }
 
 export const useCreatePost = () => {
+  const queryClient = useQueryClient()
+  const router = useRouter()
+  const { data: me } = useMeQuery()
+
   return useMutation({
     mutationFn: async (payload: { description: string; fileIds: string[] }) => {
       const { data, error } = await client.POST("/api/v1/posts", {
@@ -65,6 +71,19 @@ export const useCreatePost = () => {
       }
 
       return data
+    },
+    onSuccess: async () => {
+      if (me?.userId) {
+        await queryClient.invalidateQueries({
+          queryKey: ["userProfile", me.userId],
+        })
+      }
+
+      await queryClient.invalidateQueries({
+        queryKey: ["posts"],
+      })
+
+      router.refresh()
     },
   })
 }

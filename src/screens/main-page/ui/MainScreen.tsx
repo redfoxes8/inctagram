@@ -1,6 +1,6 @@
 import { PostCard } from "@/widgets/post-card"
 import s from "./MainScreen.module.css"
-import { PostItem, UsersCountResponse } from "@/entities/post/model/post.types"
+import type { PostItem, UsersCountResponse } from "@/entities/post/model/post.types"
 
 type MainScreenProps = {
   totalUsers: UsersCountResponse

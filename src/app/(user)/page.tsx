@@ -1,30 +1,43 @@
 import { PostItem, UsersCountResponse } from "@/entities/post/model/post.types"
 import { MainScreen } from "@/screens/main-page"
+import { serverClient } from "@/shared/api/client.server"
 
 export const revalidate = 60
-const BASE_URL = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL
 
 async function getUsersCount(): Promise<number> {
-  const res = await fetch(`${BASE_URL}/api/v1/users/count`)
-  if (!res.ok) throw new Error("Failed to fetch users count")
-  const data = await res.json()
-  return data.totalCount
+  const { data, error } = await serverClient.GET("/api/v1/users/count", {})
+
+  if (error || !data) {
+    throw new Error("Failed to fetch users count")
+  }
+
+  return data.totalCount ?? 0
 }
 
 async function getLatestPostsWithOwners(limit: number = 4): Promise<PostItem[]> {
-  const res = await fetch(`${BASE_URL}/api/v1/posts/latest?limit=${limit}`)
-  if (!res.ok) throw new Error(`Failed to fetch posts: ${res.status}`)
+  const {
+    data: posts,
+    error,
+    response,
+  } = await serverClient.GET("/api/v1/posts/latest", {
+    params: {
+      query: { limit },
+    },
+  })
 
-  const posts: Omit<PostItem, "owner">[] = await res.json()
+  if (error || !posts) {
+    throw new Error(`Failed to fetch posts: ${response?.status}`)
+  }
+
   if (!posts?.length) return []
 
-  const uniqueOwnerIds = Array.from(new Set(posts.map((post) => post.ownerId)))
+  const uniqueOwnerIds = Array.from(new Set(posts.map((post: PostItem) => post.ownerId)))
 
   const ownersData = await Promise.all(
     uniqueOwnerIds.map(async (id) => {
       try {
-        const profileRes = await fetch(`${BASE_URL}/api/v1/profile/${id}`)
-        return profileRes.ok ? await profileRes.json() : null
+        const { data, error: profileError } = await serverClient.GET(`/api/v1/profile/${id}` as any, {})
+        return profileError ? null : data
       } catch (err) {
         console.error(`Не удалось загрузить профиль для пользователя ${id}:`, err)
         return null
@@ -32,10 +45,13 @@ async function getLatestPostsWithOwners(limit: number = 4): Promise<PostItem[]> 
     }),
   )
 
-  const validOwners = ownersData.filter((u) => u && typeof u === "object" && "id" in u)
+  const validOwners = ownersData.filter(
+    (u): u is NonNullable<typeof u> => u !== null && typeof u === "object" && "id" in u,
+  )
+
   const ownersMap = new Map(validOwners.map((u) => [u.id, u]))
 
-  return posts.map((post) => ({
+  return posts.map((post: PostItem) => ({
     ...post,
     images: Array.isArray(post.images) ? post.images : post.images ? [post.images] : [],
     owner: ownersMap.get(post.ownerId),
@@ -48,6 +64,7 @@ export default async function HomePage() {
 
   try {
     const [fetchedUsersCount, fetchedPosts] = await Promise.all([getUsersCount(), getLatestPostsWithOwners(4)])
+
     totalUsers = { totalCount: fetchedUsersCount }
     posts = fetchedPosts
   } catch (error) {
