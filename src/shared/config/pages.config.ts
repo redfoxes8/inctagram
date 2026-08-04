@@ -9,6 +9,7 @@ export const PAGES = {
   LOGIN: "/login",
   PASSWORD_RECOVERY: "/password-recovery",
   PASSWORD_RECOVERY_EXPIRED: "/password-recovery-expired",
+  PRIVACY_POLICY: "/privacy-policy",
   REGISTRATION: "/register",
   VERIFICATION: "/verification-expired",
 
