@@ -1,6 +1,6 @@
 .wrapper {
   /* 84px сверху (как на макете), 24px по бокам из дизайн-системы, 0 снизу */
-  padding: 84px var(--app-page-gutter) 0;
+  padding: 84px 0 0;
   width: 100%;
   box-sizing: border-box;
 }

@@ -33,8 +33,19 @@
   }
 }
 
+@media screen and (width >= 769px) and (width < 1280px) {
+  .header .headerContainer {
+    width: 100%;
+    max-width: none;
+    padding-inline: var(--app-page-gutter);
+  }
+}
+
 @media screen and (width >= 1280px) {
   .header .headerContainer {
-    padding-inline: 60px;
+    width: min(100%, var(--app-shell-max-width));
+    max-width: var(--app-shell-max-width);
+    padding-left: 60px;
+    padding-right: 64px;
   }
 }
