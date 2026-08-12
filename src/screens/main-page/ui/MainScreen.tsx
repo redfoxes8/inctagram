@@ -1,13 +1,38 @@
-import { PostCard } from "@/widgets/post-card"
+"use client"
+
+import { Suspense, useMemo } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { PostModal } from "@/widgets/post-modal/ui"
+import { useMeQuery } from "@/features/auth/api/use-me"
 import s from "./MainScreen.module.css"
 import type { PostItem, UsersCountResponse } from "@/entities/post/model/post.types"
+import { PostCard } from "@/entities/post/ui"
 
 type MainScreenProps = {
   totalUsers: UsersCountResponse
   serverPosts: PostItem[]
 }
 
-export function MainScreen({ totalUsers, serverPosts }: MainScreenProps) {
+function MainContent({ totalUsers, serverPosts }: MainScreenProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const { data: currentUser, isLoading: isAuthLoading } = useMeQuery()
+  
+  const postId = searchParams.get("postId")
+
+  const initialPost = useMemo(() => {
+    if (!postId) return null
+    const found = serverPosts.find(post => post.id === postId)
+    return found || null
+  }, [postId, serverPosts])
+  const handlePostClick = (postId: string) => {
+    router.push(`/?postId=${postId}`, { scroll: false })
+  }
+
+  const handleCloseModal = () => {
+    router.push("/", { scroll: false })
+  }
+
   const digits = String(totalUsers.totalCount).padStart(6, "0").split("")
 
   return (
@@ -25,9 +50,37 @@ export function MainScreen({ totalUsers, serverPosts }: MainScreenProps) {
 
       <div className={s.content}>
         {serverPosts.map((post) => (
-          <PostCard key={post.id} post={post} />
+          <PostCard
+            key={post.id}
+            post={post}
+            onPostClick={handlePostClick}
+            variant="feed"
+            showAuthor={true}
+            showDescription={true}
+          />
         ))}
       </div>
+
+      {postId && (
+        <PostModal
+          postId={postId}
+          isOpen={!!postId}
+          isOwnProfile={false}
+          onClose={handleCloseModal}
+          from="feed"
+          userId={currentUser?.userId ?? undefined}
+          currentUser={currentUser}
+          initialPost={initialPost}
+        />
+      )}
     </div>
+  )
+}
+
+export function MainScreen(props: MainScreenProps) {
+  return (
+    <Suspense fallback={<div className={s.loading}>Loading...</div>}>
+      <MainContent {...props} />
+    </Suspense>
   )
 }

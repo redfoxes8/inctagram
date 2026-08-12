@@ -3,19 +3,19 @@
 import { useFeedPosts } from "@/entities/post/api/use-feed-posts"
 import { Spinner } from "@radix-ui/themes"
 import { useInfiniteScroll } from "@/shared/lib/hooks"
-import { PostCard } from "@/entities/post/ui/post-card/PostCard"
 import s from "./PostFeed.module.css"
-import { SchemaPostResponseDto, SchemaUserMeResponseDto } from "@/shared/api/schema"
+import { SchemaPostResponseDto} from "@/shared/api/schema"
+import { PostCard } from "@/entities/post/ui"
 
 type PostFeedProps = {
   userId: string
   isOwner: boolean
   pageSize?: number
-  onPostClick?: (postId: string) => void
+  handlePostClick?: (postId: string) => void
   useFeedEndpoint?: boolean
 }
 
-export const PostFeed = ({ userId, isOwner, pageSize = 8, onPostClick, useFeedEndpoint = true }: PostFeedProps) => {
+export const PostFeed = ({ userId, isOwner, pageSize = 8, handlePostClick, useFeedEndpoint = true }: PostFeedProps) => {
   const feedQuery = useFeedPosts({
     pageSize,
     userId,
@@ -62,7 +62,14 @@ export const PostFeed = ({ userId, isOwner, pageSize = 8, onPostClick, useFeedEn
     <div className={s.feed}>
       <div className={s.gridContainer}>
         {posts.map((post: SchemaPostResponseDto) => (
-          <PostCard key={post.id} post={post} isOwner={isOwner} onPostClick={onPostClick} />
+          <PostCard
+            key={post.id}
+            post={post}
+            onPostClick={handlePostClick}
+            variant="grid"
+            showAuthor={false}
+            showDescription={false}
+          />
         ))}
       </div>
 

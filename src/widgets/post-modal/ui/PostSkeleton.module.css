@@ -1,0 +1,103 @@
+.skeletonContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  height: 100%;
+  min-height: 700px;
+  background: var(--dark-300);
+}
+
+.skeletonImage {
+  background: var(--dark-500);
+  animation: pulse 1.5s ease-in-out infinite;
+  min-height: 300px;
+}
+
+.skeletonRight {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 16px;
+  background: var(--dark-300);
+}
+
+.skeletonHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--dark-100);
+}
+
+.skeletonAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--dark-500);
+  flex-shrink: 0;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonLine {
+  height: 16px;
+  border-radius: 4px;
+  background: var(--dark-500);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.skeletonActions {
+  display: flex;
+  gap: 24px;
+  padding: 12px 0;
+  border-top: 1px solid var(--dark-100);
+  border-bottom: 1px solid var(--dark-100);
+}
+
+.skeletonIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--dark-500);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonComment {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--dark-100);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (width <= 768px) {
+  .skeletonContainer {
+    grid-template-columns: 1fr;
+    grid-template-rows: 200px 1fr;
+    min-height: auto;
+  }
+
+  .skeletonImage {
+    min-height: 200px;
+    max-height: 300px;
+  }
+
+  .skeletonRight {
+    padding: 16px;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+}
