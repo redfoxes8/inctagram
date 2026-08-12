@@ -14,17 +14,17 @@
 }
 
 @media (width >= 768px) {
-  .dialog[size="s"] {
+  .dialog[data-size="s"] {
     max-width: 378px;
     width: 100%;
   }
 
-  .dialog[size="m"] {
+  .dialog[data-size="m"] {
     max-width: 486px;
     width: 100%;
   }
 
-  .dialog[size="l"] {
+  .dialog[data-size="l"] {
     max-width: 972px;
     width: 100%;
   }

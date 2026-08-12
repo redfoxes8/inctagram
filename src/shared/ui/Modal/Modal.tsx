@@ -33,6 +33,8 @@ type ModalProps = {
   email?: string
   size?: "s" | "m" | "l"
   fullscreenOnMobile?: boolean
+  isConfirmDisabled?: boolean
+  isLoading?: boolean
 }
 
 export const Modal = ({
@@ -55,6 +57,8 @@ export const Modal = ({
   buttonsClassName,
   size = "s",
   fullscreenOnMobile = false,
+  isConfirmDisabled = false,
+  isLoading = false,
 }: ModalProps) => {
   useEffect(() => {
     if (!isOpen) return
@@ -105,11 +109,13 @@ export const Modal = ({
           : showFooter && (
               <div className={clsx(s.buttons, buttonsClassName)}>
                 {showCancelButton && (
-                  <Button variant="outlined" onClick={onCancel || onClose}>
+                  <Button variant="outlined" onClick={onCancel || onClose} disabled={isLoading}>
                     {cancelText}
                   </Button>
                 )}
-                <Button onClick={onConfirm || onClose}>{confirmText}</Button>
+                <Button onClick={onConfirm || onClose} disabled={isConfirmDisabled || isLoading}>
+                  {isLoading ? "Saving..." : confirmText}
+                </Button>
               </div>
             )}
       </div>

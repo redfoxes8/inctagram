@@ -1,0 +1,38 @@
+.deleteBtn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--danger-500, #ec3d3d);
+  color: var(--light-100, #fff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  border: none;
+  z-index: 100;
+  box-shadow: 0 0 0 8px var(--dark-700, #171717);
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.deleteBtn:hover:not(:disabled) {
+  background: var(--danger-600, #cd2c2c);
+  box-shadow: 0 0 0 8px var(--dark-700, #171717);
+}
+
+.deleteBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.deleteIcon {
+  width: 12px;
+  height: 12px;
+  display: block;
+}

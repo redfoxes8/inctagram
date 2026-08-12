@@ -1,0 +1,122 @@
+.hidden {
+  display: none;
+}
+
+.modalContent {
+  padding: 24px !important;
+  align-items: stretch !important;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.uploadArea {
+  width: 100%;
+  min-height: 228px;
+  background: var(--dark-500, #242424);
+  border: 1px dashed var(--dark-100, #4c4c4c);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.uploadArea:hover {
+  border-color: var(--accent-500, #397fff);
+  background: var(--dark-400, #2f2f2f);
+}
+
+.iconBg {
+  width: 48px;
+  height: 48px;
+  background: var(--dark-300, #4c4c4c);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  color: var(--light-100, #fff);
+}
+
+.selectButton {
+  min-width: 200px;
+}
+
+.error {
+  width: 100%;
+  background: rgb(236 61 61 / 10%);
+  border: 1px solid var(--danger-500, #ec3d3d);
+  color: var(--danger-500, #ec3d3d);
+  font-size: 14px;
+  padding: 12px 16px;
+  border-radius: 2px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.previewWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 0;
+}
+
+.previewCircle {
+  width: 228px;
+  height: 228px;
+  background: var(--dark-500);
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 1px var(--dark-300);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.removeBtn {
+  position: absolute;
+  top: 0;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--dark-400, #2f2f2f);
+  border: 1px solid var(--dark-300, #4c4c4c);
+  color: var(--light-100);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease;
+}
+
+.removeBtn:hover {
+  background: var(--danger-500);
+  border-color: var(--danger-500);
+}
