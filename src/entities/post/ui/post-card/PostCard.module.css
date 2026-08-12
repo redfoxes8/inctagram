@@ -1,10 +1,15 @@
+/* entities/post/ui/PostCard/PostCard.module.css */
+
+/* ============ БАЗОВЫЕ СТИЛИ ============ */
 .card {
-  position: relative;
-  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 234px;
+  background-color: transparent;
+  font-family: sans-serif;
+  color: #fff;
   cursor: pointer;
-  overflow: hidden;
-  background-color: var(--color-light-300);
-  border-radius: 0;
   transition: transform 0.2s ease;
 }
 
@@ -12,6 +17,211 @@
   transform: scale(1.02);
 }
 
+/* ============ ВАРИАНТ ДЛЯ СЕТКИ/ПРОФИЛЯ ============ */
+.gridCard {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  max-width: none;
+  overflow: hidden;
+  background-color: var(--dark-500);
+  border-radius: 0;
+  transition: transform 0.2s ease;
+}
+
+.gridCard:hover {
+  transform: scale(1.02);
+}
+
+.gridCard .imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.gridCard .image {
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.gridCard .image.loading {
+  opacity: 0;
+}
+
+.gridCard .image.loaded {
+  opacity: 1;
+}
+
+.emptyCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--dark-300);
+  color: var(--light-900);
+  font-size: 14px;
+  aspect-ratio: 1 / 1;
+}
+
+/* ============ МЕДИА-САЙД (изображение) ============ */
+.media_side {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--dark-500);
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.image_container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main_image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image_placeholder {
+  color: var(--light-900);
+  font-size: 14px;
+}
+
+/* ============ КНОПКИ НАВИГАЦИИ (стрелки) ============ */
+.arrow_btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgb(33 33 33 / 60%);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  z-index: 2;
+  transition: background 0.2s ease;
+  padding: 0;
+}
+
+.arrow_btn:hover {
+  background: rgb(33 33 33 / 90%);
+}
+
+.arrow_left {
+  left: 6px;
+}
+
+.arrow_right {
+  right: 6px;
+}
+
+/* ============ ИНДИКАТОРЫ (точки) ============ */
+.dots_container {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: rgb(255 255 255 / 50%);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.dot_active {
+  background-color: var(--accent-500);
+  transform: scale(1.2);
+}
+
+/* ============ ИНФО-САЙД (текст) ============ */
+.info_side {
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ============ ПРОФИЛЬ АВТОРА ============ */
+.profile_header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.avatar_wrapper {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--dark-500);
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar_placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, var(--dark-300), var(--dark-100));
+}
+
+/* ============ ВРЕМЯ ============ */
+.time_stamp {
+  font-size: 12px;
+  color: var(--light-900);
+}
+
+/* ============ ОПИСАНИЕ ============ */
+.description {
+  font-size: 13px;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  margin: 0;
+}
+
+.description p {
+  margin: 0;
+}
+
+/* ============ КНОПКА "ПОКАЗАТЬ БОЛЬШЕ" ============ */
+.toggle_text_btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline;
+  margin-left: 4px;
+  font-size: inherit;
+}
+
+.toggle_text_btn:hover .regular_link {
+  text-decoration: underline;
+}
+
+/* ============ КАРУСЕЛЬ (для grid варианта) ============ */
 .embla {
   width: 100%;
   height: 100%;
@@ -30,26 +240,6 @@
   height: 100%;
 }
 
-.imageWrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.image {
-  object-fit: cover;
-  transition: opacity 0.3s ease;
-}
-
-.image.loading {
-  opacity: 0;
-}
-
-.image.loaded {
-  opacity: 1;
-}
-
 .carouselIndicators {
   position: absolute;
   bottom: 8px;
@@ -66,29 +256,24 @@
   border-radius: 50%;
   background-color: rgb(255 255 255 / 50%);
   transition: background-color 0.3s ease;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .carouselDot.active {
   background-color: rgb(255 255 255 / 100%);
 }
 
-.emptyCard {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--color-light-200);
-  color: var(--color-light-500);
-  font-size: 14px;
-}
-
+/* ============ МЕДИА-ЗАПРОСЫ ============ */
 @media (width >= 768px) {
-  .card {
+  .gridCard {
     border-radius: 4px;
   }
 }
 
 @media (width >= 1024px) {
-  .card {
+  .gridCard {
     border-radius: 8px;
   }
 }
@@ -104,6 +289,60 @@
   }
 
   .emptyCard {
+    font-size: 12px;
+  }
+
+  .dots_container {
+    bottom: 8px;
+  }
+
+  .dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .arrow_btn {
+    width: 20px;
+    height: 20px;
+  }
+
+  .arrow_btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .info_side {
+    padding-top: 8px;
+  }
+
+  .description {
+    font-size: 12px;
+  }
+
+  .time_stamp {
+    font-size: 10px;
+  }
+
+  .avatar_wrapper {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (width <= 360px) {
+  .card {
+    max-width: 160px;
+  }
+
+  .description {
+    font-size: 11px;
+  }
+
+  .time_stamp {
+    font-size: 9px;
+  }
+
+  .profile_header .h3 {
     font-size: 12px;
   }
 }
