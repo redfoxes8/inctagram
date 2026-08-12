@@ -45,7 +45,6 @@ export const PostModal = ({
 
   const open = Boolean(postId && isOpen)
 
-  // Загрузка поста
   useEffect(() => {
     if (!isOpen || !postId) return
 
