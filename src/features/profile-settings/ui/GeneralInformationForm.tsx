@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
+import Link from "next/link"
 import { Controller, useForm } from "react-hook-form"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
@@ -16,6 +17,7 @@ import type { ProfileSettingsFormValues } from "@/features/profile-settings/type
 import type { SchemaUpdateProfileDto } from "@/shared/api/schema"
 import { useCheckUsernameLazy } from "@/features/auth/api/use-check-username"
 import { useMeQuery } from "@/features/auth/api/use-me"
+import { PAGES } from "@/shared/config/pages.config"
 import { Button, DateRangePicker, Input, TextArea } from "@/shared/ui"
 import { Icon } from "@/shared/ui/Icon"
 
@@ -211,7 +213,17 @@ export const GeneralInformationForm = () => {
               />
               {isUnder13FieldError(fieldState.error?.message) && (
                 <p className={s.linkedFieldError}>
-                  A user under 13 cannot create a profile. <span className={s.fieldErrorLink}>Privacy Policy</span>
+                  <span>
+                    A user under 13 cannot create a profile.{" "}
+                    <Link
+                      href={PAGES.PRIVACY_POLICY}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={s.fieldErrorLink}
+                    >
+                      Privacy Policy
+                    </Link>
+                  </span>
                 </p>
               )}
             </div>

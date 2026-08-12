@@ -134,15 +134,13 @@
 }
 
 .linkedFieldError {
-  display: flex;
-  gap: 4px;
-  align-items: center;
   color: var(--danger-500);
   font-size: 12px;
   line-height: 16px;
 }
 
 .fieldErrorLink {
+  color: var(--danger-500);
   text-decoration: underline;
 }
 

@@ -7,12 +7,15 @@ import { Logo } from "@/shared/ui/Logo"
 
 import s from "./Header.module.css"
 import { useMeQuery } from "@/features/auth/api/use-me"
+import { PAGES } from "@/shared/config/pages.config"
 import { Button } from "@/shared/ui"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 
 export const Header = () => {
   const { data: user, isLoading } = useMeQuery()
   const router = useRouter()
+  const pathname = usePathname()
+  const isPrivacyPolicyPage = pathname === PAGES.PRIVACY_POLICY
 
   return (
     <header className={s.header}>
@@ -22,7 +25,7 @@ export const Header = () => {
           <div className={s.controls}>
             <LanguageSwitcher />
 
-            {!isLoading && !user && (
+            {!isLoading && !user && !isPrivacyPolicyPage && (
               <div className={s.btn_group}>
                 <Button variant="outlined" onClick={() => router.push("/login")}>
                   Login
