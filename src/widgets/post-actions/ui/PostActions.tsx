@@ -74,14 +74,14 @@ export const PostActions = ({
 
         <DropdownMenu.Portal>
           <DropdownMenu.Content className={s.content} sideOffset={5} align={align} side="bottom">
-            <DropdownMenu.Item className={s.item} onClick={handleEdit}>
+            <DropdownMenu.Item className={clsx(s.item,"regular_text 14")} onClick={handleEdit}>
               <Icon name="edit-2-outline" className={s.itemIcon} />
               Edit Post
             </DropdownMenu.Item>
 
             <DropdownMenu.Separator className={s.separator} />
 
-            <DropdownMenu.Item className={clsx(s.item, s.itemDanger)} onClick={handleDelete}>
+            <DropdownMenu.Item className={clsx(s.item,"regular_text 14")} onClick={handleDelete}>
               <Icon name="trash-outline" className={s.itemIcon} />
               Delete Post
             </DropdownMenu.Item>

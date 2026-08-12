@@ -25,7 +25,7 @@
   background: var(--dark-300);
   width: 90vw;
   max-width: 1024px;
-  max-height: 90vh;
+  max-height: 85vh;
   overflow: hidden;
   z-index: 1001;
   box-shadow: 0 24px 48px rgb(0 0 0 / 50%);
@@ -46,27 +46,32 @@
 
 .closeButton {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 12px;
+  right: 12px;
   z-index: 10;
-  background: rgb(0 0 0 / 50%);
-  border: none;
-  border-radius: 50%;
   width: 32px;
   height: 32px;
+  border-radius: 50%;
+  background: var(--dark-300);
+  border: 2px solid var(--dark-300);
+  cursor: pointer;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  color: var(--light-100);
-  transition:
-    background 0.2s,
-    transform 0.2s;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .closeButton:hover {
-  background: rgb(255 255 255 / 10%);
+  background: rgba(255, 255, 255, 0.2);
   transform: scale(1.1);
+}
+
+.closeButton svg {
+  width: 24px;
+  height: 24px;
 }
 
 .container {
@@ -125,6 +130,8 @@
   overflow-y: auto;
   height: 100%;
   padding: 0;
+  overflow-x: hidden;
+  max-height: 100%;
 }
 
 .user {
@@ -132,7 +139,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 40px;
+  padding: 40px 46px 24px 24px;
   flex-shrink: 0;
   border-bottom: 1px solid var(--dark-100);
 }
@@ -144,14 +151,27 @@
   flex: 1;
 }
 
+.commentPost {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 24px 0px 24px;
+  flex-shrink: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.commentPost .regular_text_16 {
+  flex: 1;
+  word-break: break-word;
+}
+
 .actionsTrigger {
   margin-left: auto;
 }
 
 .userName {
   color: var(--light-100);
-  font-weight: 600;
-  font-size: 16px;
 }
 
 .avatarRoot {
@@ -182,101 +202,21 @@
   color: var(--light-900);
 }
 
-.existingDescription {
-  display: flex;
-  gap: 12px;
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--dark-100);
-  flex-shrink: 0;
-}
-
-.existingDescription .userName {
-  flex-shrink: 0;
-  font-weight: 600;
-}
-
-.existingDescription .descriptionText {
-  color: var(--light-100);
-  font-size: 14px;
-  line-height: 1.5;
-  overflow-wrap: break-word;
-}
-
-.commentsList {
-  flex: 1;
-  padding: 12px 24px;
-  overflow-y: auto;
-  min-height: 120px;
-  max-height: 300px;
-}
-
-.commentItem {
-  display: flex;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--dark-100);
-}
-
-.commentItem:last-child {
-  border-bottom: none;
-}
-
-.commentContent {
-  flex: 1;
+.commentBlock {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
-.commentHeader {
+.commentBody {
   display: flex;
-  align-items: center;
   gap: 8px;
 }
 
-.commentUserName {
-  font-weight: 600;
-  font-size: 13px;
-  color: var(--light-100);
-}
 
-.commentTime {
-  font-size: 11px;
+.dateInfoPost {
+  padding: 8px 72px;
   color: var(--light-900);
-}
-
-.commentText {
-  font-size: 14px;
-  color: var(--light-100);
-  line-height: 1.4;
-  overflow-wrap: break-word;
-}
-
-.commentActions {
-  display: flex;
-  gap: 16px;
-  margin-top: 4px;
-}
-
-.commentActions button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--light-900);
-  font-size: 12px;
-  padding: 0;
-  transition: color 0.2s;
-}
-
-.commentActions button:hover {
-  color: var(--light-100);
-}
-
-.noComments {
-  padding: 24px;
-  text-align: center;
-  color: var(--light-900);
-  font-size: 14px;
+  flex-shrink: 0;
 }
 
 .likesInfo {
@@ -288,104 +228,152 @@
 }
 
 .dateInfo {
-  padding: 2px 24px 8px;
+  padding: 8px 24px;
   color: var(--light-900);
-  font-size: 11px;
   flex-shrink: 0;
 }
 
 .actionButtons {
   display: flex;
-  gap: 16px;
-  padding: 8px 24px;
-  flex-shrink: 0;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-top: 1px solid var(--dark-100);
+}
+
+.actionButtonsGroup {
+  display: flex;
+  gap: 24px;
 }
 
 .actionButtons button {
   display: flex;
   align-items: center;
-  gap: 6px;
   background: none;
   border: none;
   cursor: pointer;
   color: var(--light-100);
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition:
-    background 0.2s,
-    transform 0.2s;
+  transition: background 0.2s, transform 0.2s;
   font-size: 14px;
 }
 
-.actionButtons button:hover {
-  background: var(--dark-100);
-  transform: scale(1.05);
-}
-
-.actionButtons button:active {
-  transform: scale(0.95);
-}
 
 .actionButtons button svg {
   width: 22px;
   height: 22px;
 }
 
-.textarea {
-  padding: 12px 24px 16px;
-  border-top: 1px solid var(--dark-100);
-  flex-shrink: 0;
-}
-
-.textarea textarea {
-  width: 100%;
-  min-height: 40px;
-  padding: 10px 12px;
-  background: var(--dark-500);
-  border: 1px solid var(--dark-100);
-  border-radius: 8px;
-  color: var(--light-100);
-  font-size: 14px;
-  resize: vertical;
-  font-family: inherit;
-  transition: border-color 0.2s;
-}
-
-.textarea textarea:focus {
-  outline: none;
-  border-color: var(--accent-500);
-}
-
-.textarea textarea::placeholder {
-  color: var(--light-900);
-}
-
-.textareaActions {
+.totalLike {
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-top: 8px;
+  padding: 8px 24px 8px;
   gap: 12px;
 }
 
-.charCount {
-  font-size: 12px;
-  color: var(--light-900);
+.commentForm {
+  display: flex;
+  gap: 12px;
+  padding: 8px 24px;
+  background: var(--dark-300);
+  border-top: 1px solid var(--dark-100);
+  flex-shrink: 0;
+  min-height: 60px;
+
 }
 
-.textareaActions button {
-  padding: 6px 16px;
+.textComment {
+  flex: 1;
+  background: var(--dark-300);
   font-size: 14px;
+  font-weight: 400;
+  color: var(--light-100);
+  min-height: 60px;
+
+}
+/* Скрываем скроллбар */
+.textComment textarea::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
 }
 
-.textareaActions button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.textComment textarea {
+  scrollbar-width: none;
+}
+
+/* Убираем рамку у обертки TextArea */
+.textComment > div,
+.textComment > div:focus,
+.textComment > div:focus-within {
+  border: none ;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.textComment textarea {
+  background: var(--dark-300);
+  box-shadow: none;
+  border: none;
+  outline: none;
+  color: var(--light-100);
+  font-size: 14px;
+  font-weight: 400;
+  padding: 0;
+  width: 100%;
+  height: 60px;
+  min-height: 60px;
+  box-shadow: none;
+  line-height: 20px;
+}
+
+.textComment textarea::placeholder {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--light-900);
+  line-height: 60px;
+}
+
+.publishButton {
+  font-size: 16px;
+  font-weight: 600;
+  flex-shrink: 0;
+  cursor: pointer;
+  height: 60px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s, opacity 0.2s;
+  white-space: nowrap;
+}
+
+.publishButton button {
+  padding: 8px 0px 8px;
+}
+
+.charCount {
+  display: none;
+}
+
+.authRequired {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  margin: 8px 24px 16px;
+  background: var(--dark-500);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.authRequired p {
+  color: var(--light-900);
+  font-size: 14px;
+  margin: 0;
 }
 
 .loader,
-.error,
-.empty {
+.error {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -403,17 +391,13 @@
   color: var(--danger-500);
 }
 
-.error button,
-.empty button {
+.error button {
   padding: 8px 20px;
   border-radius: 6px;
   border: none;
   cursor: pointer;
   font-size: 14px;
   transition: background 0.2s;
-}
-
-.error button {
   background: var(--danger-500);
   color: white;
 }
@@ -421,26 +405,66 @@
 .error button:hover {
   background: var(--danger-700);
 }
-
-.empty button {
-  background: var(--accent-500);
-  color: white;
-}
-
-.empty button:hover {
-  background: var(--accent-700);
-}
-
-.sr-only {
+.arrowBtn {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  z-index: 10;
   padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(0);
-  white-space: nowrap;
-  border: 0;
+}
+
+.arrowBtn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.arrowLeft {
+  left: 12px;
+}
+
+.arrowRight {
+  right: 12px;
+}
+
+.dotsContainer {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.2);
+}
+
+.dotActive {
+  background: #ffffff;
+  transform: scale(1.2);
 }
 
 @media (width <=1024px) {
@@ -471,14 +495,8 @@
     padding: 12px 16px;
   }
 
-  .commentsList {
-    padding: 8px 16px;
-    max-height: 200px;
-    min-height: 80px;
-  }
-
-  .existingDescription {
-    padding: 12px 16px;
+  .commentPost {
+    padding: 16px 16px 0px 16px;
   }
 
   .likesInfo {
@@ -493,8 +511,12 @@
     padding: 6px 16px;
   }
 
-  .textarea {
+  .commentForm {
     padding: 8px 16px 12px;
+  }
+
+  .authRequired {
+    margin: 8px 16px 12px;
   }
 
   .closeButton {
@@ -543,16 +565,22 @@
     height: 30px;
   }
 
-  .commentsList {
-    padding: 6px 14px;
-    max-height: 150px;
-    min-height: 60px;
+  .commentPost {
+    padding: 12px 14px 0px 14px;
+    flex-wrap: wrap;
   }
 
-  .existingDescription {
-    padding: 10px 14px;
-    flex-direction: column;
-    gap: 4px;
+  .commentPost .regular_text_16 {
+    flex-basis: 100%;
+    order: 3;
+  }
+
+  .commentPost .userName {
+    order: 1;
+  }
+
+  .commentPost .avatarRoot {
+    order: 0;
   }
 
   .likesInfo {
@@ -579,63 +607,42 @@
     height: 18px;
   }
 
-  .textarea {
+  .commentForm {
     padding: 6px 14px 10px;
+    gap: 8px;
   }
 
-  .textarea textarea {
-    min-height: 36px;
+  .textComment {
     font-size: 13px;
-    padding: 8px 10px;
+    padding: 6px 0;
+    min-height: 36px;
   }
 
-  .textareaActions {
-    flex-direction: column;
-    align-items: flex-end;
+  .textComment::placeholder {
+    font-size: 13px;
   }
 
-  .charCount {
-    font-size: 11px;
+  .publishButton {
+    font-size: 14px;
+    padding: 4px 12px;
   }
 
-  .textareaActions button {
-    padding: 4px 14px;
+  .authRequired {
+    margin: 6px 14px 10px;
+    padding: 16px;
+  }
+
+  .authRequired p {
     font-size: 13px;
   }
 
   .loader,
-  .error,
-  .empty {
+  .error {
     min-height: 250px;
   }
 
   .loader span {
     font-size: 14px;
-  }
-
-  .noComments {
-    padding: 16px;
-    font-size: 13px;
-  }
-
-  .commentItem {
-    padding: 6px 0;
-  }
-
-  .commentUserName {
-    font-size: 12px;
-  }
-
-  .commentText {
-    font-size: 13px;
-  }
-
-  .commentTime {
-    font-size: 10px;
-  }
-
-  .commentActions button {
-    font-size: 11px;
   }
 
   .closeButton {

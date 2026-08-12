@@ -1,1 +1,7 @@
 export { PostModal } from "./PostModal"
+export { PostSkeleton } from "./PostSkeleton"
+export { PostContent } from "./PostContent"
+export { PostHeader } from "./PostHeader"
+export { PostDescription } from "./PostDescription"
+export { PostActionsBar } from "./PostActionsBar"
+export { CommentForm } from "./CommentForm"
