@@ -74,6 +74,13 @@
   padding-top: 24px;
 }
 
+.avatarWrapper {
+  position: relative;
+  display: inline-block;
+  width: 192px;
+  height: 192px;
+}
+
 .avatarPlaceholder {
   display: flex;
   align-items: center;
@@ -82,6 +89,16 @@
   height: 192px;
   border-radius: 50%;
   background: var(--dark-500);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
 }
 
 .avatarIcon {

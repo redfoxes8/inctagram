@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Controller, useForm } from "react-hook-form"
 import { useQueryClient } from "@tanstack/react-query"
@@ -34,6 +34,8 @@ import {
 } from "@/features/profile-settings/lib/profile-settings-form.utils"
 
 import s from "./ProfileSettings.module.css"
+import { AvatarModal } from "@/features/upload-avatar/ui/AvatarModal/AvatarModal"
+import { AvatarDeleteButton } from "@/features/upload-avatar/ui/AvatarDeleteButton/AvatarDeleteButton"
 
 export const GeneralInformationForm = () => {
   const queryClient = useQueryClient()
@@ -42,6 +44,8 @@ export const GeneralInformationForm = () => {
   const { data: profile, isLoading: isProfileLoading } = useProfileSettingsQuery(userId)
   const { mutateAsync: updateProfile, isPending: isUpdatePending } = useUpdateProfileSettingsMutation(userId)
   const { mutateAsync: checkUsername, isPending: isUsernameChecking } = useCheckUsernameLazy()
+
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false)
 
   const {
     control,
@@ -65,11 +69,10 @@ export const GeneralInformationForm = () => {
   })
 
   const initialUsername = profile?.username ?? ""
+  const avatarUrl = profile?.avatarUrl || null
 
   useEffect(() => {
-    if (profile) {
-      reset(toFormValues(profile))
-    }
+    if (profile) reset(toFormValues(profile))
   }, [profile, reset])
 
   const onSubmit = async (values: ProfileSettingsFormValues) => {
@@ -100,13 +103,9 @@ export const GeneralInformationForm = () => {
       })
     } catch (error) {
       if (isUnder13Error(error)) {
-        setError("dateOfBirth", {
-          type: "server",
-          message: UNDER_13_FIELD_MESSAGE,
-        })
+        setError("dateOfBirth", { type: "server", message: UNDER_13_FIELD_MESSAGE })
         return
       }
-
       toast.error(SERVER_ERROR_MESSAGE)
     }
   }
@@ -114,160 +113,155 @@ export const GeneralInformationForm = () => {
   const isSaveDisabled = !isValid || !isDirty || isProfileLoading || isUpdatePending || isUsernameChecking
 
   return (
-    <form className={s.form} onSubmit={handleSubmit(onSubmit)} noValidate>
-      <div className={s.avatarColumn}>
-        <div className={s.avatarPlaceholder}>
-          <Icon name="image-outline" className={s.avatarIcon} />
-        </div>
-
-        <Button type="button" variant="outlined" className={s.photoButton}>
-          Select Profile Photo
-        </Button>
-      </div>
-
-      <div className={s.fieldsColumn}>
-        <Input
-          label="Username"
-          className={s.fullField}
-          disabled={isProfileLoading}
-          error={errors.username?.message}
-          required
-          {...register("username", {
-            required: "Username is required",
-            minLength: { value: 6, message: "Username must be at least 6 characters" },
-            maxLength: { value: 30, message: "Username must be at most 30 characters" },
-            pattern: {
-              value: USERNAME_PATTERN,
-              message: "Username can contain only Latin letters, numbers, underscores and hyphens",
-            },
-            validate: async (value) => {
-              const normalizedUsername = value.trim()
-
-              if (!initialUsername || normalizedUsername === initialUsername) {
-                return true
-              }
-
-              try {
-                const result = await checkUsername(normalizedUsername)
-
-                return result.available === true || "Username is already taken"
-              } catch {
-                return "Unable to check username availability"
-              }
-            },
-          })}
-        />
-
-        <Input
-          label="First Name"
-          className={s.fullField}
-          disabled={isProfileLoading}
-          error={errors.firstName?.message}
-          required
-          {...register("firstName", {
-            required: "First name is required",
-            minLength: { value: 1, message: "First name must be at least 1 character" },
-            maxLength: { value: 50, message: "First name must be at most 50 characters" },
-            pattern: {
-              value: NAME_PATTERN,
-              message: "First name can contain only Latin and Cyrillic letters",
-            },
-          })}
-        />
-
-        <Input
-          label="Last Name"
-          className={s.fullField}
-          disabled={isProfileLoading}
-          error={errors.lastName?.message}
-          required
-          {...register("lastName", {
-            required: "Last name is required",
-            minLength: { value: 1, message: "Last name must be at least 1 character" },
-            maxLength: { value: 50, message: "Last name must be at most 50 characters" },
-            pattern: {
-              value: NAME_PATTERN,
-              message: "Last name can contain only Latin and Cyrillic letters",
-            },
-          })}
-        />
-
-        <Controller
-          control={control}
-          name="dateOfBirth"
-          rules={{
-            validate: (value) => isDateOfBirthAllowed(value) || UNDER_13_FORM_MESSAGE,
-          }}
-          render={({ field, fieldState }) => (
-            <div className={s.dateOfBirthField}>
-              <DateRangePicker
-                mode="single"
-                label="Date of birth"
-                placeholder="00.00.0000"
-                value={field.value}
-                onChange={(date) => {
-                  setValue("dateOfBirth", date, { shouldDirty: true, shouldValidate: true })
-                }}
-                disabled={isProfileLoading}
-                error={isUnder13FieldError(fieldState.error?.message) ? undefined : fieldState.error?.message}
-              />
-              {isUnder13FieldError(fieldState.error?.message) && (
-                <p className={s.linkedFieldError}>
-                  <span>
-                    A user under 13 cannot create a profile.{" "}
-                    <Link
-                      href={PAGES.PRIVACY_POLICY}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={s.fieldErrorLink}
-                    >
-                      Privacy Policy
-                    </Link>
-                  </span>
-                </p>
+    <>
+      <form className={s.form} onSubmit={handleSubmit(onSubmit)} noValidate>
+        <div className={s.avatarColumn}>
+          <div className={s.avatarWrapper} style={{ position: "relative", display: "inline-block" }}>
+            <div className={s.avatarPlaceholder} onClick={() => setIsAvatarModalOpen(true)}>
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Profile avatar" className={s.avatarImage} />
+              ) : (
+                <Icon name="image-outline" className={s.avatarIcon} />
               )}
             </div>
-          )}
-        />
+            {avatarUrl && <AvatarDeleteButton onDeleted={() => setIsAvatarModalOpen(true)} />}
+          </div>
 
-        <div className={s.locationFields}>
+          <Button type="button" variant="outlined" className={s.photoButton} onClick={() => setIsAvatarModalOpen(true)}>
+            {avatarUrl ? "Change Profile Photo" : "Select Profile Photo"}
+          </Button>
+        </div>
+
+        <div className={s.fieldsColumn}>
           <Input
-            label="Select your country"
-            placeholder="Country"
-            className={s.locationField}
+            label="Username"
+            className={s.fullField}
             disabled={isProfileLoading}
-            error={errors.country?.message}
-            {...register("country")}
+            error={errors.username?.message}
+            required
+            {...register("username", {
+              required: "Username is required",
+              minLength: { value: 6, message: "Username must be at least 6 characters" },
+              maxLength: { value: 30, message: "Username must be at most 30 characters" },
+              pattern: {
+                value: USERNAME_PATTERN,
+                message: "Username can contain only Latin letters, numbers, underscores and hyphens",
+              },
+              validate: async (value) => {
+                const normalized = value.trim()
+                if (!initialUsername || normalized === initialUsername) return true
+                try {
+                  const result = await checkUsername(normalized)
+                  return result.available === true || "Username is already taken"
+                } catch {
+                  return "Unable to check username availability"
+                }
+              },
+            })}
           />
 
           <Input
-            label="Select your city"
-            placeholder="City"
-            className={s.locationField}
+            label="First Name"
+            className={s.fullField}
             disabled={isProfileLoading}
-            error={errors.city?.message}
-            {...register("city")}
+            error={errors.firstName?.message}
+            required
+            {...register("firstName", {
+              required: "First name is required",
+              minLength: { value: 1, message: "First name must be at least 1 character" },
+              maxLength: { value: 50, message: "First name must be at most 50 characters" },
+              pattern: { value: NAME_PATTERN, message: "First name can contain only Latin and Cyrillic letters" },
+            })}
+          />
+
+          <Input
+            label="Last Name"
+            className={s.fullField}
+            disabled={isProfileLoading}
+            error={errors.lastName?.message}
+            required
+            {...register("lastName", {
+              required: "Last name is required",
+              minLength: { value: 1, message: "Last name must be at least 1 character" },
+              maxLength: { value: 50, message: "Last name must be at most 50 characters" },
+              pattern: { value: NAME_PATTERN, message: "Last name can contain only Latin and Cyrillic letters" },
+            })}
+          />
+
+          <Controller
+            control={control}
+            name="dateOfBirth"
+            rules={{ validate: (value) => isDateOfBirthAllowed(value) || UNDER_13_FORM_MESSAGE }}
+            render={({ field, fieldState }) => (
+              <div className={s.dateOfBirthField}>
+                <DateRangePicker
+                  mode="single"
+                  label="Date of birth"
+                  placeholder="00.00.0000"
+                  value={field.value}
+                  onChange={(date) => setValue("dateOfBirth", date, { shouldDirty: true, shouldValidate: true })}
+                  disabled={isProfileLoading}
+                  error={isUnder13FieldError(fieldState.error?.message) ? undefined : fieldState.error?.message}
+                />
+                {isUnder13FieldError(fieldState.error?.message) && (
+                  <p className={s.linkedFieldError}>
+                    <span>
+                      A user under 13 cannot create a profile.{" "}
+                      <Link
+                        href={PAGES.PRIVACY_POLICY}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={s.fieldErrorLink}
+                      >
+                        Privacy Policy
+                      </Link>
+                    </span>
+                  </p>
+                )}
+              </div>
+            )}
+          />
+
+          <div className={s.locationFields}>
+            <Input
+              label="Select your country"
+              placeholder="Country"
+              className={s.locationField}
+              disabled={isProfileLoading}
+              error={errors.country?.message}
+              {...register("country")}
+            />
+            <Input
+              label="Select your city"
+              placeholder="City"
+              className={s.locationField}
+              disabled={isProfileLoading}
+              error={errors.city?.message}
+              {...register("city")}
+            />
+          </div>
+
+          <TextArea
+            label="About Me"
+            placeholder="Text-area"
+            className={s.fullField}
+            rows={3}
+            disabled={isProfileLoading}
+            error={errors.aboutMe?.message}
+            {...register("aboutMe", {
+              maxLength: { value: 200, message: "About me must be at most 200 characters" },
+            })}
           />
         </div>
 
-        <TextArea
-          label="About Me"
-          placeholder="Text-area"
-          className={s.fullField}
-          rows={3}
-          disabled={isProfileLoading}
-          error={errors.aboutMe?.message}
-          {...register("aboutMe", {
-            maxLength: { value: 200, message: "About me must be at most 200 characters" },
-          })}
-        />
-      </div>
+        <div className={s.bottomDivider} />
 
-      <div className={s.bottomDivider} />
+        <Button type="submit" className={s.saveButton} disabled={isSaveDisabled}>
+          Save Changes
+        </Button>
+      </form>
 
-      <Button type="submit" className={s.saveButton} disabled={isSaveDisabled}>
-        Save Changes
-      </Button>
-    </form>
+      <AvatarModal isOpen={isAvatarModalOpen} onClose={() => setIsAvatarModalOpen(false)} />
+    </>
   )
 }
