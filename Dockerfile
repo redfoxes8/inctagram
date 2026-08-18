@@ -14,7 +14,7 @@ WORKDIR /app
 RUN npm install -g pnpm@9.15.0
 
 COPY . .
-
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 # Копируем node_modules из dependencies
 COPY --from=dependencies /app/node_modules ./node_modules
 
