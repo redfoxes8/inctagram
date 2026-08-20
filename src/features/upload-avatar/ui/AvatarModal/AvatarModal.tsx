@@ -10,6 +10,7 @@ import { Button } from "@/shared/ui/Button"
 
 import s from "./AvatarModal.module.css"
 import { useUploadAvatarMutation } from "../../api/useAvatar"
+import { useRouter } from "next/navigation"
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/jpg"]
@@ -21,8 +22,9 @@ interface Props {
 }
 
 export const AvatarModal = ({ isOpen, onClose, onSuccess }: Props) => {
+  const router = useRouter()
   const { data: currentUser } = useMeQuery()
-  const userId = currentUser?.userId ? Number(currentUser.userId) : undefined
+  const userId = currentUser?.userId || undefined
   const { mutateAsync: uploadAvatar, isPending } = useUploadAvatarMutation(userId)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -77,6 +79,9 @@ export const AvatarModal = ({ isOpen, onClose, onSuccess }: Props) => {
     try {
       await uploadAvatar(file)
       toast.success("Profile photo updated successfully!")
+
+      router.refresh()
+
       onSuccess?.()
       onClose()
     } catch (error) {

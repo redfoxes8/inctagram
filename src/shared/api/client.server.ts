@@ -1,11 +1,8 @@
 import createClient, { Middleware } from "openapi-fetch"
 import { paths } from "@/shared/api/schema"
 import { cookies } from "next/headers"
-import { localStorageKeys } from "@/features/auth/types"
 
-const rawBaseUrl = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:4278"
-
-const baseUrl = rawBaseUrl.replace("localhost", "127.0.0.1")
+const baseUrl = process.env.API_BASE_URL || "https://nymbi.org"
 
 export const serverClient = createClient<paths>({
   baseUrl,
@@ -15,12 +12,15 @@ const serverAuthMiddleware: Middleware = {
   async onRequest({ request }) {
     try {
       const cookieStore = await cookies()
-      const accessToken = cookieStore.get(localStorageKeys.accessToken)?.value || null
 
-      if (accessToken) {
-        request.headers.set("Authorization", `Bearer ${accessToken}`)
+      const cookieString = cookieStore.toString()
+
+      if (cookieString) {
+        request.headers.set("Cookie", cookieString)
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error("Не удалось прочитать или пробросить куки на сервере Next.js:", e)
+    }
 
     request.headers.set("accept", "application/json")
     return request
