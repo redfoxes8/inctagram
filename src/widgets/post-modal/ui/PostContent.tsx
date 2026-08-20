@@ -12,14 +12,15 @@ import { usePostAuthor } from "@/entities/post/lib/hooks/usePostAuthor"
 import { useImageNavigation } from "@/entities/post/lib/hooks/useImageNavigation"
 import { formatCommentDate, formatPostDate } from "@/shared/lib/utils/dateFormatters"
 import type { EditPostData } from "@/features/posts/edit-post/model/edit-post.types"
+import type { ProfileResponse } from "@/entities/user/model/profile.type"
 import s from "./PostModal.module.css"
 
 type PostContentProps = {
   post: PostItem
   currentUser?: SchemaUserMeResponseDto | null
-  isOwnProfile: boolean
   isPostOwner: boolean
   editData?: EditPostData
+  authorProfile?: ProfileResponse | null
   onEditSuccess: () => void
   onDeleteSuccess: () => void
   onClose: () => void
@@ -28,9 +29,9 @@ type PostContentProps = {
 export const PostContent = ({
   post,
   currentUser,
-  isOwnProfile,
   isPostOwner,
   editData,
+  authorProfile,
   onEditSuccess,
   onDeleteSuccess,
   onClose,
@@ -38,7 +39,7 @@ export const PostContent = ({
   const [isLiked, setIsLiked] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
 
-  const { authorName, authorAvatar } = usePostAuthor(post, currentUser)
+  const { authorName, authorAvatar } = usePostAuthor(post, currentUser, authorProfile)
   const { currentImage, currentImageIndex, hasMultipleImages, totalImages, handlePrev, handleNext, handleDotClick } =
     useImageNavigation(post.images)
 
@@ -96,7 +97,6 @@ export const PostContent = ({
         <PostHeader
           authorName={authorName}
           authorAvatar={authorAvatar}
-          isOwnProfile={isOwnProfile}
           isPostOwner={isPostOwner}
           editData={editData}
           postId={post.id}

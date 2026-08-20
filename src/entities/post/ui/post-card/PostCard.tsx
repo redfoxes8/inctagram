@@ -142,7 +142,18 @@ export const PostCard = memo(function PostCard({
 
   // Вариант для ленты (полный вид)
   return (
-    <article className={s.card} onClick={handlePostClick}>
+    <article
+      className={s.card}
+      onClick={handlePostClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          handlePostClick()
+        }
+      }}
+    >
       <div className={s.media_side}>
         <div className={s.image_container}>
           {imagesList[currentImageIndex]?.url ? (

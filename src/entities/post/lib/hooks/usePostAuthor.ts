@@ -5,8 +5,14 @@ import { SchemaUserMeResponseDto } from "@/shared/api/schema"
 import { ProfileResponse } from "@/entities/user/model/profile.type"
 import { client } from "@/shared/api/client"
 
-export const usePostAuthor = (post: PostItem, currentUser?: SchemaUserMeResponseDto | null) => {
+export const usePostAuthor = (
+  post: PostItem,
+  currentUser?: SchemaUserMeResponseDto | null,
+  resolvedOwnerProfile?: ProfileResponse | null,
+) => {
   const ownerId = post.ownerId
+
+  const matchesOwner = Boolean(ownerId && resolvedOwnerProfile?.id === ownerId)
 
   const { data: ownerProfile } = useQuery<ProfileResponse, Error>({
     queryKey: ["profile", ownerId],
@@ -21,11 +27,11 @@ export const usePostAuthor = (post: PostItem, currentUser?: SchemaUserMeResponse
 
       return data
     },
-    enabled: Boolean(ownerId) && !post.owner,
+    enabled: Boolean(ownerId) && !post.owner && !matchesOwner,
     staleTime: 5 * 60 * 1000,
   })
 
-  const resolvedOwner = post.owner ?? ownerProfile
+  const resolvedOwner = post.owner ?? (matchesOwner ? resolvedOwnerProfile : null) ?? ownerProfile
 
   const authorName = useMemo(() => {
     if (resolvedOwner?.username) {

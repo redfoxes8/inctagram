@@ -88,10 +88,11 @@ export function useUploadAvatarMutation(userId?: string) {
       if (userId) {
         queryClient.invalidateQueries({
           queryKey: getProfileSettingsQueryKey(userId),
+          refetchType: "all",
         })
         queryClient.invalidateQueries({ queryKey: ["me"] })
 
-        queryClient.invalidateQueries({ queryKey: ["posts", userId] })
+        queryClient.invalidateQueries({ queryKey: ["posts", { userId }], refetchType: "all" })
       }
     },
   })
@@ -112,10 +113,11 @@ export function useDeleteAvatarMutation(userId?: string) {
       if (userId) {
         queryClient.invalidateQueries({
           queryKey: getProfileSettingsQueryKey(userId),
+          refetchType: "all",
         })
         queryClient.invalidateQueries({ queryKey: ["me"] })
 
-        queryClient.invalidateQueries({ queryKey: ["posts", userId] })
+        queryClient.invalidateQueries({ queryKey: ["posts", { userId }], refetchType: "all" })
       }
     },
   })

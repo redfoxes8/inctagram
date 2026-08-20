@@ -13,14 +13,12 @@ type PostFeedProps = {
   isOwner: boolean
   pageSize?: number
   handlePostClick?: (postId: string) => void
-  useFeedEndpoint?: boolean
 }
 
-export const PostFeed = ({ userId, isOwner, pageSize = 8, handlePostClick, useFeedEndpoint = true }: PostFeedProps) => {
+export const PostFeed = ({ userId, isOwner, pageSize = 8, handlePostClick }: PostFeedProps) => {
   const feedQuery = useFeedPosts({
     pageSize,
     userId,
-    useFeedEndpoint,
   })
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = feedQuery

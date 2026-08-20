@@ -4,6 +4,8 @@ import { Suspense, useCallback, useMemo } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PostModal } from "@/widgets/post-modal/ui"
 import { useMeQuery } from "@/features/auth/api/use-me"
+import { revalidateAllPosts } from "@/shared/api/actions"
+import { queryClient } from "@/shared/api/query-client"
 import s from "./MainScreen.module.css"
 import type { PostItem, UsersCountResponse } from "@/entities/post/model/post.types"
 import { PostCard } from "@/entities/post/ui"
@@ -16,7 +18,7 @@ type MainScreenProps = {
 function MainContent({ totalUsers, serverPosts }: MainScreenProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { data: currentUser, isLoading: isAuthLoading } = useMeQuery()
+  const { data: currentUser } = useMeQuery()
 
   const postId = searchParams.get("postId")
 
@@ -35,6 +37,21 @@ function MainContent({ totalUsers, serverPosts }: MainScreenProps) {
   const handleCloseModal = useCallback(() => {
     router.push("/", { scroll: false })
   }, [router])
+
+  const handlePostChanged = useCallback(
+    async (ownerId?: string) => {
+      await revalidateAllPosts(ownerId)
+      router.refresh()
+
+      await queryClient.invalidateQueries({ queryKey: ["posts"], refetchType: "all" })
+      await queryClient.invalidateQueries({ queryKey: ["post"], refetchType: "all" })
+
+      if (ownerId) {
+        await queryClient.invalidateQueries({ queryKey: ["profile", ownerId], refetchType: "all" })
+      }
+    },
+    [router],
+  )
 
   const digits = String(totalUsers.totalCount).padStart(6, "0").split("")
 
@@ -68,12 +85,11 @@ function MainContent({ totalUsers, serverPosts }: MainScreenProps) {
         <PostModal
           postId={postId}
           isOpen={!!postId}
-          isOwnProfile={false}
           onClose={handleCloseModal}
-          from="feed"
-          userId={currentUser?.userId ?? undefined}
           currentUser={currentUser}
           initialPost={initialPost}
+          onEditSuccess={handlePostChanged}
+          onDeleteSuccess={handlePostChanged}
         />
       )}
     </div>

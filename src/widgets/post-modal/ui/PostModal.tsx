@@ -2,13 +2,13 @@
 
 import { VisuallyHidden } from "@radix-ui/themes"
 import { useCallback, useMemo } from "react"
-import { useRouter } from "next/navigation"
 import * as Dialog from "@radix-ui/react-dialog"
 import { toast } from "sonner"
 import { Icon } from "@/shared/ui/Icon"
 import s from "./PostModal.module.css"
 import { PostItem } from "@/entities/post/model/post.types"
 import { SchemaUserMeResponseDto } from "@/shared/api/schema"
+import type { ProfileResponse } from "@/entities/user/model/profile.type"
 import { usePostQuery } from "@/entities/post/api/use-post"
 import { PostContent } from "./PostContent"
 import { PostSkeleton } from "./PostSkeleton"
@@ -17,29 +17,23 @@ type PostModalProps = {
   postId?: string
   onClose?: () => void
   isOpen: boolean
-  isOwnProfile: boolean
-  onEditSuccess?: () => void
-  onDeleteSuccess?: () => void
+  onEditSuccess?: (ownerId?: string) => void
+  onDeleteSuccess?: (ownerId?: string) => void
   initialPost?: PostItem | null
-  userId?: string
   currentUser?: SchemaUserMeResponseDto | null
-  from?: "profile" | "feed" | "direct"
+  authorProfile?: ProfileResponse | null
 }
 
 export const PostModal = ({
   postId,
   onClose,
   isOpen,
-  isOwnProfile,
   onEditSuccess,
   onDeleteSuccess,
   initialPost,
   currentUser,
-  userId,
-  from = "direct",
+  authorProfile,
 }: PostModalProps) => {
-  const router = useRouter()
-
   const hasInitialPost = Boolean(initialPost && initialPost.id === postId)
 
   const {
@@ -55,24 +49,8 @@ export const PostModal = ({
   const open = Boolean(postId && isOpen)
 
   const handleClose = useCallback(() => {
-    if (onClose) {
-      onClose()
-      return
-    }
-
-    if (from === "feed") {
-      router.push("/")
-    } else if (from === "profile" && userId) {
-      router.push(`/profile/${userId}`)
-    } else {
-      const ownerId = post?.ownerId || userId
-      if (ownerId) {
-        router.push(`/profile/${ownerId}`)
-      } else {
-        router.back()
-      }
-    }
-  }, [from, onClose, router, userId, post?.ownerId])
+    onClose?.()
+  }, [onClose])
 
   const isPostOwner = Boolean(currentUser && post && currentUser.userId === post.ownerId)
 
@@ -91,13 +69,13 @@ export const PostModal = ({
       toast.error("Failed to refresh the post")
       return
     }
-    onEditSuccess?.()
-  }, [refetch, onEditSuccess])
+    onEditSuccess?.(post?.ownerId)
+  }, [refetch, onEditSuccess, post?.ownerId])
 
   const handlePostDeleteSuccess = useCallback(() => {
     handleClose()
-    onDeleteSuccess?.()
-  }, [handleClose, onDeleteSuccess])
+    onDeleteSuccess?.(post?.ownerId)
+  }, [handleClose, onDeleteSuccess, post?.ownerId])
 
   return (
     <Dialog.Root open={open} onOpenChange={(value) => !value && handleClose()}>
@@ -113,7 +91,7 @@ export const PostModal = ({
           </VisuallyHidden>
 
           <Dialog.Close asChild>
-            <button type="button" className={s.closeButton} onClick={handleClose}>
+            <button type="button" className={s.closeButton} aria-label="Close">
               <Icon name="close-outline" />
             </button>
           </Dialog.Close>
@@ -133,9 +111,9 @@ export const PostModal = ({
                 key={post.id}
                 post={post}
                 currentUser={currentUser}
-                isOwnProfile={isOwnProfile}
                 isPostOwner={isPostOwner}
                 editData={editData}
+                authorProfile={authorProfile}
                 onEditSuccess={handlePostEditSuccess}
                 onDeleteSuccess={handlePostDeleteSuccess}
                 onClose={handleClose}

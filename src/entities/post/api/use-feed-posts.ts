@@ -7,8 +7,7 @@ import { toast } from "sonner"
 type UseFeedPostsParams = {
   pageSize?: number
   enabled?: boolean
-  userId?: string
-  useFeedEndpoint?: boolean
+  userId: string
 }
 
 function handleFeedError(status?: number): never {
@@ -23,38 +22,13 @@ function handleFeedError(status?: number): never {
   throw new Error(errorMessage)
 }
 
-export function useFeedPosts({
-  pageSize = 8,
-  enabled = true,
-  userId,
-  useFeedEndpoint = true,
-}: UseFeedPostsParams = {}) {
+export function useFeedPosts({ pageSize = 8, enabled = true, userId }: UseFeedPostsParams) {
   return useInfiniteQuery({
-    queryKey: ["posts", { useFeedEndpoint, userId, pageSize }],
+    queryKey: ["posts", { userId, pageSize }],
     queryFn: async ({ pageParam }) => {
       const commonQuery = {
         cursor: pageParam as string | undefined,
         pageSize,
-      }
-
-      if (useFeedEndpoint) {
-        const res = await client.GET("/api/v1/posts/feed", {
-          params: { query: commonQuery },
-        })
-
-        if (res.error) {
-          handleFeedError(res.response?.status)
-        }
-
-        return {
-          posts: res.data?.posts ?? [],
-          nextCursor: res.data?.nextCursor ?? null,
-          hasMore: res.data?.hasMore ?? false,
-        }
-      }
-
-      if (!userId) {
-        throw new Error("User id is required")
       }
 
       const res = await client.GET("/api/v1/users/{userId}/posts", {
@@ -81,7 +55,7 @@ export function useFeedPosts({
       }
       return undefined
     },
-    enabled: enabled && (useFeedEndpoint || !!userId),
+    enabled: enabled && Boolean(userId),
     staleTime: 60 * 1000,
   })
 }

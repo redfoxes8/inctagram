@@ -10,7 +10,6 @@ import type { EditPostData } from "@/features/posts/edit-post/model/edit-post.ty
 type PostHeaderProps = {
   authorName: string
   authorAvatar?: string
-  isOwnProfile: boolean
   isPostOwner: boolean
   editData?: EditPostData
   postId: string
@@ -21,7 +20,6 @@ type PostHeaderProps = {
 export const PostHeader = ({
   authorName,
   authorAvatar,
-  isOwnProfile,
   isPostOwner,
   editData,
   postId,
@@ -40,7 +38,7 @@ export const PostHeader = ({
         <span className={clsx("h3", s.userName)}>{authorName}</span>
       </div>
 
-      {(isOwnProfile || isPostOwner) && editData && (
+      {editData && (
         <PostActions
           postId={postId}
           isOwner={isPostOwner}

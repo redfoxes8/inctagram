@@ -4,7 +4,7 @@ import { client } from "@/shared/api/client"
 import type { SchemaGetProfileResponseDto, SchemaUpdateProfileDto } from "@/shared/api/schema"
 import { useRouter } from "next/navigation"
 
-const PROFILE_QUERY_KEY = "profile-settings"
+const PROFILE_QUERY_KEY = "profile"
 export const SERVER_ERROR_MESSAGE = "Error! Server is not available!"
 
 export class ProfileSettingsApiError extends Error {

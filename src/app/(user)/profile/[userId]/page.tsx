@@ -2,11 +2,28 @@ import { Suspense } from "react"
 import { ProfilePage } from "@/screens/profile-page/ProfilePage"
 import { serverClient } from "@/shared/api/client.server"
 import { notFound } from "next/navigation"
+import type { Metadata } from "next"
 import type { PostItem } from "@/entities/post/model/post.types"
 
 type Props = {
   params: Promise<{ userId: string }>
   searchParams: Promise<{ postId?: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { userId } = await params
+  const profile = await getProfileServer(userId)
+
+  if (!profile) {
+    return {
+      title: "Profile not found",
+    }
+  }
+
+  return {
+    title: profile.username || "Profile",
+    description: profile.aboutMe || undefined,
+  }
 }
 
 async function getProfileServer(userId: string) {

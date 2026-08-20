@@ -12,6 +12,7 @@ import s from "./ProfilePage.module.css"
 import { PostItem } from "@/entities/post/model/post.types"
 import { revalidateFeed, revalidateProfile } from "@/shared/api/actions"
 import { queryClient } from "@/shared/api/query-client"
+import { getProfileSettingsQueryKey } from "@/features/profile-settings/api/profile-settings-api"
 
 export type ProfilePageProps = {
   userId: string
@@ -41,8 +42,6 @@ export const ProfilePage = ({
 
   const selectedPostId = searchParams.get("postId") || initialPostId || undefined
 
-  const postFrom = selectedPostId ? (initialPostId ? "profile" : "direct") : undefined
-
   const handlePostClick = useCallback(
     (postId: string) => {
       router.push(`${pathname}?postId=${postId}`, { scroll: false })
@@ -60,8 +59,15 @@ export const ProfilePage = ({
 
     await queryClient.invalidateQueries({
       queryKey: ["posts"],
+      refetchType: "all",
     })
-  }, [propUserId])
+    await queryClient.invalidateQueries({
+      queryKey: getProfileSettingsQueryKey(propUserId),
+      refetchType: "all",
+    })
+
+    router.refresh()
+  }, [propUserId, router])
 
   if (!profile) {
     return (
@@ -75,13 +81,7 @@ export const ProfilePage = ({
   return (
     <div className={s.container}>
       <ProfileHeader user={profile} isOwner={isOwner} />
-      <PostFeed
-        userId={propUserId}
-        isOwner={isOwner}
-        pageSize={8}
-        handlePostClick={handlePostClick}
-        useFeedEndpoint={isOwner}
-      />
+      <PostFeed userId={propUserId} isOwner={isOwner} pageSize={8} handlePostClick={handlePostClick} />
 
       {selectedPostId && (
         <PostModal
@@ -89,10 +89,8 @@ export const ProfilePage = ({
           initialPost={serverPost}
           isOpen={!!selectedPostId}
           onClose={handlePostModalClose}
-          isOwnProfile={isOwner}
-          userId={propUserId}
           currentUser={me}
-          from={postFrom}
+          authorProfile={profile}
           onEditSuccess={handlePostUpdate}
           onDeleteSuccess={handlePostUpdate}
         />

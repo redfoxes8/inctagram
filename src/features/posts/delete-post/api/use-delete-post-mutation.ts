@@ -18,7 +18,7 @@ export const useDeletePostMutation = () => {
       }
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["posts"] })
+      await queryClient.invalidateQueries({ queryKey: ["posts"], refetchType: "all" })
     },
   })
 }
