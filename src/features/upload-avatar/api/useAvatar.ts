@@ -10,7 +10,7 @@ import type {
 
 export const AVATAR_QUERY_KEY = ["profile", "avatar"]
 
-export function useUploadAvatarMutation(userId?: number) {
+export function useUploadAvatarMutation(userId?: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -86,17 +86,18 @@ export function useUploadAvatarMutation(userId?: number) {
     },
     onSuccess: () => {
       if (userId) {
-        const stringUserId = String(userId)
         queryClient.invalidateQueries({
-          queryKey: getProfileSettingsQueryKey(stringUserId),
+          queryKey: getProfileSettingsQueryKey(userId),
         })
         queryClient.invalidateQueries({ queryKey: ["me"] })
+
+        queryClient.invalidateQueries({ queryKey: ["posts", userId] })
       }
     },
   })
 }
 
-export function useDeleteAvatarMutation(userId?: number) {
+export function useDeleteAvatarMutation(userId?: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -109,11 +110,12 @@ export function useDeleteAvatarMutation(userId?: number) {
     },
     onSuccess: () => {
       if (userId) {
-        const stringUserId = String(userId)
         queryClient.invalidateQueries({
-          queryKey: getProfileSettingsQueryKey(stringUserId),
+          queryKey: getProfileSettingsQueryKey(userId),
         })
         queryClient.invalidateQueries({ queryKey: ["me"] })
+
+        queryClient.invalidateQueries({ queryKey: ["posts", userId] })
       }
     },
   })

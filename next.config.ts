@@ -2,6 +2,7 @@ import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -12,7 +13,6 @@ const nextConfig: NextConfig = {
     ],
   },
   output: "standalone",
-  /* config options here */
   reactCompiler: true,
 }
 

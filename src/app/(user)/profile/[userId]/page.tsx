@@ -11,7 +11,9 @@ type Props = {
 
 async function getProfileServer(userId: string) {
   const response = await serverClient.GET("/api/v1/profile/{userId}", {
-    params: { path: { userId } },
+    params: {
+      path: { userId },
+    },
   })
 
   if (response.error) {
@@ -21,13 +23,15 @@ async function getProfileServer(userId: string) {
   return response.data
 }
 
-async function getPostServer(postId: string): Promise<PostItem | null> {
+async function getPostServer(postId: string) {
   const response = await serverClient.GET("/api/v1/posts/{postId}", {
-    params: { path: { postId } },
+    params: {
+      path: { postId },
+    },
   })
 
-  if (response.error || !response.data) {
-    return null
+  if (response.error) {
+    return undefined
   }
 
   return response.data as PostItem
@@ -39,7 +43,7 @@ export default async function Page({ params, searchParams }: Props) {
 
   const [serverProfile, serverPost] = await Promise.all([
     getProfileServer(userId),
-    postId ? getPostServer(postId) : Promise.resolve(null),
+    postId ? getPostServer(postId) : Promise.resolve(undefined),
   ])
 
   if (!serverProfile) {
