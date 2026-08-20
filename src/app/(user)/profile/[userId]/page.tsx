@@ -8,7 +8,11 @@ type Props = {
 }
 
 async function getProfileServer(userId: string) {
-  const response = await serverClient.GET(`/api/v1/profile/${userId}` as any, {})
+  const response = await serverClient.GET("/api/v1/profile/{userId}", {
+    params: {
+      path: { userId },
+    },
+  })
 
   if (response.error) {
     console.error("❌ Ошибка SSR запроса к бэку:", response.error)
@@ -19,13 +23,14 @@ async function getProfileServer(userId: string) {
 }
 
 async function getPostServer(postId: string) {
-  const response = await serverClient.GET(
-    `/api/v1/posts/${postId}` as any,
-    {}
-  )
+  const response = await serverClient.GET("/api/v1/posts/{postId}", {
+    params: {
+      path: { postId },
+    },
+  })
 
   if (response.error) {
-    return null
+    return undefined
   }
 
   return response.data
@@ -35,22 +40,18 @@ export default async function Page({ params, searchParams }: Props) {
   const { userId } = await params
   const { postId } = await searchParams
 
-const [serverProfile, serverPost] = await Promise.all([
-  getProfileServer(userId),
-  postId ? getPostServer(postId) : Promise.resolve(null),
-])
+  const [serverProfile, serverPost] = await Promise.all([
+    getProfileServer(userId),
+    postId ? getPostServer(postId) : Promise.resolve(undefined),
+  ])
 
-if (!serverProfile) {
-  return notFound()
-}
+  if (!serverProfile) {
+    return notFound()
+  }
 
-if (postId && !serverPost) {
-  return notFound()
-}
+  if (postId && !serverPost) {
+    return notFound()
+  }
 
   return <ProfilePage userId={userId} postId={postId} serverProfile={serverProfile} serverPost={serverPost} />
 }
-
-
-
-

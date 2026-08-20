@@ -10,15 +10,19 @@ export const client = createClient<paths>({
 
 const authMiddleware: Middleware = {
   async onRequest({ request }) {
+    const authenticatedRequest = new Request(request, {
+      credentials: "include",
+    })
+
     const accessToken = localStorage.getItem(localStorageKeys.accessToken)
 
     if (accessToken) {
-      request.headers.set("Authorization", `Bearer ${accessToken}`)
+      authenticatedRequest.headers.set("Authorization", `Bearer ${accessToken}`)
     }
 
-    request.headers.set("accept", "application/json")
+    authenticatedRequest.headers.set("accept", "application/json")
 
-    return request
+    return authenticatedRequest
   },
 }
 

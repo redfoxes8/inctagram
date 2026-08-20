@@ -8,14 +8,16 @@ import { Icon } from "@/shared/ui/Icon"
 import { useDeleteAvatarMutation } from "../../api/useAvatar"
 
 import s from "./AvatarDeleteButton.module.css"
+import { useRouter } from "next/navigation"
 
 interface Props {
   onDeleted?: () => void
 }
 
 export const AvatarDeleteButton = ({ onDeleted }: Props) => {
+  const router = useRouter()
   const { data: currentUser } = useMeQuery()
-  const userId = currentUser?.userId ? parseInt(currentUser.userId) : undefined
+  const userId = currentUser?.userId || undefined
   const { mutateAsync: deleteAvatar, isPending } = useDeleteAvatarMutation(userId)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
@@ -23,6 +25,9 @@ export const AvatarDeleteButton = ({ onDeleted }: Props) => {
     try {
       await deleteAvatar()
       toast.success("Profile photo deleted successfully")
+
+      router.refresh()
+
       setIsConfirmOpen(false)
       onDeleted?.()
     } catch {

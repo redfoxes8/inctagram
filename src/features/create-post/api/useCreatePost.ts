@@ -3,6 +3,7 @@ import { client } from "@/shared/api/client"
 import { paths } from "@/shared/api/schema"
 import { useRouter } from "next/navigation"
 import { useMeQuery } from "@/features/auth/api/use-me"
+import { getProfileSettingsQueryKey } from "@/features/profile-settings/api/profile-settings-api"
 
 export const useUploadPostImages = () => {
   return useMutation({
@@ -62,26 +63,23 @@ export const useCreatePost = () => {
 
   return useMutation({
     mutationFn: async (payload: { description: string; fileIds: string[] }) => {
-      const { data, error } = await client.POST("/api/v1/posts", {
-        body: payload,
-      })
-
-      if (error) {
-        throw new Error("Ошибка при создании поста на бэкенде")
-      }
-
+      const { data, error } = await client.POST("/api/v1/posts", { body: payload })
+      if (error) throw new Error("Ошибка при создании поста на бэкенде")
       return data
     },
     onSuccess: async () => {
       if (me?.userId) {
         await queryClient.invalidateQueries({
-          queryKey: ["userProfile", me.userId],
+          queryKey: getProfileSettingsQueryKey(me.userId),
+        })
+
+        await queryClient.invalidateQueries({
+          queryKey: ["posts", me.userId],
         })
       }
 
-      await queryClient.invalidateQueries({
-        queryKey: ["posts"],
-      })
+      await queryClient.invalidateQueries({ queryKey: ["posts"] })
+      await queryClient.invalidateQueries({ queryKey: ["feed-posts"] })
 
       router.refresh()
     },

@@ -2,8 +2,10 @@ import { useMutation } from "@tanstack/react-query"
 import { client } from "@/shared/api/client"
 import { localStorageKeys, LoginRequestPayload, LoginResponse } from "../types"
 import { queryClient } from "@/shared/api/query-client"
+import { useRouter } from "next/navigation"
 
 export const useLoginMutation = () => {
+  const router = useRouter()
   return useMutation<LoginResponse, Error, LoginRequestPayload>({
     mutationFn: async (payload: LoginRequestPayload) => {
       const { data, error } = await client.POST("/api/v1/auth/login", {

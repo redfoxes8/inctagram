@@ -1,9 +1,6 @@
 export type SettingsTab = "info" | "devices" | "subscriptions" | "payments"
 
 export const PAGES = {
-  // Публичные (если корень теперь защищен, здесь остаются только гостевые, либо оставляем пустую секцию)
-
-  // Auth
   CONFIRM_EMAIL: "/confirm-email",
   FORGOT_PASSWORD: "/forgot-password",
   LOGIN: "/login",
@@ -13,19 +10,16 @@ export const PAGES = {
   REGISTRATION: "/register",
   VERIFICATION: "/verification-expired",
 
-  // Личные
-  FEED: "/", // <-- ИЗМЕНИЛИ: Теперь главная лента доступна прямо по корню сайта!
+  FEED: "/",
   CREATE: "/create",
   MESSENGER: "/messenger",
   SEARCH: "/search",
   STATISTICS: "/statistics",
   FAVORITES: "/favorites",
 
-  // Профиль
   PROFILE: "/profile",
   TO_PROFILE: (id: string = "[userId]") => `/profile/${id}`,
 
-  // Settings
   SETTINGS: (part: SettingsTab = "info") => `/settings?part=${part}`,
 } as const
 
