@@ -1,52 +1,50 @@
+import { useState, useCallback, useEffect } from "react"
+import type { PostImage } from "@/entities/post/model/post.types"
 
-import { useState, useCallback, useEffect } from 'react'
-
-export const useImageNavigation = (images: any[], postId: string) => {
+export const useImageNavigation = (images: PostImage[]) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const hasMultipleImages = images.length > 1
   const currentImage = images[currentImageIndex]?.url ?? null
-
-  useEffect(() => {
-    setCurrentImageIndex(0)
-  }, [postId])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) {
         return
       }
-      
-      if (e.key === 'ArrowLeft' && currentImageIndex > 0) {
-        setCurrentImageIndex(prev => prev - 1)
+
+      if (e.key === "ArrowLeft") {
+        setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : prev))
         e.preventDefault()
-      } else if (e.key === 'ArrowRight' && currentImageIndex < images.length - 1) {
-        setCurrentImageIndex(prev => prev + 1)
+      } else if (e.key === "ArrowRight") {
+        setCurrentImageIndex((prev) => (prev < images.length - 1 ? prev + 1 : prev))
         e.preventDefault()
       }
     }
-    
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [currentImageIndex, images.length])
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [images.length])
 
   const handlePrev = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
-    if (currentImageIndex > 0) {
-      setCurrentImageIndex(prev => prev - 1)
-    }
-  }, [currentImageIndex])
-
-  const handleNext = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (currentImageIndex < images.length - 1) {
-      setCurrentImageIndex(prev => prev + 1)
-    }
-  }, [currentImageIndex, images.length])
-
-  const handleDotClick = useCallback((index: number) => (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setCurrentImageIndex(index)
+    setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : prev))
   }, [])
+
+  const handleNext = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      setCurrentImageIndex((prev) => (prev < images.length - 1 ? prev + 1 : prev))
+    },
+    [images.length],
+  )
+
+  const handleDotClick = useCallback(
+    (index: number) => (e: React.MouseEvent) => {
+      e.stopPropagation()
+      setCurrentImageIndex(index)
+    },
+    [],
+  )
 
   return {
     currentImage,

@@ -1,4 +1,3 @@
-
 "use client"
 
 import { Icon } from "@/shared/ui/Icon"
@@ -7,22 +6,13 @@ import s from "./PostModal.module.css"
 type PostActionsBarProps = {
   isLiked: boolean
   isSaved: boolean
-  isSend: boolean
   onLike: () => void
   onSend: () => void
   onSave: () => void
   isDisabled: boolean
 }
 
-export const PostActionsBar = ({
-  isLiked,
-  isSaved,
-  isSend,
-  onLike,
-  onSend,
-  onSave,
-  isDisabled,
-}: PostActionsBarProps) => {
+export const PostActionsBar = ({ isLiked, isSaved, onLike, onSend, onSave, isDisabled }: PostActionsBarProps) => {
   return (
     <div className={s.actionButtons}>
       <div className={s.actionButtonsGroup}>
@@ -35,14 +25,8 @@ export const PostActionsBar = ({
         >
           <Icon name={isLiked ? "heart" : "heart-outline"} />
         </button>
-        <button
-          type="button"
-          onClick={onSend}
-          disabled={isDisabled}
-          className={s.actionButton}
-          aria-label="Share"
-        >
-          <Icon name={isSend ? "paper-plane" : "paper-plane-outline"} />
+        <button type="button" onClick={onSend} disabled={isDisabled} className={s.actionButton} aria-label="Share">
+          <Icon name="paper-plane-outline" />
         </button>
       </div>
       <button

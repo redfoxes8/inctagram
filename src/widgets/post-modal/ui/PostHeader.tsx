@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as Avatar from "@radix-ui/react-avatar"
@@ -6,14 +5,14 @@ import { Icon } from "@/shared/ui/Icon"
 import clsx from "clsx"
 import s from "./PostModal.module.css"
 import { PostActions } from "@/widgets/post-actions/ui/PostActions"
-
+import type { EditPostData } from "@/features/posts/edit-post/model/edit-post.types"
 
 type PostHeaderProps = {
   authorName: string
   authorAvatar?: string
   isOwnProfile: boolean
   isPostOwner: boolean
-  editData?: any
+  editData?: EditPostData
   postId: string
   onEditSuccess: () => void
   onDeleteSuccess: () => void

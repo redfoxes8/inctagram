@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { memo, useMemo, useState } from "react"
 import Image from "next/image"
 import { formatDistanceToNow } from "date-fns"
 import clsx from "clsx"
@@ -12,18 +12,18 @@ import { PostItem } from "@/entities/post/model/post.types"
 export type PostCardProps = {
   post: PostItem
   onPostClick?: (postId: string) => void
-  variant?: 'feed' | 'profile' | 'grid'
-  showAuthor?: boolean 
-  showDescription?: boolean 
+  variant?: "feed" | "profile" | "grid"
+  showAuthor?: boolean
+  showDescription?: boolean
 }
 
-export const PostCard = ({ 
-  post, 
-  onPostClick, 
-  variant = 'feed',
+export const PostCard = memo(function PostCard({
+  post,
+  onPostClick,
+  variant = "feed",
   showAuthor = true,
   showDescription = true,
-}: PostCardProps) => {
+}: PostCardProps) {
   const navigate = useRouter()
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isExpanded, setIsExpanded] = useState(false)
@@ -45,8 +45,7 @@ export const PostCard = ({
     }
   }
 
-  const handlePostClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
+  const handlePostClick = () => {
     onPostClick?.(post.id)
   }
 
@@ -54,19 +53,19 @@ export const PostCard = ({
     e.stopPropagation()
     const targetId = post.owner?.id || post.ownerId
 
-    if (!targetId) {
-      console.warn("Не удалось найти ID пользователя:", {
-        ownerId: post.ownerId,
-        owner: post.owner,
-      })
-      return
-    }
+    if (!targetId) return
 
     navigate.push(`/profile/${targetId}`)
   }
 
   const TEXT_LIMIT = 90
   const isLongText = (post.description?.length ?? 0) > TEXT_LIMIT
+
+  const formattedTime = useMemo(
+    () =>
+      post.createdAt ? formatDistanceToNow(new Date(post.createdAt), { addSuffix: true }).replace("about ", "") : "",
+    [post.createdAt],
+  )
 
   const renderDescription = () => {
     const description = post.description || ""
@@ -108,18 +107,10 @@ export const PostCard = ({
     )
   }
 
-  const formattedTime = post.createdAt
-    ? formatDistanceToNow(new Date(post.createdAt), { addSuffix: true }).replace("about ", "")
-    : ""
-
-  if (variant === 'grid' || variant === 'profile') {
+  if (variant === "grid" || variant === "profile") {
     const image = imagesList[0]
     if (!image?.url) {
-      return (
-        <div className={clsx(s.card, s.emptyCard)}>
-          No image
-        </div>
-      )
+      return <div className={clsx(s.card, s.emptyCard)}>No image</div>
     }
 
     return (
@@ -131,7 +122,7 @@ export const PostCard = ({
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault()
-            handlePostClick(e as any)
+            handlePostClick()
           }
         }}
       >
@@ -154,9 +145,9 @@ export const PostCard = ({
     <article className={s.card} onClick={handlePostClick}>
       <div className={s.media_side}>
         <div className={s.image_container}>
-          {imagesList.length > 0 ? (
+          {imagesList[currentImageIndex]?.url ? (
             <Image
-              src={imagesList[currentImageIndex]?.url || ""}
+              src={imagesList[currentImageIndex].url}
               alt={`Post content ${currentImageIndex + 1}`}
               className={s.main_image}
               fill
@@ -214,13 +205,7 @@ export const PostCard = ({
           <div className={s.profile_header} onClick={handleProfileClick}>
             <div className={s.avatar_wrapper}>
               {post.owner?.avatarUrl ? (
-                <Image 
-                  src={post.owner.avatarUrl} 
-                  alt="avatar" 
-                  className={s.avatar} 
-                  width={40} 
-                  height={40} 
-                />
+                <Image src={post.owner.avatarUrl} alt="avatar" className={s.avatar} width={40} height={40} />
               ) : (
                 <div className={s.avatar_placeholder} />
               )}
@@ -235,4 +220,6 @@ export const PostCard = ({
       </div>
     </article>
   )
-}
+})
+
+PostCard.displayName = "PostCard"

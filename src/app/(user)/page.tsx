@@ -36,7 +36,9 @@ async function getLatestPostsWithOwners(limit: number = 4): Promise<PostItem[]> 
   const ownersData = await Promise.all(
     uniqueOwnerIds.map(async (id) => {
       try {
-        const { data, error: profileError } = await serverClient.GET(`/api/v1/profile/${id}` as any, {})
+        const { data, error: profileError } = await serverClient.GET("/api/v1/profile/{userId}", {
+          params: { path: { userId: id } },
+        })
         return profileError ? null : data
       } catch (err) {
         console.error(`Не удалось загрузить профиль для пользователя ${id}:`, err)

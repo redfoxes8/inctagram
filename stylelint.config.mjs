@@ -7,6 +7,10 @@ const config = {
     "selector-class-pattern": null,
     "custom-property-pattern": null,
     "keyframes-name-pattern": null,
+    "selector-pseudo-class-no-unknown": [
+      true,
+      { ignorePseudoClasses: ["global", "local"] },
+    ],
   },
   ignoreFiles: ["**/node_modules/**", ".next/**", "out/**", "build/**"],
 }

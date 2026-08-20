@@ -1,8 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
-import clsx from "clsx"
-import s from "./PostModal.module.css"
+import { useCallback, useState } from "react"
 import { PostItem } from "@/entities/post/model/post.types"
 import { SchemaUserMeResponseDto } from "@/shared/api/schema"
 import { CommentForm } from "./CommentForm"
@@ -13,14 +11,15 @@ import { PostImage } from "./PostImage"
 import { usePostAuthor } from "@/entities/post/lib/hooks/usePostAuthor"
 import { useImageNavigation } from "@/entities/post/lib/hooks/useImageNavigation"
 import { formatCommentDate, formatPostDate } from "@/shared/lib/utils/dateFormatters"
-
+import type { EditPostData } from "@/features/posts/edit-post/model/edit-post.types"
+import s from "./PostModal.module.css"
 
 type PostContentProps = {
   post: PostItem
   currentUser?: SchemaUserMeResponseDto | null
   isOwnProfile: boolean
   isPostOwner: boolean
-  editData?: any
+  editData?: EditPostData
   onEditSuccess: () => void
   onDeleteSuccess: () => void
   onClose: () => void
@@ -38,79 +37,46 @@ export const PostContent = ({
 }: PostContentProps) => {
   const [isLiked, setIsLiked] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
-  const [isSend, setIsSend] = useState(false)
-  const [description, setDescription] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { authorName, authorAvatar } = usePostAuthor(post, currentUser)
-  const {
-    currentImage,
-    currentImageIndex,
-    hasMultipleImages,
-    totalImages,
-    handlePrev,
-    handleNext,
-    handleDotClick,
-  } = useImageNavigation(post?.images || [], post.id)
+  const { currentImage, currentImageIndex, hasMultipleImages, totalImages, handlePrev, handleNext, handleDotClick } =
+    useImageNavigation(post.images)
 
-  const likesCount = 5
   const maxLength = 500
 
   const handleLike = useCallback(() => {
     if (!currentUser) return
-    setIsLiked(prev => !prev)
+    setIsLiked((prev) => !prev)
   }, [currentUser])
 
   const handleSend = useCallback(async () => {
-    if (!currentUser || !post) return
+    if (!post) return
+
+    const shareUrl = post.ownerId
+      ? `${window.location.origin}/profile/${post.ownerId}?postId=${post.id}`
+      : `${window.location.origin}/?postId=${post.id}`
 
     try {
       if (navigator.share) {
         await navigator.share({
-          title: post.description || 'Check out this post!',
-          text: post.description || '',
-          url: `${window.location.origin}/?postId=${post.id}`,
+          title: post.description || "Check out this post!",
+          text: post.description || "",
+          url: shareUrl,
         })
       } else {
-        await navigator.clipboard.writeText(
-          `${window.location.origin}/?postId=${post.id}`
-        )
+        await navigator.clipboard.writeText(shareUrl)
       }
     } catch (error) {
-      if (error instanceof Error && error.name !== 'AbortError') {
-        console.error('Share error:', error)
+      if (error instanceof Error && error.name !== "AbortError") {
+        console.error("Share error:", error)
       }
     }
-  }, [currentUser, post])
+  }, [post])
 
   const handleSave = useCallback(() => {
     if (!currentUser) return
-    setIsSaved(prev => !prev)
+    setIsSaved((prev) => !prev)
   }, [currentUser])
-
-  const handlePublishComment = useCallback(async () => {
-    if (!currentUser || !description.trim() || isSubmitting) return
-
-    setIsSubmitting(true)
-
-    try {
-      console.log('Comment:', description.trim())
-      setDescription("")
-    } catch (err) {
-      console.error('Failed to publish comment:', err)
-    } finally {
-      setIsSubmitting(false)
-    }
-  }, [currentUser, description, isSubmitting])
-
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      if (description.trim() && !isSubmitting) {
-        handlePublishComment()
-      }
-    }
-  }, [description, handlePublishComment, isSubmitting])
 
   return (
     <div className={s.contentWrapper}>
@@ -151,30 +117,17 @@ export const PostContent = ({
         <PostActionsBar
           isLiked={isLiked}
           isSaved={isSaved}
-          isSend={isSend}
           onLike={handleLike}
           onSend={handleSend}
           onSave={handleSave}
           isDisabled={!currentUser}
         />
 
-        <div className={clsx(s.totalLike, "regular_text 14")}>
-          {likesCount} "Like"
-        </div>
-
         <div className={s.dateInfo}>
           <span className="small_text">{formatPostDate(post.createdAt)}</span>
         </div>
 
-        <CommentForm
-          currentUser={currentUser}
-          description={description}
-          setDescription={setDescription}
-          isSubmitting={isSubmitting}
-          onSubmit={handlePublishComment}
-          onKeyDown={handleKeyDown}
-          maxLength={maxLength}
-        />
+        <CommentForm currentUser={currentUser} maxLength={maxLength} />
       </div>
     </div>
   )

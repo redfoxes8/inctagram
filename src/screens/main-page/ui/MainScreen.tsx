@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense, useMemo } from "react"
+import { Suspense, useCallback, useMemo } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PostModal } from "@/widgets/post-modal/ui"
 import { useMeQuery } from "@/features/auth/api/use-me"
@@ -17,21 +17,24 @@ function MainContent({ totalUsers, serverPosts }: MainScreenProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { data: currentUser, isLoading: isAuthLoading } = useMeQuery()
-  
+
   const postId = searchParams.get("postId")
 
   const initialPost = useMemo(() => {
     if (!postId) return null
-    const found = serverPosts.find(post => post.id === postId)
+    const found = serverPosts.find((post) => post.id === postId)
     return found || null
   }, [postId, serverPosts])
-  const handlePostClick = (postId: string) => {
-    router.push(`/?postId=${postId}`, { scroll: false })
-  }
+  const handlePostClick = useCallback(
+    (postId: string) => {
+      router.push(`/?postId=${postId}`, { scroll: false })
+    },
+    [router],
+  )
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     router.push("/", { scroll: false })
-  }
+  }, [router])
 
   const digits = String(totalUsers.totalCount).padStart(6, "0").split("")
 

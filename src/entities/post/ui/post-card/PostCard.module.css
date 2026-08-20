@@ -143,7 +143,9 @@
   border: none;
   padding: 0;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .dot_active {
@@ -157,6 +159,11 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.info_side p {
+  overflow-wrap: break-word;
+  min-width: 0;
 }
 
 /* ============ ПРОФИЛЬ АВТОРА ============ */

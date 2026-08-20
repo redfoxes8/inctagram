@@ -1,14 +1,15 @@
 "use client"
 
 import { VisuallyHidden } from "@radix-ui/themes"
-import { useState, useCallback, useEffect, useMemo } from "react"
+import { useCallback, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import * as Dialog from "@radix-ui/react-dialog"
+import { toast } from "sonner"
 import { Icon } from "@/shared/ui/Icon"
 import s from "./PostModal.module.css"
-import { client } from "@/shared/api/client"
 import { PostItem } from "@/entities/post/model/post.types"
 import { SchemaUserMeResponseDto } from "@/shared/api/schema"
+import { usePostQuery } from "@/entities/post/api/use-post"
 import { PostContent } from "./PostContent"
 import { PostSkeleton } from "./PostSkeleton"
 
@@ -22,7 +23,7 @@ type PostModalProps = {
   initialPost?: PostItem | null
   userId?: string
   currentUser?: SchemaUserMeResponseDto | null
-  from?: 'profile' | 'feed' | 'direct'
+  from?: "profile" | "feed" | "direct"
 }
 
 export const PostModal = ({
@@ -35,47 +36,23 @@ export const PostModal = ({
   initialPost,
   currentUser,
   userId,
-  from = 'direct',
+  from = "direct",
 }: PostModalProps) => {
   const router = useRouter()
 
-  const [post, setPost] = useState<PostItem | null>(initialPost || null)
-  const [isLoading, setIsLoading] = useState(Boolean(postId && !initialPost))
-  const [error, setError] = useState<Error | null>(null)
+  const hasInitialPost = Boolean(initialPost && initialPost.id === postId)
+
+  const {
+    data: post,
+    isLoading,
+    error,
+    refetch,
+  } = usePostQuery(postId, {
+    enabled: isOpen && !hasInitialPost,
+    initialData: hasInitialPost ? (initialPost ?? undefined) : undefined,
+  })
 
   const open = Boolean(postId && isOpen)
-
-  useEffect(() => {
-    if (!isOpen || !postId) return
-
-    if (initialPost && initialPost.id === postId) {
-      setPost(initialPost)
-      setIsLoading(false)
-      return
-    }
-
-    let cancelled = false
-    setIsLoading(true)
-
-    client.GET("/api/v1/posts/{postId}", {
-      params: { path: { postId } },
-    })
-      .then((res) => {
-        if (cancelled) return
-        if (res.error) throw new Error("Failed to fetch post")
-        setPost(res.data as PostItem)
-        setError(null)
-      })
-      .catch((err) => {
-        if (cancelled) return
-        setError(err instanceof Error ? err : new Error("Unknown error"))
-      })
-      .finally(() => {
-        if (!cancelled) setIsLoading(false)
-      })
-
-    return () => { cancelled = true }
-  }, [initialPost, isOpen, postId])
 
   const handleClose = useCallback(() => {
     if (onClose) {
@@ -83,9 +60,9 @@ export const PostModal = ({
       return
     }
 
-    if (from === 'feed') {
-      router.push('/')
-    } else if (from === 'profile' && userId) {
+    if (from === "feed") {
+      router.push("/")
+    } else if (from === "profile" && userId) {
       router.push(`/profile/${userId}`)
     } else {
       const ownerId = post?.ownerId || userId
@@ -108,18 +85,14 @@ export const PostModal = ({
   }, [post, currentUser, isPostOwner])
 
   const handlePostEditSuccess = useCallback(async () => {
-    if (!postId) return
-
-    const res = await client.GET("/api/v1/posts/{postId}", {
-      params: { path: { postId } }
-    })
-
-    if (!res.error) {
-      setPost(res.data as PostItem)
+    try {
+      await refetch()
+    } catch {
+      toast.error("Failed to refresh the post")
+      return
     }
-
     onEditSuccess?.()
-  }, [postId, onEditSuccess])
+  }, [refetch, onEditSuccess])
 
   const handlePostDeleteSuccess = useCallback(() => {
     handleClose()
@@ -147,14 +120,17 @@ export const PostModal = ({
 
           <div className={s.container}>
             {isLoading ? (
-              <PostSkeleton/>
+              <PostSkeleton />
             ) : error || !post ? (
               <div className={s.error}>
                 <p>{error ? "Failed to load post" : "Post not found"}</p>
-                <button type="button" onClick={handleClose}>Close</button>
+                <button type="button" onClick={handleClose}>
+                  Close
+                </button>
               </div>
             ) : (
               <PostContent
+                key={post.id}
                 post={post}
                 currentUser={currentUser}
                 isOwnProfile={isOwnProfile}
@@ -171,6 +147,3 @@ export const PostModal = ({
     </Dialog.Root>
   )
 }
-
-
-

@@ -1,7 +1,6 @@
 "use client"
 
 import { client } from "@/shared/api/client"
-import { SchemaGetFeedResponseDto } from "@/shared/api/schema"
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { toast } from "sonner"
 
@@ -33,15 +32,35 @@ export function useFeedPosts({
   return useInfiniteQuery({
     queryKey: ["posts", { useFeedEndpoint, userId, pageSize }],
     queryFn: async ({ pageParam }) => {
-      const endpoint = useFeedEndpoint ? "/api/v1/posts/feed" : "/api/v1/users/{userId}/posts"
+      const commonQuery = {
+        cursor: pageParam as string | undefined,
+        pageSize,
+      }
 
-      const res = await client.GET(endpoint as any, {
+      if (useFeedEndpoint) {
+        const res = await client.GET("/api/v1/posts/feed", {
+          params: { query: commonQuery },
+        })
+
+        if (res.error) {
+          handleFeedError(res.response?.status)
+        }
+
+        return {
+          posts: res.data?.posts ?? [],
+          nextCursor: res.data?.nextCursor ?? null,
+          hasMore: res.data?.hasMore ?? false,
+        }
+      }
+
+      if (!userId) {
+        throw new Error("User id is required")
+      }
+
+      const res = await client.GET("/api/v1/users/{userId}/posts", {
         params: {
-          query: {
-            cursor: pageParam as string | undefined,
-            pageSize,
-          },
-          ...(!useFeedEndpoint && userId ? { path: { userId } } : {}),
+          path: { userId },
+          query: commonQuery,
         },
       })
 
@@ -49,12 +68,10 @@ export function useFeedPosts({
         handleFeedError(res.response?.status)
       }
 
-      const data = res.data as SchemaGetFeedResponseDto
-
       return {
-        posts: data.posts || [],
-        nextCursor: data.nextCursor ?? null,
-        hasMore: data.hasMore ?? false,
+        posts: res.data?.posts ?? [],
+        nextCursor: res.data?.nextCursor ?? null,
+        hasMore: res.data?.hasMore ?? false,
       }
     },
     initialPageParam: undefined as string | undefined,

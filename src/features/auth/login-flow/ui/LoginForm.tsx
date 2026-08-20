@@ -4,7 +4,6 @@ import { useState } from "react"
 import clsx from "clsx"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 
 import { Button } from "@/shared/ui/Button"
@@ -19,7 +18,6 @@ import { PAGES } from "@/shared/config/pages.config"
 const UNAUTHORIZED_ERROR = "Unauthorized"
 
 export function LoginForm() {
-  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [serverError, setServerError] = useState("")
 
@@ -31,10 +29,6 @@ export function LoginForm() {
     formState: { errors, isValid },
   } = useForm<LoginRequestPayload>({
     mode: "onBlur",
-    defaultValues: {
-      usernameOrEmail: "redfoxes333@gmail.com",
-      password: "Rf123456!",
-    },
   })
 
   const onSubmit = async (data: LoginRequestPayload) => {
@@ -42,7 +36,6 @@ export function LoginForm() {
 
     try {
       await loginMutation(data)
-      router.replace(PAGES.PROFILE)
     } catch {
       setServerError(UNAUTHORIZED_ERROR)
     }

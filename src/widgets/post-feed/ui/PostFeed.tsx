@@ -1,10 +1,11 @@
 "use client"
 
+import { useMemo } from "react"
 import { useFeedPosts } from "@/entities/post/api/use-feed-posts"
 import { Spinner } from "@radix-ui/themes"
 import { useInfiniteScroll } from "@/shared/lib/hooks"
 import s from "./PostFeed.module.css"
-import { SchemaPostResponseDto} from "@/shared/api/schema"
+import { SchemaPostResponseDto } from "@/shared/api/schema"
 import { PostCard } from "@/entities/post/ui"
 
 type PostFeedProps = {
@@ -32,11 +33,7 @@ export const PostFeed = ({ userId, isOwner, pageSize = 8, handlePostClick, useFe
     threshold: 0.1,
   })
 
-  const posts =
-    data?.pages.flatMap((page) => {
-      if (page.posts) return page.posts
-      return []
-    }) ?? []
+  const posts = useMemo(() => data?.pages.flatMap((page) => page.posts ?? []) ?? [], [data?.pages])
 
   if (isLoading) {
     return <PostFeedSkeleton count={8} />
