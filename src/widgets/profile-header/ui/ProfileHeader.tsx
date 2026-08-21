@@ -20,9 +20,9 @@ export const ProfileHeader = ({ user, isOwner }: ProfileHeaderProps) => {
   const router = useRouter()
 
   const stats = {
-    following: 0,
-    followers: 0,
-    publications: 0,
+    following: user.followingCount ?? 0,
+    followers: user.followersCount ?? 0,
+    publications: user.postsCount ?? 0,
   }
 
   const handleSettingsClick = () => {

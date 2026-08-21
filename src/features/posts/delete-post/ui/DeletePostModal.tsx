@@ -14,9 +14,15 @@ export const DeletePostModal = ({ postId, isOpen, onClose, onSuccess }: Props) =
   const { mutate: deletePost, isPending } = useDeletePostMutation()
 
   const handleConfirm = () => {
-    console.log("Deleting post")
-    onSuccess?.()
-    deletePost({ postId }, { onSuccess: onClose })
+    deletePost(
+      { postId },
+      {
+        onSuccess: () => {
+          onSuccess?.()
+          onClose()
+        },
+      },
+    )
   }
 
   return (

@@ -1,10 +1,29 @@
+import { Suspense } from "react"
 import { ProfilePage } from "@/screens/profile-page/ProfilePage"
 import { serverClient } from "@/shared/api/client.server"
 import { notFound } from "next/navigation"
+import type { Metadata } from "next"
+import type { PostItem } from "@/entities/post/model/post.types"
 
 type Props = {
   params: Promise<{ userId: string }>
   searchParams: Promise<{ postId?: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { userId } = await params
+  const profile = await getProfileServer(userId)
+
+  if (!profile) {
+    return {
+      title: "Profile not found",
+    }
+  }
+
+  return {
+    title: profile.username || "Profile",
+    description: profile.aboutMe || undefined,
+  }
 }
 
 async function getProfileServer(userId: string) {
@@ -15,7 +34,6 @@ async function getProfileServer(userId: string) {
   })
 
   if (response.error) {
-    console.error("❌ Ошибка SSR запроса к бэку:", response.error)
     return null
   }
 
@@ -33,7 +51,7 @@ async function getPostServer(postId: string) {
     return undefined
   }
 
-  return response.data
+  return response.data as PostItem
 }
 
 export default async function Page({ params, searchParams }: Props) {
@@ -53,5 +71,9 @@ export default async function Page({ params, searchParams }: Props) {
     return notFound()
   }
 
-  return <ProfilePage userId={userId} postId={postId} serverProfile={serverProfile} serverPost={serverPost} />
+  return (
+    <Suspense fallback={null}>
+      <ProfilePage userId={userId} postId={postId} serverProfile={serverProfile} serverPost={serverPost} />
+    </Suspense>
+  )
 }

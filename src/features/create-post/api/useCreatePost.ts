@@ -71,15 +71,17 @@ export const useCreatePost = () => {
       if (me?.userId) {
         await queryClient.invalidateQueries({
           queryKey: getProfileSettingsQueryKey(me.userId),
+          refetchType: "all",
         })
 
         await queryClient.invalidateQueries({
-          queryKey: ["posts", me.userId],
+          queryKey: ["posts", { userId: me.userId }],
+          refetchType: "all",
         })
       }
 
       await queryClient.invalidateQueries({ queryKey: ["posts"] })
-      await queryClient.invalidateQueries({ queryKey: ["feed-posts"] })
+      await queryClient.invalidateQueries({ queryKey: ["post"] })
 
       router.refresh()
     },

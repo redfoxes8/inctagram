@@ -1,9 +1,11 @@
 "use client"
 
-import { Suspense, useMemo } from "react"
+import { Suspense, useCallback, useMemo } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PostModal } from "@/widgets/post-modal/ui"
 import { useMeQuery } from "@/features/auth/api/use-me"
+import { revalidateAllPosts } from "@/shared/api/actions"
+import { queryClient } from "@/shared/api/query-client"
 import s from "./MainScreen.module.css"
 import type { PostItem, UsersCountResponse } from "@/entities/post/model/post.types"
 import { PostCard } from "@/entities/post/ui"
@@ -16,22 +18,40 @@ type MainScreenProps = {
 function MainContent({ totalUsers, serverPosts }: MainScreenProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { data: currentUser, isLoading: isAuthLoading } = useMeQuery()
-  
+  const { data: currentUser } = useMeQuery()
+
   const postId = searchParams.get("postId")
 
   const initialPost = useMemo(() => {
     if (!postId) return null
-    const found = serverPosts.find(post => post.id === postId)
+    const found = serverPosts.find((post) => post.id === postId)
     return found || null
   }, [postId, serverPosts])
-  const handlePostClick = (postId: string) => {
-    router.push(`/?postId=${postId}`, { scroll: false })
-  }
+  const handlePostClick = useCallback(
+    (postId: string) => {
+      router.push(`/?postId=${postId}`, { scroll: false })
+    },
+    [router],
+  )
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     router.push("/", { scroll: false })
-  }
+  }, [router])
+
+  const handlePostChanged = useCallback(
+    async (ownerId?: string) => {
+      await revalidateAllPosts(ownerId)
+      router.refresh()
+
+      await queryClient.invalidateQueries({ queryKey: ["posts"], refetchType: "all" })
+      await queryClient.invalidateQueries({ queryKey: ["post"], refetchType: "all" })
+
+      if (ownerId) {
+        await queryClient.invalidateQueries({ queryKey: ["profile", ownerId], refetchType: "all" })
+      }
+    },
+    [router],
+  )
 
   const digits = String(totalUsers.totalCount).padStart(6, "0").split("")
 
@@ -65,12 +85,11 @@ function MainContent({ totalUsers, serverPosts }: MainScreenProps) {
         <PostModal
           postId={postId}
           isOpen={!!postId}
-          isOwnProfile={false}
           onClose={handleCloseModal}
-          from="feed"
-          userId={currentUser?.userId ?? undefined}
           currentUser={currentUser}
           initialPost={initialPost}
+          onEditSuccess={handlePostChanged}
+          onDeleteSuccess={handlePostChanged}
         />
       )}
     </div>

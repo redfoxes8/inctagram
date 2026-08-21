@@ -11,14 +11,9 @@ export async function revalidateFeed() {
   revalidatePath("/")
 }
 
-export async function revalidatePost(postId: string) {
-  revalidatePath(`/api/v1/posts/${postId}`)
-}
-
 export async function revalidateAllPosts(userId?: string) {
   revalidatePath("/")
   if (userId) {
     revalidatePath(`/profile/${userId}`)
   }
 }
-

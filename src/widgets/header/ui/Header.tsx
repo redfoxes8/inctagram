@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { LanguageSwitcher } from "@/features/language-switcher"
 import { Container } from "@/shared/ui/Container"
 import { FlexWrapper } from "@/shared/ui/FlexWrapper"
@@ -13,9 +14,20 @@ import { usePathname, useRouter } from "next/navigation"
 
 export const Header = () => {
   const { data: user, isLoading } = useMeQuery()
+  const [showSkeleton, setShowSkeleton] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
   const isPrivacyPolicyPage = pathname === PAGES.PRIVACY_POLICY
+
+  useEffect(() => {
+    if (!isLoading) return
+
+    const timer = setTimeout(() => setShowSkeleton(true), 300)
+    return () => {
+      clearTimeout(timer)
+      setShowSkeleton(false)
+    }
+  }, [isLoading])
 
   return (
     <header className={s.header}>
@@ -24,6 +36,13 @@ export const Header = () => {
           <Logo />
           <div className={s.controls}>
             <LanguageSwitcher />
+
+            {showSkeleton && !isPrivacyPolicyPage && (
+              <div className={s.btn_group}>
+                <div className={s.btnSkeleton} />
+                <div className={s.btnSkeleton} />
+              </div>
+            )}
 
             {!isLoading && !user && !isPrivacyPolicyPage && (
               <div className={s.btn_group}>
