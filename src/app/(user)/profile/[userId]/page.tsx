@@ -9,6 +9,7 @@ type Props = {
   params: Promise<{ userId: string }>
   searchParams: Promise<{ postId?: string }>
 }
+export const dynamic = "force-dynamic"
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { userId } = await params

@@ -1,6 +1,7 @@
 import { PostItem, UsersCountResponse } from "@/entities/post/model/post.types"
 import { MainScreen } from "@/screens/main-page"
 import { serverClient } from "@/shared/api/client.server"
+export const dynamic = "force-dynamic"
 
 export const revalidate = 60
 
