@@ -12,12 +12,6 @@ pipeline {
         DEPLOYMENT_NAME = "inctagram-deployment"
         IMAGE_NAME = "${env.BUILD_ID}_${env.ENV_TYPE}_${env.GIT_COMMIT}"
         DOCKER_BUILD_NAME = "${env.REGISTRY_HOSTNAME}/${env.PROJECT}:${env.IMAGE_NAME}"
-
-         API_BASE_URL =  'https://main-gateway-service.nymbi.org'
-        NEXT_PUBLIC_BASE_URL =  'https://main-gateway-service.nymbi.org'
-        NEXT_PUBLIC_RECAPTCHA_SITE_KEY = '6LdmQs0sAAAAAFK-o8fm8A3o4N_RGLgS505TqxEfy'
-
-        
     }
 
     stages {
@@ -31,8 +25,7 @@ pipeline {
             steps {
                 echo "Build image started..."
                 script {
-                        def dockerBuildArgs = "--build-arg API_BASE_URL=${env.API_BASE_URL} --build-arg NEXT_PUBLIC_BASE_URL=${env.NEXT_PUBLIC_BASE_URL} --build-arg NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} --build-arg NODE_TLS_REJECT_UNAUTHORIZED=0 ."
-            app = docker.build("${env.DOCKER_BUILD_NAME}", dockerBuildArgs)
+                    app = docker.build("${env.DOCKER_BUILD_NAME}", dockerBuildArgs)
                 }
                 echo "Build image finished..."
             }
