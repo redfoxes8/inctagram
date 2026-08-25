@@ -30,10 +30,8 @@ pipeline {
             steps {
                 echo "Build image started..."
                     script {
-                        app = docker.build("${env.DOCKER_BUILD_NAME}"
-                        
-                       "--build-arg API_BASE_URL=${env.API_BASE_URL} --build-arg NEXT_PUBLIC_BASE_URL=${env.NEXT_PUBLIC_BASE_URL} --build-arg NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} --build-arg NODE_TLS_REJECT_UNAUTHORIZED=0 ."
-            )
+                def dockerBuildArgs = "--build-arg API_BASE_URL=${env.API_BASE_URL} --build-arg NEXT_PUBLIC_BASE_URL=${env.NEXT_PUBLIC_BASE_URL} --build-arg NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} --build-arg NODE_TLS_REJECT_UNAUTHORIZED=0 ."
+                    app = docker.build("${env.DOCKER_BUILD_NAME}", dockerBuildArgs)
         }
         echo "Build image finished..."
     }
