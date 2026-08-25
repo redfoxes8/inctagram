@@ -13,7 +13,7 @@ pipeline {
         IMAGE_NAME = "${env.BUILD_ID}_${env.ENV_TYPE}_${env.GIT_COMMIT}"
         DOCKER_BUILD_NAME = "${env.REGISTRY_HOSTNAME}/${env.PROJECT}:${env.IMAGE_NAME}"
 
-         API_BASE_URL = 'http://main-gateway-service.nymbi.svc.cluster.local:4283' 
+         API_BASE_URL =  'https://main-gateway-service.nymbi.org'
         NEXT_PUBLIC_BASE_URL =  'https://main-gateway-service.nymbi.org'
         NEXT_PUBLIC_RECAPTCHA_SITE_KEY = '6LdmQs0sAAAAAFK-o8fm8A3o4N_RGLgS505TqxEfy'
 
