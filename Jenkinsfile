@@ -26,17 +26,18 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Build docker image') {
+        
+       stage('Build docker image') {
             steps {
                 echo "Build image started..."
-                    script {
-                def dockerBuildArgs = "--build-arg API_BASE_URL=${env.API_BASE_URL} --build-arg NEXT_PUBLIC_BASE_URL=${env.NEXT_PUBLIC_BASE_URL} --build-arg NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} --build-arg NODE_TLS_REJECT_UNAUTHORIZED=0 ."
+                script {
+                    def dockerBuildArgs = "--build-arg API_BASE_URL=${env.API_BASE_URL} --build-arg NEXT_PUBLIC_BASE_URL=${env.NEXT_PUBLIC_BASE_URL} --build-arg NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} --build-arg NODE_TLS_REJECT_UNAUTHORIZED=0 ."
                     app = docker.build("${env.DOCKER_BUILD_NAME}", dockerBuildArgs)
+                }
+                echo "Build image finished..."
+            }
         }
-        echo "Build image finished..."
-    }
-}
-        }
+        
         stage('Push docker image') {
              steps {
                  echo "Push image started..."
