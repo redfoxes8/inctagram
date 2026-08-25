@@ -25,7 +25,7 @@ pipeline {
             steps {
                 echo "Build image started..."
                 script {
-                    app = docker.build("${env.DOCKER_BUILD_NAME}", dockerBuildArgs)
+                    app = docker.build("${env.DOCKER_BUILD_NAME}")
                 }
                 echo "Build image finished..."
             }
