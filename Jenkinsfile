@@ -20,15 +20,17 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Build docker image') {
+
+       stage('Build docker image') {
             steps {
                 echo "Build image started..."
-                    script {
-                        app = docker.build("${env.DOCKER_BUILD_NAME}")
-                    }
+                script {
+                    app = docker.build("${env.DOCKER_BUILD_NAME}")
+                }
                 echo "Build image finished..."
             }
         }
+        
         stage('Push docker image') {
              steps {
                  echo "Push image started..."
