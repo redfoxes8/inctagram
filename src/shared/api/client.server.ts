@@ -2,7 +2,11 @@ import createClient, { Middleware } from "openapi-fetch"
 import { paths } from "@/shared/api/schema"
 import { cookies } from "next/headers"
 
-const baseUrl = process.env.API_BASE_URL || "https://nymbi.org"
+const baseUrl = process.env.API_BASE_URL
+
+if (!baseUrl) {
+  throw new Error("API_BASE_URL is not configured")
+}
 
 export const serverClient = createClient<paths>({
   baseUrl,
