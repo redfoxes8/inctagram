@@ -174,6 +174,103 @@
   bottom: 0;
 }
 
+.payments {
+  padding-top: 24px;
+}
+
+.paymentsTableScroll {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.paymentsTable {
+  width: 100%;
+  min-width: 860px;
+  border-right: 1px solid var(--dark-500);
+  border-left: 1px solid var(--dark-500);
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.paymentsTable thead tr {
+  background: var(--dark-500);
+}
+
+.paymentsTable th,
+.paymentsTable td {
+  height: 48px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--dark-500);
+  color: var(--light-100);
+  font-size: 14px;
+  line-height: 24px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.paymentsTable th {
+  height: 48px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.paymentsTable td {
+  font-weight: 400;
+}
+
+.paymentsTable th:nth-child(1),
+.paymentsTable td:nth-child(1) {
+  width: 19%;
+}
+
+.paymentsTable th:nth-child(2),
+.paymentsTable td:nth-child(2) {
+  width: 25%;
+}
+
+.paymentsTable th:nth-child(3),
+.paymentsTable td:nth-child(3) {
+  width: 11%;
+}
+
+.paymentsTable th:nth-child(4),
+.paymentsTable td:nth-child(4) {
+  width: 23%;
+}
+
+.paymentsTable th:nth-child(5),
+.paymentsTable td:nth-child(5) {
+  width: 22%;
+}
+
+.paymentsStateCell {
+  color: var(--light-900);
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+}
+
+.paymentsSkeleton {
+  display: block;
+  width: min(180px, 100%);
+  height: 16px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--dark-500), var(--dark-300), var(--dark-500));
+  background-size: 200% 100%;
+  animation: paymentsSkeleton 1.2s ease-in-out infinite;
+}
+
+@keyframes paymentsSkeleton {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
 @media (width <= 1024px) {
   .form {
     grid-template-columns: 1fr;
@@ -198,6 +295,20 @@
 @media (width <= 768px) {
   .page {
     padding: 24px 0 40px;
+  }
+
+  .tabs {
+    --settings-tab-width: 220px;
+  }
+
+  .payments {
+    padding-top: 16px;
+  }
+
+  .paymentsTable th,
+  .paymentsTable td {
+    padding-right: 16px;
+    padding-left: 16px;
   }
 
   .locationFields {
