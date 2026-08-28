@@ -9,6 +9,7 @@ import { PAGES } from "@/shared/config/pages.config"
 import { Tabs } from "@/shared/ui"
 
 import s from "./ProfileSettings.module.css"
+import { AccountManagement } from "./account-management"
 
 const SETTINGS_TABS: Array<{ label: string; value: ProfileSettingsTab }> = [
   { label: "General information", value: "info" },
@@ -41,7 +42,10 @@ export const ProfileSettings = () => {
         <div className={s.divider} />
 
         {activeTab === "info" && <GeneralInformationForm />}
+
         {activeTab === "payments" && <MyPayments />}
+
+        {activeTab === "subscriptions" && <AccountManagement />}
       </div>
     </section>
   )

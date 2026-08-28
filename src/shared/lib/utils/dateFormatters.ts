@@ -23,3 +23,11 @@ export const formatPostDate = (dateString: string) => {
     return "Invalid date"
   }
 }
+
+export const formatDate = (value: string) => {
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(new Date(value))
+}
