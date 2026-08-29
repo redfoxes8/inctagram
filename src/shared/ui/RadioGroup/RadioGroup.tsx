@@ -17,7 +17,7 @@ export type RadioGroupProps = {
   onChange?: (value: string) => void
   options: Option[]
   value?: string
-} & Omit<RadioGroupRootProps, "onValueChange" | "value">
+} & Omit<RadioGroupRootProps, "onValueChange" | "value" | "onChange">
 
 // НЕ УДАЛЯТЬ КОММЕНТ ПЕРЕД forwardRef - без него ломается tree shaking
 function RadioGroupComponentInner(

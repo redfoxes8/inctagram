@@ -94,6 +94,7 @@ export function LoginForm() {
       <div className={s.input_group}>
         <Input
           label="Email"
+          value={"redfoxes333@gmail.com"}
           placeholder="Epam@epam.com"
           className={s.input_conf}
           error={errors.usernameOrEmail?.message}
@@ -108,6 +109,7 @@ export function LoginForm() {
 
         <div className={s.password_container}>
           <Input
+            value={"Rf123456!"}
             label="Password"
             type={showPassword ? "text" : "password"}
             placeholder="************"
