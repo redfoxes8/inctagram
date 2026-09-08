@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation"
 
 import { GeneralInformationForm } from "@/features/profile-settings/ui/GeneralInformationForm"
+import { MyPayments } from "@/features/profile-settings/ui/MyPayments"
 import type { ProfileSettingsTab } from "@/features/profile-settings/types/type"
 import { PAGES } from "@/shared/config/pages.config"
 import { Tabs } from "@/shared/ui"
@@ -42,6 +43,7 @@ export const ProfileSettings = () => {
 
         {activeTab === "info" && <GeneralInformationForm />}
         {activeTab === "subscriptions" && <AccountManagement />}
+        {activeTab === "payments" && <MyPayments />}
       </div>
     </section>
   )

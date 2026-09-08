@@ -5,7 +5,7 @@
 
 .account_type {
   margin-top: 6px;
-  margin-bottom: 24px; /* Отступ до следующего заголовка */
+  margin-bottom: 24px;
   display: flex;
   flex-direction: column;
   max-width: 972px;
@@ -15,11 +15,10 @@
   padding: 12px 18px;
 }
 
-/* Стили для блока с платежками */
 .payment_methods {
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* Сдвигает кнопки вправо по макету */
+  justify-content: flex-end;
   gap: 16px;
   max-width: 972px;
   margin-top: 12px;
@@ -35,10 +34,47 @@
 }
 
 .payment_btn:hover {
-  transform: scale(1.02); /* Легкий интерактив при наведении */
+  transform: scale(1.02);
 }
 
 .or_text {
   color: var(--dark-100);
   font-size: 14px;
+}
+
+.modal_content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.custom_modal_content {
+  text-align: left !important;
+  display: flex !important;
+  flex-direction: column;
+}
+
+.custom_modal_content p,
+.modal_text {
+  text-align: left !important;
+  max-width: 330px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.custom_footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 16px 24px 24px;
+}
+
+.custom_footer label,
+.custom_footer span {
+  text-align: left !important;
+}
+
+.confirm_btn {
+  min-width: 70px;
 }

@@ -603,6 +603,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/payments/products": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get available payment products
+         * @description Returns active purchasable Business subscription products. Use productId when creating Checkout.
+         */
+        get: operations["getAvailableProducts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/payments/history": {
         parameters: {
             query?: never;
@@ -610,7 +630,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get payment history */
+        /**
+         * Get payment history
+         * @description Returns paginated payment history with newest-first ordering.
+         */
         get: operations["getPaymentHistory"];
         put?: never;
         post?: never;
@@ -627,6 +650,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * Get paid subscriptions
+         * @description Returns the current subscription and ordered queued paid periods.
+         */
         get: operations["getSubscriptions"];
         put?: never;
         post?: never;
@@ -645,7 +672,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Create checkout session */
+        /**
+         * Create checkout session
+         * @description Creates or idempotently retrieves a provider-hosted checkout for an active product.
+         */
         post: operations["createCheckoutSession"];
         delete?: never;
         options?: never;
@@ -682,7 +712,31 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * Receive Stripe webhook
+         * @description Accepts a Stripe webhook using the exact raw request bytes for signature verification.
+         */
         post: operations["stripeWebhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/payments/checkout/{checkoutSessionId}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get checkout session status
+         * @description Returns the local state of a verified webhook processing for a checkout session. This endpoint returns the payment service-local status and does not contact the provider API.
+         */
+        get: operations["getCheckoutSessionStatus"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1124,17 +1178,274 @@ export interface components {
         GetFileStatusBatchResponseDto: {
             filesStatus: Record<string, never>[];
         };
-        GetPaymentHistoryResponseDto: Record<string, never>;
-        CreateCheckoutSessionDto: {
-            /** Format: uuid */
+        AvailablePaymentProductResponseDto: {
+            /**
+             * Format: uuid
+             * @description Product identifier accepted by POST /api/v1/payments/checkout.
+             * @example 2b8d6f9a-8f87-4c8b-a3b6-c5de92ca6f14
+             */
             productId: string;
-            /** @enum {string} */
-            provider: CreateCheckoutSessionDtoProvider;
+            /** @example Business - 1 Week */
+            name: string;
+            /**
+             * @description Price in integer minor currency units; format it for display on the client.
+             * @example 700
+             */
+            amountMinor: number;
+            /**
+             * @description ISO 4217 currency code.
+             * @example USD
+             */
+            currency: string;
+            /**
+             * @example WEEK
+             * @enum {string}
+             */
+            billingInterval: AvailablePaymentProductResponseDtoBillingInterval;
+            /** @example 1 */
+            billingIntervalCount: number;
         };
-        CreateCheckoutSessionResponseDto: Record<string, never>;
+        GetAvailableProductsResponseDto: {
+            items: components["schemas"]["AvailablePaymentProductResponseDto"][];
+        };
+        PaymentApiErrorExtensionDto: {
+            /** @example reason */
+            field: string;
+            /** @example PROVIDER_REJECTED */
+            message: string;
+        };
+        PaymentApiErrorResponseDto: {
+            /**
+             * @description HTTP-compatible domain error code.
+             * @example 400
+             */
+            code: number;
+            /** @example Payment provider rejected the request */
+            message: string;
+            extensions: components["schemas"]["PaymentApiErrorExtensionDto"][];
+            errorsMessages?: components["schemas"]["PaymentApiErrorExtensionDto"][];
+        };
+        PaymentHistoryItemResponseDto: {
+            /**
+             * Format: uuid
+             * @example 6e660aba-669b-4d55-b43b-6ccbfba6e1dd
+             */
+            transactionId: string;
+            /**
+             * Format: date-time
+             * @example 2026-08-26T14:00:00.000Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example null
+             */
+            paidAt: string | null;
+            /**
+             * @description Amount in integer minor currency units.
+             * @example 800
+             */
+            amountMinor: number;
+            /** @example USD */
+            currency: string;
+            /**
+             * Format: uuid
+             * @example 2b8d6f9a-8f87-4c8b-a3b6-c5de92ca6f14
+             */
+            productId: string;
+            /** @example Business — 1 Week */
+            productName: string;
+            /**
+             * @example WEEK
+             * @enum {string}
+             */
+            billingInterval: AvailablePaymentProductResponseDtoBillingInterval;
+            /** @example 1 */
+            billingIntervalCount: number;
+            /**
+             * @example STRIPE
+             * @enum {string}
+             */
+            provider: PaymentHistoryItemResponseDtoProvider;
+            /**
+             * @example PURCHASE
+             * @enum {string}
+             */
+            kind: PaymentHistoryItemResponseDtoKind;
+            /**
+             * @example SUCCEEDED
+             * @enum {string}
+             */
+            status: PaymentHistoryItemResponseDtoStatus;
+            /**
+             * @example INITIAL_SUBSCRIPTION
+             * @enum {string|null}
+             */
+            checkoutPurpose: PaymentHistoryItemResponseDtoCheckoutPurpose;
+            /**
+             * Format: uuid
+             * @description Paid subscription period linked to this transaction.
+             * @example 6e7570ad-7888-4400-80b1-0766aa424161
+             */
+            subscriptionId: string | null;
+            /**
+             * Format: date-time
+             * @description Exclusive end boundary of the paid subscription period linked to this transaction.
+             * @example 2026-09-03T12:26:54.000Z
+             */
+            subscriptionEndsAt: string | null;
+        };
+        GetPaymentHistoryResponseDto: {
+            items: components["schemas"]["PaymentHistoryItemResponseDto"][];
+            /** @example 1 */
+            totalCount: number;
+            /** @example 1 */
+            page: number;
+            /** @example 10 */
+            pageSize: number;
+            /** @example 1 */
+            pagesCount: number;
+        };
+        SubscriptionProductResponseDto: {
+            /**
+             * Format: uuid
+             * @example 2b8d6f9a-8f87-4c8b-a3b6-c5de92ca6f14
+             */
+            id: string;
+            /** @example BUSINESS_WEEK_1_USD_V1 */
+            code: string;
+            /** @example Business — 1 Week */
+            name: string;
+            /**
+             * @example WEEK
+             * @enum {string}
+             */
+            billingInterval: AvailablePaymentProductResponseDtoBillingInterval;
+            /** @example 1 */
+            billingIntervalCount: number;
+        };
+        SubscriptionResponseDto: {
+            /**
+             * Format: uuid
+             * @example 59d3a914-1707-42cc-952b-bc46e41d2ea8
+             */
+            id: string;
+            /** @example 1 */
+            sequence: number;
+            product: components["schemas"]["SubscriptionProductResponseDto"];
+            /**
+             * Format: date-time
+             * @example 2026-08-26T14:00:00.000Z
+             */
+            startsAt: string;
+            /**
+             * Format: date-time
+             * @example 2026-09-02T14:00:00.000Z
+             */
+            endsAt: string;
+            /**
+             * Format: date-time
+             * @example null
+             */
+            nextBillingAt: string | null;
+            /** @example true */
+            autoRenew: boolean;
+            /**
+             * @example STRIPE
+             * @enum {string}
+             */
+            provider: PaymentHistoryItemResponseDtoProvider;
+            /**
+             * @example ACTIVE
+             * @enum {string}
+             */
+            status: SubscriptionResponseDtoStatus;
+        };
+        GetSubscriptionsResponseDto: {
+            /** @example null */
+            current: components["schemas"]["SubscriptionResponseDto"] | null;
+            queued: components["schemas"]["SubscriptionResponseDto"][];
+        };
+        CreateCheckoutSessionDto: {
+            /**
+             * Format: uuid
+             * @description Active local payment product identifier.
+             * @example 2b8d6f9a-8f87-4c8b-a3b6-c5de92ca6f14
+             */
+            productId: string;
+            /**
+             * @description STRIPE is currently operational. PAYPAL is reserved and currently returns PROVIDER_NOT_SUPPORTED.
+             * @example STRIPE
+             * @enum {string}
+             */
+            provider: PaymentHistoryItemResponseDtoProvider;
+            /**
+             * @description Required consent to automatic renewal for the initial subscription.
+             * @example true
+             * @enum {boolean}
+             */
+            autoRenewConsent: true;
+        };
+        CreateCheckoutSessionResponseDto: {
+            /**
+             * Format: uuid
+             * @example 81f33ed7-621e-45f8-8d84-453591f246a8
+             */
+            checkoutSessionId: string;
+            /**
+             * Format: uri
+             * @description Provider-hosted checkout URL.
+             * @example https://checkout.stripe.com/c/pay/example
+             */
+            checkoutUrl: string;
+            /**
+             * Format: date-time
+             * @example 2026-08-26T15:30:00.000Z
+             */
+            expiresAt: string | null;
+        };
         ToggleAutoRenewDto: {
-            /** @description Enable or disable auto renewal */
+            /**
+             * @description Enable or disable auto renewal
+             * @example true
+             */
             enabled: boolean;
+        };
+        ToggleAutoRenewResponseDto: {
+            /** @example true */
+            success: boolean;
+            /** @example true */
+            autoRenew: boolean;
+            /**
+             * Format: date-time
+             * @example 2026-09-02T14:00:00.000Z
+             */
+            nextBillingAt: string | null;
+            /** @example active */
+            providerStatus: string | null;
+        };
+        ProcessWebhookEventResponseDto: {
+            /** @example true */
+            accepted: boolean;
+            /** @example false */
+            duplicate: boolean;
+            /**
+             * @example PROCESSED
+             * @enum {string}
+             */
+            status: ProcessWebhookEventResponseDtoStatus;
+        };
+        GetCheckoutSessionStatusResponseDto: {
+            /**
+             * @example COMPLETED
+             * @enum {string}
+             */
+            status: GetCheckoutSessionStatusResponseDtoStatus;
+            /**
+             * Format: uuid
+             * @example 59d3a914-1707-42cc-952b-bc46e41d2ea8
+             */
+            subscriptionId: string | null;
         };
     };
     responses: never;
@@ -1171,10 +1482,21 @@ export type SchemaPostViewType = components['schemas']['PostViewType'];
 export type SchemaUpdatePostDto = components['schemas']['UpdatePostDto'];
 export type SchemaGetFileStatusBatchRequestDto = components['schemas']['GetFileStatusBatchRequestDto'];
 export type SchemaGetFileStatusBatchResponseDto = components['schemas']['GetFileStatusBatchResponseDto'];
+export type SchemaAvailablePaymentProductResponseDto = components['schemas']['AvailablePaymentProductResponseDto'];
+export type SchemaGetAvailableProductsResponseDto = components['schemas']['GetAvailableProductsResponseDto'];
+export type SchemaPaymentApiErrorExtensionDto = components['schemas']['PaymentApiErrorExtensionDto'];
+export type SchemaPaymentApiErrorResponseDto = components['schemas']['PaymentApiErrorResponseDto'];
+export type SchemaPaymentHistoryItemResponseDto = components['schemas']['PaymentHistoryItemResponseDto'];
 export type SchemaGetPaymentHistoryResponseDto = components['schemas']['GetPaymentHistoryResponseDto'];
+export type SchemaSubscriptionProductResponseDto = components['schemas']['SubscriptionProductResponseDto'];
+export type SchemaSubscriptionResponseDto = components['schemas']['SubscriptionResponseDto'];
+export type SchemaGetSubscriptionsResponseDto = components['schemas']['GetSubscriptionsResponseDto'];
 export type SchemaCreateCheckoutSessionDto = components['schemas']['CreateCheckoutSessionDto'];
 export type SchemaCreateCheckoutSessionResponseDto = components['schemas']['CreateCheckoutSessionResponseDto'];
 export type SchemaToggleAutoRenewDto = components['schemas']['ToggleAutoRenewDto'];
+export type SchemaToggleAutoRenewResponseDto = components['schemas']['ToggleAutoRenewResponseDto'];
+export type SchemaProcessWebhookEventResponseDto = components['schemas']['ProcessWebhookEventResponseDto'];
+export type SchemaGetCheckoutSessionStatusResponseDto = components['schemas']['GetCheckoutSessionStatusResponseDto'];
 export type $defs = Record<string, never>;
 export interface operations {
     testLog: {
@@ -2758,7 +3080,7 @@ export interface operations {
             };
         };
     };
-    getPaymentHistory: {
+    getAvailableProducts: {
         parameters: {
             query?: never;
             header?: never;
@@ -2767,12 +3089,119 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
+            /** @description Available products in deterministic billing-period and price order. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetAvailableProductsResponseDto"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment service returned an invalid or internal response. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment service is unavailable. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment service request timed out. */
+            504: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+        };
+    };
+    getPaymentHistory: {
+        parameters: {
+            query?: {
+                /** @description One-based payment history page number. */
+                pageNumber?: number;
+                /** @description Number of payment records per page. */
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated payment history */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": components["schemas"]["GetPaymentHistoryResponseDto"];
+                };
+            };
+            /** @description Pagination query validation failed. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment service returned an invalid or internal response. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment service is unavailable. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment service request timed out. */
+            504: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
                 };
             };
         };
@@ -2786,12 +3215,49 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
+            /** @description Current and queued subscriptions. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": components["schemas"]["GetSubscriptionsResponseDto"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment service returned an invalid or internal response. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment service is unavailable. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment service request timed out. */
+            504: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
                 };
             };
         };
@@ -2799,7 +3265,10 @@ export interface operations {
     createCheckoutSession: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Client-generated UUID v4. Reuse it only when retrying the same logical checkout request. */
+                "Idempotency-Key": string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -2809,12 +3278,76 @@ export interface operations {
             };
         };
         responses: {
+            /** @description Checkout session created or recovered. */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": components["schemas"]["CreateCheckoutSessionResponseDto"];
+                };
+            };
+            /** @description Request validation failed, provider is unsupported, or provider rejected the request (reason PROVIDER_REJECTED). */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Active product or provider billing configuration was not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Idempotency or paid-subscription state conflicts with the request. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment provider configuration or response is invalid. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment provider or payment service is unavailable. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment provider or payment service timed out. */
+            504: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
                 };
             };
         };
@@ -2824,6 +3357,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                /** @description Subscription identifier. */
                 subscriptionId: string;
             };
             cookie?: never;
@@ -2839,51 +3373,71 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ToggleAutoRenewResponseDto"];
+                };
             };
-            /** @description Unauthorized */
+            /** @description Request or subscription identifier validation failed. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized. */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    /**
-                     * @example {
-                     *       "statusCode": 401,
-                     *       "message": "Unauthorized"
-                     *     }
-                     */
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
                 };
             };
-            /** @description Subscription not found */
+            /** @description Subscription was not found. */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    /**
-                     * @example {
-                     *       "statusCode": 404,
-                     *       "message": "Not Found"
-                     *     }
-                     */
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
                 };
             };
-            /** @description Payment service unavailable */
+            /** @description Subscription state cannot be toggled or requires reconciliation. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment provider or payment service returned an internal error. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment provider state or payment service is unavailable. */
             503: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    /**
-                     * @example {
-                     *       "statusCode": 503,
-                     *       "message": "Service unavailable"
-                     *     }
-                     */
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment provider or payment service timed out. */
+            504: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
                 };
             };
         };
@@ -2891,17 +3445,134 @@ export interface operations {
     stripeWebhook: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Stripe webhook signature for the exact raw request body. */
+                "Stripe-Signature": string;
+            };
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        /** @description Stripe JSON webhook payload. Signature verification uses its exact raw bytes. */
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
         responses: {
+            /** @description Verified event accepted, processed, ignored, or recognized as a duplicate. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ProcessWebhookEventResponseDto"];
+                };
+            };
+            /** @description Signature/raw body is missing or webhook signature is invalid. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Webhook processing returned a sanitized internal error. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Webhook is already processing or requires a retryable later delivery. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+        };
+    };
+    getCheckoutSessionStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Local checkout session identifier. */
+                checkoutSessionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Checkout session status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetCheckoutSessionStatusResponseDto"];
+                };
+            };
+            /** @description Checkout session identifier is not a UUID v4. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Checkout session was not found or does not belong to the user. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment service returned an invalid or internal response. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment service is unavailable. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
+            };
+            /** @description Payment service request timed out. */
+            504: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentApiErrorResponseDto"];
+                };
             };
         };
     };
@@ -2922,7 +3593,45 @@ export enum GeneratePostImageUploadUrlDtoFileExtension {
     _png = ".png",
     _webp = ".webp"
 }
-export enum CreateCheckoutSessionDtoProvider {
+export enum AvailablePaymentProductResponseDtoBillingInterval {
+    WEEK = "WEEK",
+    MONTH = "MONTH"
+}
+export enum PaymentHistoryItemResponseDtoProvider {
     STRIPE = "STRIPE",
     PAYPAL = "PAYPAL"
+}
+export enum PaymentHistoryItemResponseDtoKind {
+    PURCHASE = "PURCHASE",
+    RENEWAL = "RENEWAL"
+}
+export enum PaymentHistoryItemResponseDtoStatus {
+    PENDING = "PENDING",
+    PROCESSING = "PROCESSING",
+    SUCCEEDED = "SUCCEEDED",
+    FAILED = "FAILED",
+    REFUNDED = "REFUNDED",
+    PARTIALLY_REFUNDED = "PARTIALLY_REFUNDED"
+}
+export enum PaymentHistoryItemResponseDtoCheckoutPurpose {
+    INITIAL_SUBSCRIPTION = "INITIAL_SUBSCRIPTION",
+    ADDITIONAL_SUBSCRIPTION = "ADDITIONAL_SUBSCRIPTION"
+}
+export enum SubscriptionResponseDtoStatus {
+    ACTIVE = "ACTIVE",
+    QUEUED = "QUEUED",
+    EXPIRED = "EXPIRED",
+    CANCELED = "CANCELED"
+}
+export enum ProcessWebhookEventResponseDtoStatus {
+    RECEIVED = "RECEIVED",
+    PROCESSED = "PROCESSED",
+    IGNORED = "IGNORED",
+    FAILED = "FAILED"
+}
+export enum GetCheckoutSessionStatusResponseDtoStatus {
+    CREATED = "CREATED",
+    COMPLETED = "COMPLETED",
+    EXPIRED = "EXPIRED",
+    FAILED = "FAILED"
 }
