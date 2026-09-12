@@ -14,8 +14,8 @@ export function useAuthRedirect(user: MeResponse | null | undefined, isLoading: 
     if (isLoading) return
 
     if (pathname === "/paymentt-success") {
-      const currentParams = searchParams.toString()
-      const appendParams = currentParams ? `&${currentParams}` : ""
+      const sessionId = searchParams.get("session_id")
+      const appendParams = sessionId ? `&session_id=${sessionId}` : ""
 
       router.replace(`${PAGES.SETTINGS("subscriptions")}${appendParams}`)
       return

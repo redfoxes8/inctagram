@@ -40,6 +40,63 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get notification history
+         * @description Returns the current UTC calendar month in newest-first opaque cursor order.
+         */
+        get: operations["getNotifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/unseen-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get unseen notification count */
+        get: operations["getUnseenNotificationCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/seen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Mark notifications as seen
+         * @description Marks all currently unseen notifications through the Notification service server time.
+         */
+        patch: operations["markNotificationsSeen"];
+        trace?: never;
+    };
     "/api/v1/auth/registration": {
         parameters: {
             query?: never;
@@ -747,6 +804,45 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        NotificationItemResponseDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            type: NotificationItemResponseDtoType;
+            /** Format: uuid */
+            subscriptionId?: string | null;
+            providerInvoiceId?: string | null;
+            /** Format: date-time */
+            effectiveAt: string;
+            /** Format: date-time */
+            subscriptionEndsAt?: string | null;
+            reasonCode?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            seenAt?: string | null;
+        };
+        GetNotificationsResponseDto: {
+            items: components["schemas"]["NotificationItemResponseDto"][];
+            /** @description Opaque cursor for the next page. */
+            nextCursor?: string;
+        };
+        NotificationApiErrorResponseDto: {
+            /** @example 400 */
+            statusCode: number;
+            /** @example Notification cursor is invalid */
+            message: string;
+        };
+        UnseenNotificationCountResponseDto: {
+            /** @example 0 */
+            unseenCount: number;
+        };
+        MarkNotificationsSeenResponseDto: {
+            /** @example 0 */
+            unseenCount: number;
+            /** Format: date-time */
+            seenThrough: string;
+        };
         RegisterUserDto: {
             /**
              * @description Unique username
@@ -1454,6 +1550,11 @@ export interface components {
     headers: never;
     pathItems: never;
 }
+export type SchemaNotificationItemResponseDto = components['schemas']['NotificationItemResponseDto'];
+export type SchemaGetNotificationsResponseDto = components['schemas']['GetNotificationsResponseDto'];
+export type SchemaNotificationApiErrorResponseDto = components['schemas']['NotificationApiErrorResponseDto'];
+export type SchemaUnseenNotificationCountResponseDto = components['schemas']['UnseenNotificationCountResponseDto'];
+export type SchemaMarkNotificationsSeenResponseDto = components['schemas']['MarkNotificationsSeenResponseDto'];
 export type SchemaRegisterUserDto = components['schemas']['RegisterUserDto'];
 export type SchemaEmailResendDto = components['schemas']['EmailResendDto'];
 export type SchemaLoginDto = components['schemas']['LoginDTO'];
@@ -1533,6 +1634,178 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    getNotifications: {
+        parameters: {
+            query?: {
+                /** @description Opaque cursor returned by a preceding notification history response. */
+                cursor?: string;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetNotificationsResponseDto"];
+                };
+            };
+            /** @description Pagination parameters or cursor are invalid. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationApiErrorResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationApiErrorResponseDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationApiErrorResponseDto"];
+                };
+            };
+            /** @description Notification service is unavailable. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationApiErrorResponseDto"];
+                };
+            };
+            /** @description Notification service request timed out. */
+            504: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationApiErrorResponseDto"];
+                };
+            };
+        };
+    };
+    getUnseenNotificationCount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnseenNotificationCountResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationApiErrorResponseDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationApiErrorResponseDto"];
+                };
+            };
+            /** @description Notification service is unavailable. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationApiErrorResponseDto"];
+                };
+            };
+            /** @description Notification service request timed out. */
+            504: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationApiErrorResponseDto"];
+                };
+            };
+        };
+    };
+    markNotificationsSeen: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarkNotificationsSeenResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationApiErrorResponseDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationApiErrorResponseDto"];
+                };
+            };
+            /** @description Notification service is unavailable. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationApiErrorResponseDto"];
+                };
+            };
+            /** @description Notification service request timed out. */
+            504: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationApiErrorResponseDto"];
+                };
             };
         };
     };
@@ -3576,6 +3849,15 @@ export interface operations {
             };
         };
     };
+}
+export enum NotificationItemResponseDtoType {
+    SUBSCRIPTION_ACTIVATED = "SUBSCRIPTION_ACTIVATED",
+    SUBSCRIPTION_EXTENDED = "SUBSCRIPTION_EXTENDED",
+    UPCOMING_PAYMENT = "UPCOMING_PAYMENT",
+    SUBSCRIPTION_EXPIRING = "SUBSCRIPTION_EXPIRING",
+    PAYMENT_FAILED = "PAYMENT_FAILED",
+    PAYMENT_RECOVERED = "PAYMENT_RECOVERED",
+    SUBSCRIPTION_CANCELLED = "SUBSCRIPTION_CANCELLED"
 }
 export enum UserMeResponseDtoAccountType {
     PERSONAL = "PERSONAL",

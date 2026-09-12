@@ -16,7 +16,7 @@ const serverAuthMiddleware: Middleware = {
   async onRequest({ request }) {
     try {
       const cookieStore = await cookies()
-      console.log(process.env.API_BASE_URL)
+
       const cookieString = cookieStore.toString()
 
       if (cookieString) {

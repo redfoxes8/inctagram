@@ -25,6 +25,15 @@ export type CheckoutSessionResponse =
 export type PaymentProviderType =
   paths["/api/v1/payments/checkout"]["post"]["requestBody"]["content"]["application/json"]["provider"]
 
+export type GetSubscriptionsResponse =
+  paths["/api/v1/payments/subscriptions"]["get"]["responses"]["200"]["content"]["application/json"]
+
+export type ToggleAutoRenewResponse =
+  paths["/api/v1/payments/subscriptions/{subscriptionId}/auto-renew"]["patch"]["responses"]["200"]["content"]["application/json"]
+
+export type CheckoutStatusResponse =
+  paths["/api/v1/payments/checkout/{checkoutSessionId}/status"]["get"]["responses"]["200"]["content"]["application/json"]
+
 export type CreateCheckoutArgs = {
   productId: string
   provider: PaymentProviderType
