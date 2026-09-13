@@ -1,16 +1,25 @@
 "use client"
 
 import { useEffect } from "react"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { AUTH_PAGES, PAGES, PROTECTED_PAGES } from "@/shared/config/pages.config"
 import { MeResponse } from "@/features/auth/types"
 
 export function useAuthRedirect(user: MeResponse | null | undefined, isLoading: boolean) {
   const router = useRouter()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     if (isLoading) return
+
+    if (pathname === "/paymentt-success") {
+      const sessionId = searchParams.get("session_id")
+      const appendParams = sessionId ? `&session_id=${sessionId}` : ""
+
+      router.replace(`${PAGES.SETTINGS("subscriptions")}${appendParams}`)
+      return
+    }
 
     const isProfilePage = pathname.startsWith("/profile")
     const isSettingsPage = pathname.startsWith("/settings")
@@ -24,7 +33,7 @@ export function useAuthRedirect(user: MeResponse | null | undefined, isLoading: 
         return
       }
 
-      if (pathname === "/settings") {
+      if (pathname === "/settings" && !searchParams.has("part")) {
         router.replace(PAGES.SETTINGS())
         return
       }
@@ -34,5 +43,5 @@ export function useAuthRedirect(user: MeResponse | null | undefined, isLoading: 
         return
       }
     }
-  }, [isLoading, user, pathname, router])
+  }, [isLoading, user, pathname, router, searchParams])
 }
