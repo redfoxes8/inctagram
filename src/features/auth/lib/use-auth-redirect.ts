@@ -14,7 +14,7 @@ export function useAuthRedirect(user: MeResponse | null | undefined, isLoading: 
     if (isLoading) return
 
     const isProfilePage = pathname.startsWith("/profile")
-    const isSettingsPage = pathname.startsWith("/settings")
+    const isSettingsPage = pathname === "/settings" || pathname.startsWith("/settings/")
     const isAuthPage = AUTH_PAGES.includes(pathname)
 
     const isProtectedPage = (PROTECTED_PAGES.includes(pathname) || isSettingsPage) && !isProfilePage

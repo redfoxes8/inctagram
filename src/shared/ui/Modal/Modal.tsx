@@ -80,7 +80,7 @@ export const Modal = ({
       document.body.style.overflow = originalOverflow
       window.removeEventListener("keydown", onKeyDown)
     }
-  }, [isOpen, onClose])
+  }, [isOpen, onClose, isCloseDisabled])
 
   if (!isOpen) return null
 
