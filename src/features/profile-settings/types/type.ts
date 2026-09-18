@@ -39,3 +39,5 @@ export type CreateCheckoutArgs = {
   provider: PaymentProviderType
   autoRenewConsent: boolean
 }
+
+export type QueuedSubscription = GetSubscriptionsResponse["queued"][number]
