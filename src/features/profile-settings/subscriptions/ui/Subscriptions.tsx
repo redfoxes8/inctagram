@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import clsx from "clsx"
@@ -27,7 +27,7 @@ import { AccountTypeSelector } from "./components/AccountTypeSelector"
 
 const PAYPAL_ENABLED = false
 
-export const Subscriptions = () => {
+const SubscriptionsContent = () => {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get("session_id")
 
@@ -159,5 +159,18 @@ export const Subscriptions = () => {
 
       <FeedbackModal feedback={feedback} onClose={clearFeedback} />
     </div>
+  )
+}
+export const Subscriptions = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className={s.container}>
+          <p>Loading...</p>
+        </div>
+      }
+    >
+      <SubscriptionsContent />
+    </Suspense>
   )
 }
