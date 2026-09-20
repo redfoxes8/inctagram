@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useCallback, useState } from "react"
+import { useEffect, useCallback, useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PAGES } from "@/shared/config/pages.config"
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [showFallback, setShowFallback] = useState(false)
@@ -32,5 +32,13 @@ export default function PaymentSuccessPage() {
         </button>
       )}
     </div>
+  )
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: 40, textAlign: "center" }}>Loading...</div>}>
+      <PaymentSuccessContent />
+    </Suspense>
   )
 }
