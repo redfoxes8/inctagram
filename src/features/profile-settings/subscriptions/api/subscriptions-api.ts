@@ -41,6 +41,11 @@ const getCheckoutErrorMessage = (error: unknown) => {
   if (message === "PROVIDER_NOT_SUPPORTED") {
     return "PayPal is not available yet. Please use Stripe."
   }
+
+  if (message === "checkout_not_active_session" || message?.toLowerCase().includes("no longer active")) {
+    return "Your previous checkout session has expired. Please start a new purchase."
+  }
+
   switch (status) {
     case 400:
       return "Payment provider rejected the request. Please try again."
@@ -81,6 +86,7 @@ export function usePaymentsProductsQuery() {
 
 export function useCreateCheckoutSessionMutation() {
   const idempotencyKeyRef = useRef<string | null>(null)
+
   const mutation = useMutation({
     mutationFn: async ({ productId, provider, autoRenewConsent }: CreateCheckoutArgs) => {
       if (!idempotencyKeyRef.current) {
@@ -112,7 +118,7 @@ export function useCreateCheckoutSessionMutation() {
       }
     },
     onError: () => {
-      // Оставляем ключ, чтобы повторный клик переиспользовал ту же сессию
+      idempotencyKeyRef.current = null
     },
   })
 
@@ -166,9 +172,13 @@ export function useCheckoutStatusQuery(sessionId: string | null) {
     queryKey: subscriptionsQueryKeys.checkoutStatus(sessionId),
     queryFn: async () => {
       if (!sessionId) throw new Error("Session ID is required")
-      const response = await client.GET("/api/v1/payments/checkout/{checkoutSessionId}/status", {
-        params: { path: { checkoutSessionId: sessionId } },
+
+      const response = await client.GET("/api/v1/payments/checkout/stripe/{providerCheckoutId}/status", {
+        params: {
+          path: { providerCheckoutId: sessionId },
+        },
       })
+
       if (response.error) throw response.error
       return response.data
     },

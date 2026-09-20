@@ -109,7 +109,7 @@
   margin-bottom: 24px;
   padding: 16px;
   background-color: var(--dark-500);
-  border: 1px solid var(--accent-500, #397df6);
+  border: 1px solid var(--accent-500);
   border-radius: 2px;
   color: var(--light-100);
   animation: pulse 2s infinite ease-in-out;

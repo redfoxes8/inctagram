@@ -7,7 +7,6 @@ import { GetCheckoutSessionStatusResponseDtoStatus } from "@/shared/api/schema"
 export const useCheckoutFeedback = (sessionStatus: CheckoutStatusResponse | undefined) => {
   const queryClient = useQueryClient()
 
-  // Это НЕ синхронизация со стейтом, а осознанный сброс.
   const [dismissed, setDismissed] = useState(false)
 
   const feedback = useMemo<FeedbackState>(() => {
@@ -30,28 +29,19 @@ export const useCheckoutFeedback = (sessionStatus: CheckoutStatusResponse | unde
   useEffect(() => {
     if (!sessionStatus) return
 
-    const clearSessionFromUrl = () => {
-      const url = new URL(window.location.href)
-      url.searchParams.delete("session_id")
-      window.history.replaceState({}, "", url.toString())
-    }
-
     if (sessionStatus.status === GetCheckoutSessionStatusResponseDtoStatus.COMPLETED) {
       queryClient.invalidateQueries({ queryKey: ["me"] })
       queryClient.invalidateQueries({ queryKey: subscriptionsQueryKeys.current() })
-      clearSessionFromUrl()
-      return
-    }
-
-    if (
-      sessionStatus.status === GetCheckoutSessionStatusResponseDtoStatus.FAILED ||
-      sessionStatus.status === GetCheckoutSessionStatusResponseDtoStatus.EXPIRED
-    ) {
-      clearSessionFromUrl()
     }
   }, [sessionStatus, queryClient])
 
-  const clearFeedback = () => setDismissed(true)
+  const clearFeedback = () => {
+    setDismissed(true)
+
+    const url = new URL(window.location.href)
+    url.searchParams.delete("session_id")
+    window.history.replaceState({}, "", url.toString())
+  }
 
   return { feedback, clearFeedback }
 }

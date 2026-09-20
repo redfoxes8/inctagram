@@ -4,9 +4,7 @@ import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import clsx from "clsx"
-
 import { useMeQuery } from "@/features/auth"
-
 import {
   useCurrentSubscriptionQuery,
   useToggleAutoRenewMutation,
@@ -14,20 +12,16 @@ import {
   useCheckoutStatusQuery,
 } from "../api/subscriptions-api"
 import { PaymentProviderType } from "../model/types"
-
 import { useSubscriptionsView } from "../model/hooks/use-subscriptions-view"
 import { useSubscriptionOptions } from "../model/hooks/use-subscription-options"
 import { useCheckoutFeedback } from "../model/hooks/use-checkout-feedback"
 import { useConfirmPurchase } from "../lib/use-confirm-purchase"
-
 import { SubscriptionList } from "./components/SubscriptionList"
 import { AutoRenewToggle } from "./components/AutoRenewToggle"
-
 import { SubscriptionPlanSelector } from "./components/SubscriptionPlanSelector"
 import { PaymentMethods } from "./components/PaymentMethods"
 import { CreatePaymentModal } from "./components/CreatePaymentModal"
 import { FeedbackModal } from "./components/FeedbackModal"
-
 import s from "./Subscriptions.module.css"
 import { AccountTypeSelector } from "./components/AccountTypeSelector"
 
@@ -51,14 +45,11 @@ export const Subscriptions = () => {
     isError: isUpdateError,
     error: updateError,
   } = useToggleAutoRenewMutation()
-
   const { confirmPurchase, isCreatingSession, resetIdempotencyKey } = useConfirmPurchase()
-
   const { data: sessionStatus, isLoading: isCheckingPaymentStatus } = useCheckoutStatusQuery(sessionId)
-
   const { currentSubscription, allSubscriptions, lastSubscription } = useSubscriptionsView(subData)
   const subscriptionOptions = useSubscriptionOptions(productsData)
-  const { feedback, setFeedback } = useCheckoutFeedback(sessionStatus)
+  const { feedback, clearFeedback } = useCheckoutFeedback(sessionStatus)
 
   const { watch, setValue } = useForm({
     defaultValues: { accountType: "personal", subscriptionType: "" },
@@ -166,7 +157,7 @@ export const Subscriptions = () => {
         onConfirm={handleConfirmPurchase}
       />
 
-      <FeedbackModal feedback={feedback} onClose={() => setFeedback(null)} />
+      <FeedbackModal feedback={feedback} onClose={clearFeedback} />
     </div>
   )
 }
