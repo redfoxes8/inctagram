@@ -23,7 +23,7 @@ const isSettingsTab = (value: string | null): value is ProfileSettingsTab => {
   return SETTINGS_TABS.some((tab) => tab.value === value)
 }
 
-const ProfileSettingsContent = () => {
+export const ProfileSettings = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const part = searchParams.get("part")
@@ -47,12 +47,5 @@ const ProfileSettingsContent = () => {
         {activeTab === "payments" && <MyPayments />}
       </div>
     </section>
-  )
-}
-export const ProfileSettings = () => {
-  return (
-    <Suspense fallback={<div className={s.page}>Loading...</div>}>
-      <ProfileSettingsContent />
-    </Suspense>
   )
 }
