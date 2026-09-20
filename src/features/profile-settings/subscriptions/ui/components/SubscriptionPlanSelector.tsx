@@ -13,7 +13,7 @@ type Props = {
 
 export const SubscriptionPlanSelector = ({ title, options, value, isLoading, isError, onChange }: Props) => (
   <>
-    <h3 className={clsx("h3", s.subTitle)}>{title}</h3>
+    <h3 className={clsx("h3", s.sectionTitle)}>{title}</h3>
     <div className={s.account_type}>
       {isLoading ? (
         <span className="regular_text_16">Loading subscriptions...</span>
