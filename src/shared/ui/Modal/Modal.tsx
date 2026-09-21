@@ -35,6 +35,7 @@ type ModalProps = {
   fullscreenOnMobile?: boolean
   isConfirmDisabled?: boolean
   isLoading?: boolean
+  isCloseDisabled?: boolean
 }
 
 export const Modal = ({
@@ -59,6 +60,7 @@ export const Modal = ({
   fullscreenOnMobile = false,
   isConfirmDisabled = false,
   isLoading = false,
+  isCloseDisabled,
 }: ModalProps) => {
   useEffect(() => {
     if (!isOpen) return
@@ -67,7 +69,7 @@ export const Modal = ({
     document.body.style.overflow = "hidden"
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && !isCloseDisabled) {
         onClose()
       }
     }
@@ -78,7 +80,7 @@ export const Modal = ({
       document.body.style.overflow = originalOverflow
       window.removeEventListener("keydown", onKeyDown)
     }
-  }, [isOpen, onClose])
+  }, [isOpen, onClose, isCloseDisabled])
 
   if (!isOpen) return null
 
@@ -90,7 +92,7 @@ export const Modal = ({
       data-fullscreen-mobile={fullscreenOnMobile}
       style={{ maxWidth: SIZE_MAP[size] }}
     >
-      <div className={s.overlay} onClick={onClose} />
+      <div className={s.overlay} onClick={isCloseDisabled ? undefined : onClose} />
 
       <div className={clsx(s.modal, className)}>
         {header
@@ -98,7 +100,11 @@ export const Modal = ({
           : showHeader && (
               <div className={s.header}>
                 <span className={clsx(s.title, "h1")}>{title}</span>
-                <Icon name="close-outline" onClick={onClose} className={s.closeIcon} />
+                <Icon
+                  name="close-outline"
+                  onClick={isCloseDisabled ? undefined : onClose}
+                  className={clsx(s.closeIcon, isCloseDisabled && s.disabled)}
+                />
               </div>
             )}
 

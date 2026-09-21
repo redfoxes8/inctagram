@@ -1,12 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useRef } from "react"
 import { client } from "@/shared/api/client"
+import { GetCheckoutSessionStatusResponseDtoStatus } from "@/shared/api/schema"
 import {
-  CreateCheckoutArgs,
-  PaymentsProductsResponse,
-  GetSubscriptionsResponse,
-  ToggleAutoRenewResponse,
   CheckoutStatusResponse,
-} from "../types/type"
+  CreateCheckoutArgs,
+  GetSubscriptionsResponse,
+  PaymentsProductsResponse,
+} from "../model/types"
 
 const getToggleAutoRenewErrorMessage = (status?: number) => {
   switch (status) {
@@ -26,6 +27,40 @@ const getToggleAutoRenewErrorMessage = (status?: number) => {
       return "Payment service timed out. Please try again later."
     default:
       return "Failed to update auto-renewal. Please try again."
+  }
+}
+
+const getCheckoutErrorMessage = (error: unknown) => {
+  const status =
+    typeof error === "object" && error !== null && "code" in error ? (error as { code?: number }).code : undefined
+  const message =
+    typeof error === "object" && error !== null && "message" in error
+      ? (error as { message?: string }).message
+      : undefined
+
+  if (message === "PROVIDER_NOT_SUPPORTED") {
+    return "PayPal is not available yet. Please use Stripe."
+  }
+
+  if (message === "checkout_not_active_session" || message?.toLowerCase().includes("no longer active")) {
+    return "Your previous checkout session has expired. Please start a new purchase."
+  }
+
+  switch (status) {
+    case 400:
+      return "Payment provider rejected the request. Please try again."
+    case 401:
+      return "You are not authorized. Please log in again."
+    case 404:
+      return "Selected product was not found."
+    case 409:
+      return "This checkout conflicts with an existing subscription. Please refresh the page."
+    case 503:
+      return "Payment service is temporarily unavailable. Please try again later."
+    case 504:
+      return "Payment service timed out. Please try again later."
+    default:
+      return "Transaction failed, please try again."
   }
 }
 
@@ -50,40 +85,48 @@ export function usePaymentsProductsQuery() {
 }
 
 export function useCreateCheckoutSessionMutation() {
-  return useMutation({
+  const idempotencyKeyRef = useRef<string | null>(null)
+
+  const mutation = useMutation({
     mutationFn: async ({ productId, provider, autoRenewConsent }: CreateCheckoutArgs) => {
-      const idempotencyKey = crypto.randomUUID()
+      if (!idempotencyKeyRef.current) {
+        idempotencyKeyRef.current = crypto.randomUUID()
+      }
 
       const response = await client.POST("/api/v1/payments/checkout", {
         params: {
           header: {
-            "Idempotency-Key": idempotencyKey,
+            "Idempotency-Key": idempotencyKeyRef.current,
           },
         },
         body: {
           productId,
           provider,
-          autoRenewConsent: true,
+          autoRenewConsent: autoRenewConsent as true,
         },
       })
 
       if (response.error) {
-        throw response.error
+        throw new Error(getCheckoutErrorMessage(response.error))
       }
-
       return response.data
     },
     onSuccess: (data) => {
+      idempotencyKeyRef.current = null
       if (data?.checkoutUrl) {
         window.location.href = data.checkoutUrl
-      } else {
-        console.error("Бэкенд ответил успехом (201), но не прислал URL для редиректа:", data)
       }
     },
-    onError: (error) => {
-      console.error("Критическая ошибка при создании сессии оплаты:", error)
+    onError: () => {
+      idempotencyKeyRef.current = null
     },
   })
+
+  const resetIdempotencyKey = () => {
+    idempotencyKeyRef.current = null
+  }
+
+  return { ...mutation, resetIdempotencyKey }
 }
 
 export function useCurrentSubscriptionQuery() {
@@ -119,6 +162,7 @@ export function useToggleAutoRenewMutation() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: subscriptionsQueryKeys.current() })
+      queryClient.invalidateQueries({ queryKey: ["me"] })
     },
   })
 }
@@ -129,9 +173,9 @@ export function useCheckoutStatusQuery(sessionId: string | null) {
     queryFn: async () => {
       if (!sessionId) throw new Error("Session ID is required")
 
-      const response = await client.GET("/api/v1/payments/checkout/{checkoutSessionId}/status", {
+      const response = await client.GET("/api/v1/payments/checkout/stripe/{providerCheckoutId}/status", {
         params: {
-          path: { checkoutSessionId: sessionId },
+          path: { providerCheckoutId: sessionId },
         },
       })
 
@@ -139,7 +183,12 @@ export function useCheckoutStatusQuery(sessionId: string | null) {
       return response.data
     },
     enabled: !!sessionId,
-    retry: 3,
-    retryDelay: 2000,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status
+      if (!status) return 2000
+      if (status === GetCheckoutSessionStatusResponseDtoStatus.CREATED) return 2000
+      return false
+    },
+    refetchIntervalInBackground: false,
   })
 }

@@ -13,16 +13,8 @@ export function useAuthRedirect(user: MeResponse | null | undefined, isLoading: 
   useEffect(() => {
     if (isLoading) return
 
-    if (pathname === "/paymentt-success") {
-      const sessionId = searchParams.get("session_id")
-      const appendParams = sessionId ? `&session_id=${sessionId}` : ""
-
-      router.replace(`${PAGES.SETTINGS("subscriptions")}${appendParams}`)
-      return
-    }
-
     const isProfilePage = pathname.startsWith("/profile")
-    const isSettingsPage = pathname.startsWith("/settings")
+    const isSettingsPage = pathname === "/settings" || pathname.startsWith("/settings/")
     const isAuthPage = AUTH_PAGES.includes(pathname)
 
     const isProtectedPage = (PROTECTED_PAGES.includes(pathname) || isSettingsPage) && !isProfilePage

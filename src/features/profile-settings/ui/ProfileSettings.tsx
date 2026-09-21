@@ -9,7 +9,8 @@ import { PAGES } from "@/shared/config/pages.config"
 import { Tabs } from "@/shared/ui"
 
 import s from "./ProfileSettings.module.css"
-import { Subscriptions } from "./subscriptions"
+import { Subscriptions } from "../subscriptions"
+import { Suspense } from "react"
 
 const SETTINGS_TABS: Array<{ label: string; value: ProfileSettingsTab }> = [
   { label: "General information", value: "info" },
