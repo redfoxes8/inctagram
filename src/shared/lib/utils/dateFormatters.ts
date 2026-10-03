@@ -25,7 +25,7 @@ export const formatPostDate = (dateString: string) => {
 }
 
 export const formatDate = (value: string) => {
-  return new Intl.DateTimeFormat("ru-RU", {
+  return new Intl.DateTimeFormat("en-US", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",

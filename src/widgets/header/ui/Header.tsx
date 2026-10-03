@@ -11,6 +11,7 @@ import { useMeQuery } from "@/features/auth/api/use-me"
 import { PAGES } from "@/shared/config/pages.config"
 import { Button } from "@/shared/ui"
 import { usePathname, useRouter } from "next/navigation"
+import { NotificationsBell } from "@/features/notifications"
 
 export const Header = () => {
   const { data: user, isLoading } = useMeQuery()
@@ -35,6 +36,7 @@ export const Header = () => {
         <FlexWrapper justify={"space-between"} align={"center"}>
           <Logo />
           <div className={s.controls}>
+            {user && <NotificationsBell />}
             <LanguageSwitcher />
 
             {showSkeleton && !isPrivacyPolicyPage && (

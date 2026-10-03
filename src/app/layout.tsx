@@ -6,6 +6,7 @@ import "./globals.css"
 import { QueryProvider } from "@/app/providers/query-provider"
 import { AuthProvider } from "@/features/auth/lib/auth-provider"
 import { Toaster } from "sonner"
+import { NotificationsProvider } from "@/features/notifications"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,8 +28,10 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <AuthProvider>
-            <Header />
-            {children}
+            <NotificationsProvider>
+              <Header />
+              {children}
+            </NotificationsProvider>
           </AuthProvider>
           <Toaster position="bottom-left" richColors closeButton duration={3000} visibleToasts={5} />
         </QueryProvider>
