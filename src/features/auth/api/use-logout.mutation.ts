@@ -18,6 +18,7 @@ export const useLogoutMutation = () => {
     },
     onSuccess: async () => {
       localStorage.removeItem(localStorageKeys.accessToken)
+      window.dispatchEvent(new Event("auth-changed"))
       queryClient.clear()
 
       router.refresh()

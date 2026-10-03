@@ -26,6 +26,7 @@ export const useLoginMutation = () => {
 
     onSuccess: async (data) => {
       localStorage.setItem(localStorageKeys.accessToken, data.accessToken)
+      window.dispatchEvent(new Event("auth-changed"))
       await queryClient.invalidateQueries({ queryKey: ["me"] })
     },
   })

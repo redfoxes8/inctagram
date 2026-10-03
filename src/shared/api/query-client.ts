@@ -18,8 +18,9 @@ export const queryClient = new QueryClient({
       const queryKey = query.queryKey
 
       // Обработка ошибки /me — чистим сессию
-      if (queryKey[0] === "me" && error?.status === 401) {
+      if (error?.status === 401) {
         localStorage.removeItem(localStorageKeys.accessToken)
+        window.dispatchEvent(new Event("auth-changed"))
         // queryClient.removeQueries({ queryKey: ["me"] })
       }
 

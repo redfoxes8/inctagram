@@ -84,6 +84,7 @@ export type IconName =
   | "trash"
   | "trending-up-outline"
   | "trending-up"
+  | "outline-bell"
 
 interface IconProps extends SVGProps<SVGSVGElement> {
   name: IconName
