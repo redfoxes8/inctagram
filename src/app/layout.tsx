@@ -1,12 +1,11 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import { Header } from "@/widgets/header"
 
 import "./globals.css"
 import { QueryProvider } from "@/app/providers/query-provider"
-import { AuthProvider } from "@/features/auth/lib/auth-provider"
+import { ApolloProvider } from "@/app/providers/apollo-provider"
+import { SiteShell } from "@/app/providers/site-shell"
 import { Toaster } from "sonner"
-import { NotificationsProvider } from "@/features/notifications"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,15 +25,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable}`}>
       <body>
-        <QueryProvider>
-          <AuthProvider>
-            <NotificationsProvider>
-              <Header />
-              {children}
-            </NotificationsProvider>
-          </AuthProvider>
-          <Toaster position="bottom-left" richColors closeButton duration={3000} visibleToasts={5} />
-        </QueryProvider>
+        <ApolloProvider>
+          <QueryProvider>
+            <SiteShell>{children}</SiteShell>
+            <Toaster position="bottom-left" richColors closeButton duration={3000} visibleToasts={5} />
+          </QueryProvider>
+        </ApolloProvider>
       </body>
     </html>
   )

@@ -1,0 +1,38 @@
+.shell {
+  min-height: 100dvh;
+  background: var(--dark-700);
+}
+
+.header {
+  height: 60px;
+  border-bottom: 1px solid var(--dark-300);
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1280px;
+  height: 100%;
+  margin-inline: auto;
+  padding-inline: 60px 64px;
+}
+
+.brand {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 36px;
+}
+
+.brand span {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+@media (width < 769px) {
+  .headerContent {
+    padding-inline: 16px;
+  }
+}
