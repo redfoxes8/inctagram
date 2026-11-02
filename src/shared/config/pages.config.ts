@@ -9,6 +9,7 @@ export const PAGES = {
   PRIVACY_POLICY: "/privacy-policy",
   REGISTRATION: "/register",
   VERIFICATION: "/verification-expired",
+  SUPERADMIN_USERS: "/superadmin/users",
 
   FEED: "/",
   CREATE: "/create",

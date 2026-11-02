@@ -20,6 +20,8 @@
     "api-client-gen:local": "openapi-typescript http://localhost:4278/api/v1-json -o ./src/shared/api/schema.ts --root-types --enum --enum-values --dedupe-enums"
   },
   "dependencies": {
+    "@apollo/client": "^4.3.5",
+    "@apollo/client-integration-nextjs": "^0.14.5",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-avatar": "^1.2.0",
     "@radix-ui/react-checkbox": "^1.3.3",
@@ -42,6 +44,7 @@
     "date-fns": "^4.1.0",
     "embla-carousel": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "graphql": "^17.0.2",
     "next": "16.2.3",
     "openapi-fetch": "^0.17.0",
     "react": "19.2.4",
@@ -51,6 +54,7 @@
     "react-hook-form": "^7.72.1",
     "react-intersection-observer": "^10.0.3",
     "react-redux": "^9.2.0",
+    "rxjs": "^7.8.2",
     "socket.io-client": "^4.8.3",
     "sonner": "^2.0.7",
     "zustand": "^5.0.13"
