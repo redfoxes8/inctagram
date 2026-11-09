@@ -1,9 +1,5 @@
-import { Container } from "@/shared/ui/Container"
+import { SuperadminUsers } from "@/features/superadmin-users"
 
 export default function SuperadminUsersPage() {
-  return (
-    <Container>
-      <h1 className="h1">Users list</h1>
-    </Container>
-  )
+  return <SuperadminUsers />
 }

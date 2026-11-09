@@ -3,6 +3,13 @@
   background: var(--dark-700);
 }
 
+.content {
+  display: flex;
+  max-width: 1280px;
+  min-height: calc(100dvh - 60px);
+  margin-inline: auto;
+}
+
 .header {
   height: 60px;
   border-bottom: 1px solid var(--dark-300);
@@ -32,6 +39,10 @@
 }
 
 @media (width < 769px) {
+  .content {
+    flex-direction: column;
+  }
+
   .headerContent {
     padding-inline: 16px;
   }
