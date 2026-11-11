@@ -175,6 +175,25 @@
   background: var(--dark-300);
 }
 
+.deleteFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24px;
+  padding: 16px 24px;
+}
+
+.deleteError {
+  color: var(--danger-100);
+  overflow-wrap: anywhere;
+}
+
+.refreshError {
+  margin-top: 16px;
+  color: var(--danger-100);
+  font-size: 14px;
+  line-height: 24px;
+}
+
 .table .state {
   height: 384px;
   text-align: center;

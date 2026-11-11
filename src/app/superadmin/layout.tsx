@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import { LanguageSwitcher } from "@/features/language-switcher"
 import { SuperadminSidebar } from "@/widgets/superadmin-sidebar"
+import { SuperadminSessionBoundary } from "@/features/auth/superadmin-session/ui/SuperadminSessionBoundary"
 import s from "./layout.module.css"
 
 export default function SuperadminLayout({ children }: { children: ReactNode }) {
@@ -25,7 +26,7 @@ export default function SuperadminLayout({ children }: { children: ReactNode }) 
       ) : (
         <div className={s.content}>
           <SuperadminSidebar pathname={pathname} />
-          {children}
+          <SuperadminSessionBoundary>{children}</SuperadminSessionBoundary>
         </div>
       )}
     </div>
