@@ -129,7 +129,7 @@ export function UserDetailsTab({
             pageSize={input.pageSize}
             pageSizeOptions={[4, 8, 10]}
             disabled={loading}
-            showWhenEmpty={!isPayments}
+            showWhenEmpty
             onPageChange={onPageChange}
             onPageSizeChange={onPageSizeChange}
           />

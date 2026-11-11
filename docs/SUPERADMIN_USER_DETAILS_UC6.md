@@ -100,9 +100,9 @@ Retry repeats only reads; no mutations or auth/session changes are introduced.
   count labels, Total label or temporary
   unavailability message. When `pagesCount=0`, the current requested page is
   displayed as an inactive indicator; page navigation is disabled. The backend's
-  zero metadata is preserved without inventing extra pages. This opt-in empty
-  pagination display applies only to Followers/Following; Payments and other
-  pagination consumers keep their previous behavior. These are placeholder
+  zero metadata is preserved without inventing extra pages. All four detail tabs
+  now opt into pagination for successful empty responses; unrelated pagination
+  consumers retain their behavior. These are placeholder
   responses, not real social-graph data. Request errors remain a separate error
   state. No fictional people or dates are
   added. If records become available, only their confirmed user ID can be shown;
@@ -113,7 +113,10 @@ Retry repeats only reads; no mutations or auth/session changes are introduced.
   not offered.
 - A successful empty Payments response shows **No payments yet.** Request errors
   remain separate from empty results. A page beyond a nonempty result still
-  shows This page is empty. Tables and server pagination are unchanged.
+  shows This page is empty. Empty Payments and Uploaded photos keep visible
+  pagination with the enabled 4/8/10 size selector; zero-page responses disable
+  navigation arrows. Loading and error states do not show pagination. Nonempty
+  tables/gallery and server pagination keep their previous behavior.
 - Target deployment, allowed origins and cookie/CORS setup remain environment
   prerequisites; local validation does not establish production availability.
 

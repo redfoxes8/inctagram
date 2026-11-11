@@ -98,6 +98,7 @@ export function UserUploadedPhotos({ userId, input, onPageChange, onPageSizeChan
         pagesCount={Math.min(10000, gallery.pageInfo.pagesCount)}
         pageSize={input.pageSize}
         pageSizeOptions={[4, 8, 10]}
+        showWhenEmpty
         onPageChange={onPageChange}
         onPageSizeChange={onPageSizeChange}
       />
