@@ -151,6 +151,30 @@
   cursor: not-allowed;
 }
 
+.menu {
+  z-index: 20;
+  min-width: 200px;
+  padding: 4px;
+  border: 1px solid var(--dark-100);
+  border-radius: 2px;
+  background: var(--dark-500);
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.menuItem[data-highlighted] {
+  outline: none;
+  background: var(--dark-300);
+}
+
 .table .state {
   height: 384px;
   text-align: center;

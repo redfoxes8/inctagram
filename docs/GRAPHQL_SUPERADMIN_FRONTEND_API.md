@@ -1,5 +1,5 @@
-Superadmin GraphQL API — контракт 1.6.0
-Posts query/subscription реализованы в D6b (1.6.0); production rollout, публичный wss URL и browser integration пока не подтверждены. Существующие login/session/CSRF, Payments и moderation ниже сохраняются.
+Superadmin GraphQL API — контракт 1.7.0
+Uploaded photos добавлены в 1.7.0; Posts query/subscription реализованы в D6b (1.6.0); production rollout, публичный wss URL и browser integration пока не подтверждены. Существующие login/session/CSRF, Payments и moderation ниже сохраняются.
 
 До включения Posts нужны согласованные Gateway/Post builds, существующие private Post gRPC/Rabbit подключения и настоящая initial READY Post projection после bootstrap/rollout marker. Proxy должен пропускать WS upgrade точного /api/v1/graphql, Cookie/Origin/Sec-WebSocket-Protocol, с idle timeout≥60с. Отсутствие этих условий возвращается ошибкой, не пустой лентой. Фактические адреса и готовность окружения проверяются при deployment.
 
@@ -18,7 +18,7 @@ HTTPS frontend → HTTP API может блокироваться браузер
 Выполнить login, сохранить nonce из response header X-Superadmin-CSRF в памяти.
 После reload сначала выполнить superadminSession без cache; при успехе обновить nonce из header. UNAUTHENTICATED → форма входа; техническую ошибку не считать logout.
 Читать каталог/детали; в mutations передавать актуальный nonce. После logout очищать client cache/состояние.
-Фактическая schema для Codegen/tooling: runtime.graphql, версия 1.6.0. Это экспорт реализованной composition, не доказательство версии публичного сервера. Target SDL — проектный контракт, не отдельное подтверждение deployment. Операции и примеры всех вкладок приведены ниже.
+Фактическая schema для Codegen/tooling: runtime.graphql, версия 1.7.0. Это экспорт реализованной composition, не доказательство версии публичного сервера. Target SDL — проектный контракт, не отдельное подтверждение deployment. Операции и примеры всех вкладок приведены ниже.
 
 Backend checklist до браузерного подключения
 Применены AdminSession → state/audit → revoke outbox и последующие ban-reason/profile-outbox migrations в Gateway DB, projection migration — в Payment DB; сгенерированы совместимые Prisma Clients. Generation не заменяет migrate deploy; точные команды и порядок — в Deployment runbook F существующего плана.
@@ -28,7 +28,7 @@ Backend checklist до браузерного подключения
 Cookie Secure/SameSite и HTTPS соответствуют фактическому browser-размещению.
 Gateway нужной версии развёрнут; публичный URL подтверждён ответственным за окружение.
 Proxy пропускает POST/OPTIONS /api/v1/graphql, request Origin, Content-Type, X-Superadmin-CSRF, cookies и response Set-Cookie, X-Superadmin-CSRF; CORS credentials и expose header не теряются. Не логировать credentials/cookies/nonce.
-Выполнение этого checklist на публичном сервере не подтверждено. Открыты profile route (profileUrl=null), реальные origins/API URL, browser HTTPS/SameSite, provision/rotation секретов, staging/two-pod и production-политики публичных данных/paid auto-renew после delete. FOLLOW-ZERO-1 принят как временные пустые connections, не настоящие социальные данные.
+Выполнение этого checklist на публичном сервере не подтверждено. Маршрут публичного профиля подтверждён 09.11.2026 (см. list/detail ниже). Открыты реальные origins/API URL, browser HTTPS/SameSite, provision/rotation секретов, staging/two-pod и production-политики публичных данных/paid auto-renew после delete. FOLLOW-ZERO-1 принят как временные пустые connections, не настоящие социальные данные.
 
 Встроенные fallback и env override — решение от 21.10.2026
 Пять новых env необязательны при использовании встроенных настроек. Это осознанное изменение прежнего запрещающего configuration default, в том числе для production; оно не ослабляет guards/сессии/CSRF/rate limit. Исторические отчёты ниже и в других файлах описывают прежнее поведение, а не наличие этих defaults с начала разработки.
@@ -45,7 +45,7 @@ SUPERADMIN_PAYMENTS_TIMEOUT_MS 3000
 
 В текущем manifest четыре admin Secret key references помечены optional:true, timeout отдельно не подключён и использует default. Поэтому отсутствие этих ключей не препятствует запуску Node.js. Другие обязательные Secret/key references и инфраструктура остаются необходимыми: если весь существующий Secret или другой обязательный key отсутствует, Kubernetes может не запустить контейнер, и fallback приложения это не исправит. Pipeline/manifest этой задачей не меняются.
 
-Статус: runtime и целевой контракт 1.6.0. D6b добавил superadminPosts и superadminPostPublished; P2 ранее добавил общий список superadminPayments. Additive S3: существующий superadminBlockUser принимает optional reason; legacy-вызовы сохраняются. S1 ранее добавил banFilter с default ALL в версии 1.3.0. Общий Payments list реализован в 1.5.0; deployment этой версии не подтверждён. Реализованы auth SA-GQL-02, каталог/детали SA-GQL-03, block/unblock SA-GQL-04B, soft delete SA-GQL-05, Payments SA-GQL-06 и временный FOLLOW-ZERO-1 SA-GQL-08. История версии: переход 1.1.0 → 1.2.0 добавил followers/following и их минимальных типов; семантика временных нулей остаётся FOLLOW-ZERO-1. Настоящий social graph не реализован. Открытый AC profileUrl карточки 3 и прежние product/security/environment вопросы сохраняются; это подготовка к техническому review, не production-приёмка.
+Статус: runtime и целевой контракт 1.7.0. D6b добавил superadminPosts и superadminPostPublished; P2 ранее добавил общий список superadminPayments. Additive S3: существующий superadminBlockUser принимает optional reason; legacy-вызовы сохраняются. S1 ранее добавил banFilter с default ALL в версии 1.3.0. Общий Payments list реализован в 1.5.0; deployment этой версии не подтверждён. Реализованы auth SA-GQL-02, каталог/детали SA-GQL-03, block/unblock SA-GQL-04B, soft delete SA-GQL-05, Payments SA-GQL-06 и временный FOLLOW-ZERO-1 SA-GQL-08. История версии: переход 1.1.0 → 1.2.0 добавил followers/following и их минимальных типов; семантика временных нулей остаётся FOLLOW-ZERO-1. Настоящий social graph не реализован. AC profileUrl карточки 3 закрыт 09.11.2026; прежние product/security/environment вопросы сохраняются; это подготовка к техническому review, не production-приёмка.
 
 SA-GQL-09: совместная работа backend проверена автоматизированно; отчёт, матрица UC/карточки/доказательства и ограничения. Проверка агента не означает человеческое согласование API/security, проверку frontend или production-приёмку. Ниже текущий контракт; прежние приёмочные разделы в конце — история отдельных этапов.
 
@@ -54,7 +54,7 @@ URL и текущая доступность
 
 Согласованное дополнение реализовано в SA-GQL-02: защищённая query superadminSession: SuperadminSessionPayload! с authenticated: Boolean! читает состояние текущей admin session. Действующая session → { authenticated: true }, отсутствие действующей session → UNAUTHENTICATED. Query не является публичным исключением и не возвращает token/cookie/hash/credentials; каталог карточки 3 для валидного Query root не требуется.
 
-Целевой SDL: libs/contracts/src/graphql/superadmin/v1/target.graphql, версия 1.6.0 (SUPERADMIN_CONTRACT_VERSION). Runtime собирается отдельно из реализованных feature fragments, весь target не загружается. Общие DateTime/PageInput/PageInfo и pagination validation переиспользуются.
+Целевой SDL: libs/contracts/src/graphql/superadmin/v1/target.graphql, версия 1.7.0 (SUPERADMIN_CONTRACT_VERSION). Runtime собирается отдельно из реализованных feature fragments, весь target не загружается. Общие DateTime/PageInput/PageInfo и pagination validation переиспользуются.
 
 Для frontend tooling: экспорт фактически опубликованного runtime SDL. Это отдельный артефакт, не target и не новая версия контракта. Тест SA-GQL-09 сравнивает его канонический SDL с реальным GraphQLSchemaHost всех production superadmin feature modules, а все executable GraphQL-блоки этого guide проходят parse/validate по этой schema. Связный HTTP-сценарий исполняет auth/catalog/все вкладки/moderation/logout; schema validation остальных примеров не объявляется их исполнением.
 
@@ -72,6 +72,7 @@ superadminUser userId: ID! nullable SuperadminUser Реализовано — SA
 superadminBlockUser input: { userId: ID! }, optional reason userId, BLOCKED / ALREADY_BLOCKED / NOT_FOUND / USER_DELETED Реализовано — SA-GQL-04B + S3 reason
 superadminUnblockUser { userId: ID! } userId, UNBLOCKED / ALREADY_ACTIVE / NOT_FOUND / USER_DELETED Реализовано — SA-GQL-04B
 superadminDeleteUser { userId: ID! } userId, DELETED / ALREADY_DELETED / NOT_FOUND Реализовано — SA-GQL-05
+SuperadminUser.uploadedPhotos PageInput! nullable SuperadminUserPhotosConnection Реализовано — 1.7.0
 SuperadminUser.payments PageInput! nullable PaymentConnection Реализовано — SA-GQL-06
 SuperadminUser.followers PageInput! nullable SuperadminFollowConnection, только items=[]/нулевые metadata Реализовано — временный FOLLOW-ZERO-1, SA-GQL-08
 SuperadminUser.following PageInput! nullable SuperadminFollowConnection, только items=[]/нулевые metadata Реализовано — временный FOLLOW-ZERO-1, SA-GQL-08
@@ -87,7 +88,7 @@ authenticated
 При действующей session: {"data":{"superadminSession":{"authenticated":true}}}. Без действующей session: {"data":null,"errors":[{"message":"Authentication required","path":["superadminSession"],"extensions":{"code":"UNAUTHENTICATED"}}]}. Frontend использует query для проверки текущей admin session: UNAUTHENTICATED означает необходимость входа. Сетевой сбой, timeout, UPSTREAM_UNAVAILABLE и другие технические ошибки не следует автоматически трактовать как отсутствие session. Auth flow проверяется автоматизированно с изолированной PostgreSQL; неизвестное реальное browser deployment этими проверками не подтверждается.
 
 Followers/Following — реализован временный FOLLOW-ZERO-1 (SA-GQL-08)
-Это реализованный временный контракт FOLLOW-ZERO-1, опубликованный в текущих runtime и target 1.6.0 (добавлен в 1.2.0) отдельным follow-zero-type-defs.ts. Минимальный SuperadminFollowZeroResolver вызывает общую чистую application-функцию getTemporaryFollowZero; нет repository, social DB, клиентов/RPC, DataLoader или feature flags. Старый candidate 0.1 с followedAt/profile/privacy в ADR остаётся отложенным и не применяется к текущему API.
+Это реализованный временный контракт FOLLOW-ZERO-1, опубликованный в текущих runtime и target 1.7.0 (добавлен в 1.2.0) отдельным follow-zero-type-defs.ts. Минимальный SuperadminFollowZeroResolver вызывает общую чистую application-функцию getTemporaryFollowZero; нет repository, social DB, клиентов/RPC, DataLoader или feature flags. Старый candidate 0.1 с followedAt/profile/privacy в ADR остаётся отложенным и не применяется к текущему API.
 
 extend type SuperadminUser {
 followers(input: PageInput!): SuperadminFollowConnection
@@ -197,12 +198,12 @@ Variables: {"userId":"00000000-0000-4000-8000-000000000001"} (синтетиче
 }
 Aliases одного направления тоже независимы; request cache отсутствует. Приложение не предписывает текст UI: техническое ограничение описано здесь, а выбор текста остаётся frontend.
 
-В UI нули разрешены как явно временное ограничение. Настоящие directed relationships, хранение/активность/колонки/privacy/follow-unfollow и FOLLOW-PREP-01/02 отложены, не блокируют текущие 8/9 и не считаются реализованными. Публичный profileUrl карточки 3, реальные admin origins, staging/two-pod и production-политики delete/active paid auto-renew по-прежнему открыты. Решение пользователя не означает отдельного Architecture/Security/Frontend sign-off.
+В UI нули разрешены как явно временное ограничение. Настоящие directed relationships, хранение/активность/колонки/privacy/follow-unfollow и FOLLOW-PREP-01/02 отложены, не блокируют текущие 8/9 и не считаются реализованными. Реальные admin origins, staging/two-pod и production-политики delete/active paid auto-renew по-прежнему открыты. Решение пользователя не означает отдельного Architecture/Security/Frontend sign-off.
 
 Типы и nullable-поля
 DateTime — ISO-8601 UTC (YYYY-MM-DDTHH:mm:ss[.SSS]Z), сериализуется с миллисекундами. superadminUser проверяет строковый UUID через принятую в проекте @IsUUID(); некорректный ID → BAD_USER_INPUT. SuperadminUserState: ACTIVE/BLOCKED, по фактическому сохранённому User.isBanned; email confirmation — отдельный фактический isEmailConfirmed. ACTIVE не отменяет существующие проверки входа.
 
-List/detail: userId, createdAt, state, isEmailConfirmed non-null. username, profileUrl, avatarUrl nullable: Profile optional в текущей Prisma model. Detail без Profile возвращает null этих полей. Отсутствующий/deleted User — null detail. Public profile route не подтверждён, URL не выдумывать; дата создания берётся из User.
+List/detail: userId, createdAt, state, isEmailConfirmed non-null. username и avatarUrl nullable: Profile optional в текущей Prisma model. profileUrl сохраняет тип nullable String в SDL, но для возвращаемого User формируется независимо от Profile/username: ${FRONTEND_URL}/profile/{userId} (при отсутствии настройки — https://nymbi.org). Это ссылка публичного frontend, не REST API; текст ссылки — username, при username=null frontend может показать userId. Blocked/unconfirmed User сохраняют прежнюю видимость; ссылка не гарантирует публичную доступность профиля. Отсутствующий/deleted User — null detail; дата создания берётся из User.
 
 Payments: реализованный GetPaymentHistory(user_id,page,page_size) adapter предоставляет transactionId, createdAt, paidAt, amountMinor (целые minor currency units), currency, productId/productName, billingInterval/Count, provider, kind, status, checkoutPurpose, subscriptionId/EndsAt. Optional paidAt/checkoutPurpose/subscriptionId/subscriptionEndsAt остаются nullable. При timeout/outage сохраняются основные данные пользователя: payments: null + error UPSTREAM_UNAVAILABLE, не ложный пустой список. Выбор отображаемых UI-колонок остаётся вопросом Product; поля прежней истории без изменений сохраняются и в API-контракте 1.5.0, Stripe lifecycle не меняется.
 
@@ -256,7 +257,7 @@ Variables (filter + search + pagination): {"input":{"page":1,"pageSize":8,"searc
 {
 "userId": "00000000-0000-4000-8000-000000000001",
 "username": "sample",
-"profileUrl": null,
+"profileUrl": "https://nymbi.org/profile/00000000-0000-4000-8000-000000000001",
 "createdAt": "2026-10-18T12:00:00.000Z",
 "state": "BLOCKED",
 "isEmailConfirmed": false
@@ -278,7 +279,33 @@ state
 isEmailConfirmed
 }
 }
-Variables: {"userId":"00000000-0000-4000-8000-000000000001"}. Отсутствующий/soft-deleted пользователь: {"data":{"superadminUser":null}}. Без Profile возвращается объект с username, avatarUrl, profileUrl = null, без создания Profile. Открытый AC: Frontend/Product должны подтвердить публичный маршрут и его параметр; в доступных frontend-контрактах/документации он не найден. REST URL профиля не доказывает маршрут приложения; пока profileUrl всегда null, даже при Profile. Карточка 3 не объявляется полностью принятой.
+Variables: {"userId":"00000000-0000-4000-8000-000000000001"}. Отсутствующий/soft-deleted пользователь: {"data":{"superadminUser":null}}. Без Profile возвращается объект с username=null, avatarUrl=null и profileUrl="https://nymbi.org/profile/00000000-0000-4000-8000-000000000001", без создания Profile. Маршрут /profile/{userId} подтверждён пользователем 09.11.2026; прежний открытый AC маршрута закрыт. Это не подтверждение production rollout или browser-приёмки.
+
+Uploaded photos выбранного пользователя (1.7.0)
+Общая сетка superadminUser.uploadedPhotos содержит отдельную плитку на каждую PostImage опубликованных неудалённых постов выбранного пользователя. Порядок: дата Post и его ID по убыванию, затем порядок изображения и его ID по возрастанию. Blocked пользователь доступен по обычным правилам admin detail. Это чтение не зависит от готовности username projection общего Posts API.
+
+query UserUploadedPhotos($userId: ID!, $input: PageInput!) {
+superadminUser(userId: $userId) {
+userId
+uploadedPhotos(input: $input) {
+items {
+imageId
+postId
+url
+}
+totalCount
+pageInfo {
+page
+pageSize
+pagesCount
+hasNextPage
+}
+}
+}
+}
+Variables для первой страницы: {"userId":"00000000-0000-4000-8000-000000000001","input":{}}; для следующей: {"userId":"00000000-0000-4000-8000-000000000001","input":{"page":2,"pageSize":8}}. input обязателен; по умолчанию page=1, pageSize=8, допустимы page 1..10000 и pageSize 1..50. imageId идентифицирует строку изображения, postId — пост, url может быть null, если File отсутствует. totalCount и PageInfo считают изображения, не посты. Пустая галерея — items=[], totalCount=0, pagesCount=0; выходящая за диапазон страница пуста с фактическим totalCount. Отсутствующий/deleted User даёт superadminUser=null.
+
+Нужны действующая admin session и разрешённый Origin; query не требует mutation-CSRF. Post/File outage или timeout возвращает nullable uploadedPhotos=null и ошибку UPSTREAM_UNAVAILABLE с path поля; это не пустая галерея. Backend не проверяет доступность S3 или браузером по URL. При конкурентной публикации или удалении offset-страницы могут сдвигаться: frontend сбрасывает pagination и заново запрашивает первую страницу; для merge использует imageId.
 
 Payments (реализовано — SA-GQL-06)
 SuperadminUser.payments(input: PageInput!): PaymentConnection — nullable field resolver. Источник — существующий внутренний GetPaymentHistory; user_id берётся только из родительского SuperadminUser, отдельного target ID в аргументах поля нет. Public REST history не используется, Gateway не читает Payment DB напрямую. Admin guard повторно применяется к вложенному resolver; обычный user JWT не подходит. Требуются действующая admin cookie (credentials: include) и разрешённый Origin; query не требует mutation-only CSRF header. Admin cookie/token в gRPC не передаются.
@@ -373,7 +400,7 @@ ACTIVE или BLOCKED DELETED
 
 Повторно используются enforcement, relay, exchange/routing, fan-out и consumer 4B. DELETED запрещает password/Google login, refresh, старый access token в защищённых REST, WS handshake и последующую protected delivery. AdminSession не затрагивается. Consumer работает и после физического удаления Session rows; broker outage не открывает доступ, persistent retry/duplicate handling сохраняются. Уже начатые запросы/handshake/delivery могут завершиться. Block/unblock после delete → USER_DELETED; restore нет.
 
-Каталог исключает deleted до count/page, detail=null. Обычные User repositories продолжают скрывать deleted, административный state read различает DELETED/null. Проверено на PostgreSQL: UserRepository.update содержит WHERE deletedAt IS NULL, включая predicate recheck после конкурентного ожидания, и возвращает NotFound для stale entity; save выполняет INSERT (не upsert), существующий ID не восстанавливает. Исправлять эти predicates не потребовалось. Profile хранится, чтение не создаёт его; это не согласование публичной видимости. После mutation FE обновляет список/детали (Apollo refetchQueries/eviction), count/pageInfo и при необходимости уходит с опустевшей последней страницы назад. ALREADY_DELETED/NOT_FOUND также требуют обновления UI. Yes/No/крестик — frontend: mutation вызывается только после Yes. profileUrl карточки 3 остаётся null до подтверждения маршрута.
+Каталог исключает deleted до count/page, detail=null. Обычные User repositories продолжают скрывать deleted, административный state read различает DELETED/null. Проверено на PostgreSQL: UserRepository.update содержит WHERE deletedAt IS NULL, включая predicate recheck после конкурентного ожидания, и возвращает NotFound для stale entity; save выполняет INSERT (не upsert), существующий ID не восстанавливает. Исправлять эти predicates не потребовалось. Profile хранится, чтение не создаёт его; это не согласование публичной видимости. После mutation FE обновляет список/детали (Apollo refetchQueries/eviction), count/pageInfo и при необходимости уходит с опустевшей последней страницы назад. ALREADY_DELETED/NOT_FOUND также требуют обновления UI. Yes/No/крестик — frontend: mutation вызывается только после Yes. profileUrl карточки 3 теперь формируется по подтверждённому маршруту /profile/{userId} (09.11.2026).
 
 Платёжная граница и production-политики
 В отдельной Payment DB PaymentTransaction, Subscription, CheckoutSession, ProviderCustomer содержат userId UUID без FK на Gateway User (apps/micro-payment-service/src/core/prisma/schema.prisma); soft UPDATE не вызывает cross-database cascade. Handler UserAccessRevoked в Payment MS не найден. Новый код публикует только существующий access revoke, не cancellation/refund/auto-renew команды. Gateway PaymentRabbitConsumer.process читает User с deletedAt=null; его entitlement updates не пишут deletedAt, а delete этот consumer не вызывает. Интеграционно проверены сохранность Gateway entitlement inbox/cursor, User/Profile и отсутствие платёжных broker side effects. Payment MS/Payment DB/Stripe в тесте не участвуют; сквозное чтение платёжной истории не проверено. Soft delete не является отменой подписки или отключением auto-renew.
@@ -446,7 +473,7 @@ DELETED (приоритет над isBanned) USER_DELETED USER_DELETED
 Записи нет NOT_FOUND NOT_FOUND
 Некорректный UUID → BAD_USER_INPUT; отсутствие/expiry/revoke admin session → UNAUTHENTICATED; CSRF/Origin → FORBIDDEN (Origin проверяется на HTTP-границе); неожиданный DB failure → безопасный INTERNAL_SERVER_ERROR. При сбое проверки admin session сохраняется UPSTREAM_UNAVAILABLE. Outcomes — успешный результат выполненной команды, не исключение. Удалённый пользователь не восстанавливается. Повторные отдельные команды имеют отдельные audit results; client request deduplication не обещается.
 
-После mutation обновить текущий каталог и открытые детали (например, Apollo refetchQueries), сохранив search/sort/page; no-op/NOT_FOUND/USER_DELETED также требуют актуализации UI, а не фиктивной записи user из payload. profileUrl всё ещё null до решения Frontend/Product; эта работа не закрывает карточку 3. Unblock требует нового пользовательского login: прежние sessions/access/refresh tokens не восстанавливаются. Admin sessions не отзываются. Блокировка не отменяет paid auto-renew, подписки, платежи или публичные данные; payment lifecycle здесь не меняется.
+После mutation обновить текущий каталог и открытые детали (например, Apollo refetchQueries), сохранив search/sort/page; no-op/NOT_FOUND/USER_DELETED также требуют актуализации UI, а не фиктивной записи user из payload. profileUrl формируется по userId независимо от block/unblock (уточнение 09.11.2026). Unblock требует нового пользовательского login: прежние sessions/access/refresh tokens не восстанавливаются. Admin sessions не отзываются. Блокировка не отменяет paid auto-renew, подписки, платежи или публичные данные; payment lifecycle здесь не меняется.
 
 Транзакция, каналы и пределы гарантии
 ModerateUserUseCase через действующий transaction manager блокирует User row (FOR UPDATE), вычисляет outcome, при BLOCKED меняет isBanned и текущую причину, soft-revoke всех пользовательских Session (deletedAt) и создаёт UserAccessRevokeOutbox, затем пишет audit тем же живым tx. Unblock снимает isBanned и очищает причину; audit записывается и для no-op/missing/deleted. Ошибка откатывает reason/state/sessions/outbox/audit вместе. Поля audit: action, targetUserId, outcome, occurredAt, adminSessionId, id и optional snapshot причины (banReasonCode/banReasonText) — без token/cookie/password/hash. Общая admin account не идентифицирует конкретного человека.

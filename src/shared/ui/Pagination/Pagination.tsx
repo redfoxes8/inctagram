@@ -12,6 +12,7 @@ export type PaginationProps = {
   pagesCount: number
   pageSize: number
   disabled?: boolean
+  showWhenEmpty?: boolean
   pageSizeOptions?: number[]
   onPageChange: (page: number) => void
   onPageSizeChange: (pageSize: number) => void
@@ -40,15 +41,16 @@ export const Pagination = ({
   pagesCount,
   pageSize,
   disabled = false,
+  showWhenEmpty = false,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   onPageChange,
   onPageSizeChange,
 }: PaginationProps) => {
-  if (pagesCount <= 0) {
+  if (pagesCount <= 0 && !showWhenEmpty) {
     return null
   }
 
-  const pageNumbers = getPageNumbers(currentPage, pagesCount)
+  const pageNumbers = pagesCount > 0 ? getPageNumbers(currentPage, pagesCount) : [currentPage]
   const options = pageSizeOptions.map((option) => ({
     value: String(option),
     label: String(option),
@@ -60,7 +62,7 @@ export const Pagination = ({
         type="button"
         className={s.arrow}
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-        disabled={currentPage === 1 || disabled}
+        disabled={pagesCount <= 0 || currentPage === 1 || disabled}
         aria-label="Previous page"
       >
         <Icon name="arrow-ios-back" width={16} height={16} />
@@ -79,7 +81,7 @@ export const Pagination = ({
               className={s.page}
               data-active={page === currentPage}
               onClick={() => onPageChange(page)}
-              disabled={disabled}
+              disabled={pagesCount <= 0 || disabled}
             >
               {page}
             </button>
@@ -91,7 +93,7 @@ export const Pagination = ({
         type="button"
         className={s.arrow}
         onClick={() => onPageChange(Math.min(pagesCount, currentPage + 1))}
-        disabled={currentPage === pagesCount || disabled}
+        disabled={pagesCount <= 0 || currentPage === pagesCount || disabled}
         aria-label="Next page"
       >
         <Icon name="arrow-ios-forward" width={16} height={16} />

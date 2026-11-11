@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { Button } from "@/shared/ui/Button"
 import { Icon } from "@/shared/ui/Icon"
 import { formatUserDate, getProfileHref, type UsersPage, type UsersSort } from "@/features/superadmin-users/model/types"
@@ -129,16 +130,29 @@ export function UsersTable({
                   <time dateTime={user.createdAt}>{formatUserDate(user.createdAt)}</time>
                 </td>
                 <td>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className={s.actions}
-                    disabled
-                    aria-label={`Actions for ${user.username ?? user.userId} (unavailable)`}
-                    title="User actions are not available yet"
-                  >
-                    <Icon name="more-horizontal" />
-                  </Button>
+                  <DropdownMenu.Root>
+                    <DropdownMenu.Trigger asChild>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        className={s.actions}
+                        disabled={disabled}
+                        aria-label={`Information for ${user.username ?? user.userId}`}
+                      >
+                        <Icon name="more-horizontal" />
+                      </Button>
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Portal>
+                      <DropdownMenu.Content className={s.menu} align="end" sideOffset={4}>
+                        <DropdownMenu.Item asChild className={s.menuItem}>
+                          <Link href={`/superadmin/users/${encodeURIComponent(user.userId)}`} prefetch={false}>
+                            <Icon name="more-horizontal" />
+                            More information
+                          </Link>
+                        </DropdownMenu.Item>
+                      </DropdownMenu.Content>
+                    </DropdownMenu.Portal>
+                  </DropdownMenu.Root>
                 </td>
               </tr>
             )
