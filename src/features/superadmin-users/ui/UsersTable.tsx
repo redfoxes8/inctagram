@@ -4,7 +4,13 @@ import Link from "next/link"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { Button } from "@/shared/ui/Button"
 import { Icon } from "@/shared/ui/Icon"
-import { formatUserDate, getProfileHref, type UsersPage, type UsersSort } from "@/features/superadmin-users/model/types"
+import {
+  formatUserDate,
+  getProfileHref,
+  type SuperadminUser,
+  type UsersPage,
+  type UsersSort,
+} from "@/features/superadmin-users/model/types"
 import s from "@/features/superadmin-users/ui/SuperadminUsers.module.css"
 
 type UsersTableProps = {
@@ -18,6 +24,7 @@ type UsersTableProps = {
   onSort: (column: "username" | "createdAt") => void
   onRetry: () => void
   onPreviousPage: () => void
+  onDelete: (user: SuperadminUser) => void
 }
 
 export function UsersTable({
@@ -31,6 +38,7 @@ export function UsersTable({
   onSort,
   onRetry,
   onPreviousPage,
+  onDelete,
 }: UsersTableProps) {
   return (
     <div className={s.tableScroll} aria-busy={loading}>
@@ -149,6 +157,10 @@ export function UsersTable({
                             <Icon name="more-horizontal" />
                             More information
                           </Link>
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Item className={s.menuItem} disabled={disabled} onSelect={() => onDelete(user)}>
+                          <Icon name="person-remove-outline" />
+                          Delete
                         </DropdownMenu.Item>
                       </DropdownMenu.Content>
                     </DropdownMenu.Portal>

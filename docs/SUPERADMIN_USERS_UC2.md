@@ -22,10 +22,12 @@ to a real Gateway were used to infer additional operations.
 | Ban filter      | `banFilter: ALL / BLOCKED / NOT_BLOCKED`        |
 | Sort            | `USERNAME_ASC/DESC`, `CREATED_AT_ASC/DESC`      |
 
-User moderation is deferred to a separate task. The ellipsis menu contains only
-**More information**, which opens `/superadmin/users/[userId]` (UC-6). It contains
-no delete, block or unblock actions, moderation mutations, session bootstrap
-query, confirmation dialog, block reasons, or mutation-result state.
+The ellipsis menu contains **More information**, which opens
+`/superadmin/users/[userId]` (UC-6), and **Delete**, which opens a confirmation
+dialog (UC-3). Confirmed deletion uses the existing Apollo Client and refetches
+the list, correcting an emptied last page while preserving list parameters.
+See `SUPERADMIN_USER_DELETE_UC3.md` for the contract, error handling and safety
+checks. Block/unblock and block reasons remain deferred.
 
 ## Profile link and admin details
 
@@ -80,8 +82,8 @@ are inactive rather than links to nonexistent routes. Sign-in has no sidebar.
 - Deployment of the documented schema, allowed frontend origin, cookies and
   CORS/CSRF response headers must be confirmed for the target Gateway. Source
   implementation and compilation do not establish production availability.
-- The list operations used here are documented. Moderation is intentionally
-  deferred by frontend scope, rather than blocked by a missing backend operation.
+- The list and deletion operations used here are documented. Block/unblock
+  remain deferred by frontend scope, rather than a missing backend operation.
 
 ## Verification scope
 
