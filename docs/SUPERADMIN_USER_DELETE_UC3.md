@@ -2,7 +2,7 @@
 
 Route: `/superadmin/users`, row menu **⋯ → Delete**. **More information** is
 preserved; Ban with reasons is documented in `SUPERADMIN_USER_BAN_UC1.md`.
-Unban is not implemented in the UI.
+Un-ban for blocked rows is documented in `SUPERADMIN_USER_UNBAN_UC2.md`.
 
 ## Confirmed contract
 

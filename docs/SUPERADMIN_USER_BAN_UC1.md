@@ -54,7 +54,8 @@ validation remains authoritative.
 
 The row menu retains Delete and More information and adds **Ban in the system**
 with the existing `Block` icon, in the design order. Already BLOCKED rows have
-the ban item disabled. There is no Unban action.
+an **Un-ban** action instead, documented in `SUPERADMIN_USER_UNBAN_UC2.md`.
+This separate flow does not change the blocking mutation or its reason rules.
 
 `BanUserDialog` reuses `Modal`, `Button`, `SelectBox` and `TextArea`. SelectBox
 has an optional `contentClassName` for this dialog's reason portal to appear

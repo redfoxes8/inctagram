@@ -7,6 +7,7 @@ import { UsersToolbar } from "@/features/superadmin-users/ui/UsersToolbar"
 import { UsersTable } from "@/features/superadmin-users/ui/UsersTable"
 import { DeleteUserDialog } from "@/features/superadmin-users/ui/DeleteUserDialog"
 import { BanUserDialog } from "@/features/superadmin-users/ui/BanUserDialog"
+import { UnbanUserDialog } from "@/features/superadmin-users/ui/UnbanUserDialog"
 
 // Exercise parent handlers with a deterministic hook harness; no DOM or network.
 const harness = vi.hoisted(() => ({
@@ -17,6 +18,8 @@ const harness = vi.hoisted(() => ({
   input: undefined as unknown,
   deleteUser: vi.fn(),
   banUser: vi.fn(),
+  unbanUser: vi.fn(),
+  response: undefined as UsersPage | undefined,
   refetch: vi.fn(),
 }))
 
@@ -41,11 +44,12 @@ vi.mock("@/features/superadmin-users/api/delete-user-api", () => ({
   useDeleteSuperadminUser: () => harness.deleteUser,
 }))
 vi.mock("@/features/superadmin-users/api/ban-user-api", () => ({ useBanSuperadminUser: () => harness.banUser }))
+vi.mock("@/features/superadmin-users/api/unban-user-api", () => ({ useUnbanSuperadminUser: () => harness.unbanUser }))
 vi.mock("@/features/superadmin-users/api/users-api", async (original) => ({
   ...(await original<typeof import("@/features/superadmin-users/api/users-api")>()),
   useSuperadminUsers: (input: UsersInput) => {
     harness.input = input
-    return { data: { superadminUsers: page(input) }, loading: false, refetch: harness.refetch }
+    return { data: { superadminUsers: harness.response ?? page(input) }, loading: false, refetch: harness.refetch }
   },
 }))
 
@@ -86,6 +90,7 @@ function props<T>(tree: ReactNode, type: unknown): T {
 }
 const dialog = () => props<ComponentProps<typeof DeleteUserDialog>>(render(), DeleteUserDialog)
 const banDialog = () => props<ComponentProps<typeof BanUserDialog>>(render(), BanUserDialog)
+const unbanDialog = () => props<ComponentProps<typeof UnbanUserDialog>>(render(), UnbanUserDialog)
 const table = () => props<ComponentProps<typeof UsersTable>>(render(), UsersTable)
 const toolbar = () => props<ComponentProps<typeof UsersToolbar>>(render(), UsersToolbar)
 const pagination = () => props<ComponentProps<typeof Pagination>>(render(), Pagination)
@@ -98,6 +103,8 @@ beforeEach(() => {
   harness.refs = []
   harness.deleteUser.mockReset()
   harness.banUser.mockReset()
+  harness.unbanUser.mockReset()
+  harness.response = undefined
   harness.refetch
     .mockReset()
     .mockImplementation(async () => ({ data: { superadminUsers: page(harness.input as UsersInput) } }))
@@ -316,5 +323,137 @@ describe("UC-3 confirmation and list state", () => {
     await settle()
     render()
     expect((harness.input as UsersInput).page).toBe(1)
+  })
+})
+
+describe("UC-2 un-ban confirmation and Blocked filtering", () => {
+  const blocked: SuperadminUser = { ...user, state: "BLOCKED" }
+
+  it.each(["No", "close"])("%s cancels without a mutation or list request", (action) => {
+    table().onUnban(blocked)
+    const modal = UnbanUserDialog(unbanDialog())
+    if (action === "close") modal.props.onClose()
+    else {
+      const footer = modal.props.footer
+      if (!isValidElement<{ children: ReactNode }>(footer)) throw new Error("Footer missing")
+      const no = Children.toArray(footer.props.children)[0]
+      if (!isValidElement<{ onClick: () => void }>(no)) throw new Error("No button missing")
+      no.props.onClick()
+    }
+    expect(() => unbanDialog()).toThrow("Component missing")
+    expect(harness.unbanUser).not.toHaveBeenCalled()
+    expect(harness.refetch).not.toHaveBeenCalled()
+  })
+
+  it("locks repeated confirmation and closing until completion, then refreshes exactly once", async () => {
+    table().onUnban(blocked)
+    let complete!: (value: { userId: string; outcome: string }) => void
+    harness.unbanUser.mockReturnValue(
+      new Promise((resolve) => {
+        complete = resolve
+      }),
+    )
+    const confirm = unbanDialog().onConfirm
+    confirm()
+    confirm()
+    unbanDialog().onClose()
+    table().onBan(user)
+    table().onDelete(user)
+    expect(harness.unbanUser).toHaveBeenCalledExactlyOnceWith(blocked.userId)
+    expect(unbanDialog().pending).toBe(true)
+    expect(UnbanUserDialog(unbanDialog()).props.isCloseDisabled).toBe(true)
+    expect(pagination().disabled).toBe(true)
+    expect(banDialog).toThrow("Component missing")
+    expect(dialog().user).toBeNull()
+    complete({ userId: blocked.userId, outcome: "UNBLOCKED" })
+    await settle()
+    expect(unbanDialog).toThrow("Component missing")
+    expect(harness.refetch).toHaveBeenCalledTimes(1)
+  })
+
+  it("uses the refreshed Blocked result to remove the unblocked row and preserves query parameters", async () => {
+    toolbar().onSearchChange("mock")
+    toolbar().onSearchClick()
+    toolbar().onBanFilterChange("BLOCKED")
+    table().onSort("username")
+    pagination().onPageSizeChange(4)
+    render()
+    harness.response = { ...page(harness.input as UsersInput), items: [blocked] }
+    table().onUnban(blocked)
+    harness.unbanUser.mockResolvedValue({ userId: blocked.userId, outcome: "UNBLOCKED" })
+    harness.refetch.mockImplementation(async () => {
+      harness.response = page(harness.input as UsersInput, 0)
+      return { data: { superadminUsers: harness.response } }
+    })
+    unbanDialog().onConfirm()
+    await settle()
+    expect(table().page?.items).toEqual([])
+    expect(harness.input).toEqual({
+      page: 1,
+      pageSize: 4,
+      searchUsername: "mock",
+      sort: "USERNAME_ASC",
+      banFilter: "BLOCKED",
+    })
+    expect(harness.refetch).toHaveBeenCalledTimes(1)
+  })
+
+  it("moves from an emptied last Blocked page to the backend's last available page", async () => {
+    toolbar().onBanFilterChange("BLOCKED")
+    pagination().onPageChange(3)
+    table().onUnban(blocked)
+    harness.unbanUser.mockResolvedValue({ userId: blocked.userId, outcome: "ALREADY_ACTIVE" })
+    harness.refetch.mockResolvedValue({ data: { superadminUsers: page(harness.input as UsersInput, 16) } })
+    unbanDialog().onConfirm()
+    await settle()
+    render()
+    expect(harness.input).toEqual({
+      page: 2,
+      pageSize: 8,
+      searchUsername: "",
+      sort: "CREATED_AT_DESC",
+      banFilter: "BLOCKED",
+    })
+    expect(unbanDialog).toThrow("Component missing")
+  })
+
+  it("keeps a failed un-ban and the original blocked row visible without refetch or fake success", async () => {
+    render()
+    harness.response = { ...page(harness.input as UsersInput), items: [blocked] }
+    harness.unbanUser.mockRejectedValue(new Error("Mock failure"))
+    table().onUnban(blocked)
+    unbanDialog().onConfirm()
+    await settle()
+    expect(unbanDialog().error).toContain("Unable to un-ban user.")
+    expect(unbanDialog().pending).toBe(false)
+    expect(table().page?.items).toEqual([blocked])
+    expect(harness.refetch).not.toHaveBeenCalled()
+  })
+
+  it.each(["NOT_FOUND", "USER_DELETED"])("does not claim success for %s", async (outcome) => {
+    harness.unbanUser.mockResolvedValue({ userId: blocked.userId, outcome })
+    table().onUnban(blocked)
+    unbanDialog().onConfirm()
+    await settle()
+    expect(unbanDialog().error).not.toBe("")
+    expect(harness.refetch).toHaveBeenCalledTimes(1)
+  })
+
+  it("distinguishes a failed refresh after success without repeating the mutation", async () => {
+    harness.unbanUser.mockResolvedValue({ userId: blocked.userId, outcome: "UNBLOCKED" })
+    harness.refetch.mockRejectedValue(new Error("Mock refresh error"))
+    table().onUnban(blocked)
+    unbanDialog().onConfirm()
+    await settle()
+    expect(unbanDialog).toThrow("Component missing")
+    expect(JSON.stringify(render())).toContain("The users list could not be refreshed.")
+    expect(harness.unbanUser).toHaveBeenCalledTimes(1)
+    expect(harness.refetch).toHaveBeenCalledTimes(1)
+  })
+
+  it("does not open un-ban confirmation for an ACTIVE row", () => {
+    table().onUnban(user)
+    expect(unbanDialog).toThrow("Component missing")
+    expect(harness.unbanUser).not.toHaveBeenCalled()
   })
 })
