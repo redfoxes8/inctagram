@@ -28,7 +28,9 @@ dialog (UC-3). Confirmed deletion uses the existing Apollo Client and refetches
 the list, correcting an emptied last page while preserving list parameters.
 See `SUPERADMIN_USER_DELETE_UC3.md` for the contract, error handling and safety
 checks. **Ban in the system** and its reason dialog are implemented in UC-1;
-see `SUPERADMIN_USER_BAN_UC1.md`. Unblock remains deferred.
+see `SUPERADMIN_USER_BAN_UC1.md`. BLOCKED rows instead show **Un-ban**, documented
+in `SUPERADMIN_USER_UNBAN_UC2.md`. Confirmed unblocking refetches the current
+filtered result and corrects an emptied last page without resetting list parameters.
 
 ## Profile link and admin details
 
@@ -83,8 +85,8 @@ are inactive rather than links to nonexistent routes. Sign-in has no sidebar.
 - Deployment of the documented schema, allowed frontend origin, cookies and
   CORS/CSRF response headers must be confirmed for the target Gateway. Source
   implementation and compilation do not establish production availability.
-- List, deletion and blocking with a reason use documented operations. Unblock
-  remains deferred by frontend scope, rather than a missing backend operation.
+- List, deletion, blocking with a reason and unblocking use documented operations.
+  Unblocking does not restore old user sessions or accept a ban reason.
 
 ## Verification scope
 

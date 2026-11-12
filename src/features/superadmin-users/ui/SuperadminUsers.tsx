@@ -5,6 +5,7 @@ import { Pagination } from "@/shared/ui/Pagination"
 import { getUsersErrorMessage, useSuperadminUsers } from "@/features/superadmin-users/api/users-api"
 import { useDeleteSuperadminUser } from "@/features/superadmin-users/api/delete-user-api"
 import { useBanSuperadminUser } from "@/features/superadmin-users/api/ban-user-api"
+import { useUnbanSuperadminUser } from "@/features/superadmin-users/api/unban-user-api"
 import type { BanReasonInput } from "@/features/superadmin-users/model/ban-user.types"
 import {
   DEFAULT_USERS_PAGE_SIZE,
@@ -16,6 +17,7 @@ import { UsersToolbar } from "@/features/superadmin-users/ui/UsersToolbar"
 import { UsersTable } from "@/features/superadmin-users/ui/UsersTable"
 import { DeleteUserDialog } from "@/features/superadmin-users/ui/DeleteUserDialog"
 import { BanUserDialog } from "@/features/superadmin-users/ui/BanUserDialog"
+import { UnbanUserDialog } from "@/features/superadmin-users/ui/UnbanUserDialog"
 import s from "./SuperadminUsers.module.css"
 
 const initialInput: UsersInput = {
@@ -36,13 +38,17 @@ export function SuperadminUsers() {
   const [banTarget, setBanTarget] = useState<SuperadminUser | null>(null)
   const [banPending, setBanPending] = useState(false)
   const [banError, setBanError] = useState("")
+  const [unbanTarget, setUnbanTarget] = useState<SuperadminUser | null>(null)
+  const [unbanPending, setUnbanPending] = useState(false)
+  const [unbanError, setUnbanError] = useState("")
   const actionInFlight = useRef(false)
   const deleteUser = useDeleteSuperadminUser()
   const banUser = useBanSuperadminUser()
+  const unbanUser = useUnbanSuperadminUser()
   const { data, error, loading, refetch } = useSuperadminUsers(input)
   // Ни в коем случае не отображайте неполные или устаревшие данные в виде списка успешных результатов после ошибки GraphQL.
   const page = !loading && !error ? data?.superadminUsers : undefined
-  const disabled = loading || deletePending || banPending
+  const disabled = loading || deletePending || banPending || unbanPending
 
   const updateInput = (patch: Partial<UsersInput>) => {
     if (actionInFlight.current) return
@@ -60,6 +66,7 @@ export function SuperadminUsers() {
   const openDelete = (user: SuperadminUser) => {
     if (actionInFlight.current) return
     setBanTarget(null)
+    setUnbanTarget(null)
     setDeleteError("")
     setRefreshError("")
     setDeleteTarget(user)
@@ -72,6 +79,7 @@ export function SuperadminUsers() {
   const openBan = (user: SuperadminUser) => {
     if (actionInFlight.current || user.state === "BLOCKED") return
     setDeleteTarget(null)
+    setUnbanTarget(null)
     setBanError("")
     setRefreshError("")
     setBanTarget(user)
@@ -80,6 +88,48 @@ export function SuperadminUsers() {
     if (actionInFlight.current) return
     setBanTarget(null)
     setBanError("")
+  }
+  const openUnban = (user: SuperadminUser) => {
+    if (actionInFlight.current || user.state !== "BLOCKED") return
+    setDeleteTarget(null)
+    setBanTarget(null)
+    setUnbanError("")
+    setRefreshError("")
+    setUnbanTarget(user)
+  }
+  const closeUnban = () => {
+    if (actionInFlight.current) return
+    setUnbanTarget(null)
+    setUnbanError("")
+  }
+  const confirmUnban = async () => {
+    if (!unbanTarget || actionInFlight.current) return
+    actionInFlight.current = true
+    setUnbanPending(true)
+    setUnbanError("")
+    try {
+      const result = await unbanUser(unbanTarget.userId)
+      if (result.outcome === "NOT_FOUND" || result.outcome === "USER_DELETED") {
+        setUnbanError(result.outcome === "NOT_FOUND" ? "User not found." : "This user has been deleted.")
+        try {
+          await refresh()
+        } catch {
+          setUnbanError("User unavailable. The users list could not be refreshed.")
+        }
+        return
+      }
+      setUnbanTarget(null)
+      try {
+        await refresh()
+      } catch {
+        setRefreshError("The users list could not be refreshed. Please try again.")
+      }
+    } catch (failure) {
+      setUnbanError(`Unable to un-ban user. ${getUsersErrorMessage(failure)}`)
+    } finally {
+      actionInFlight.current = false
+      setUnbanPending(false)
+    }
   }
   const confirmBan = async (reason: BanReasonInput) => {
     if (!banTarget || actionInFlight.current) return
@@ -178,6 +228,7 @@ export function SuperadminUsers() {
         onSort={toggleSort}
         onDelete={openDelete}
         onBan={openBan}
+        onUnban={openUnban}
         onRetry={() => {
           void refresh().catch(() => {})
         }}
@@ -219,6 +270,17 @@ export function SuperadminUsers() {
           onClose={closeBan}
           onConfirm={(reason) => {
             void confirmBan(reason)
+          }}
+        />
+      )}
+      {unbanTarget && (
+        <UnbanUserDialog
+          user={unbanTarget}
+          pending={unbanPending}
+          error={unbanError}
+          onClose={closeUnban}
+          onConfirm={() => {
+            void confirmUnban()
           }}
         />
       )}

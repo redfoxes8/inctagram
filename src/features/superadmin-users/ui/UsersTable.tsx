@@ -26,6 +26,7 @@ type UsersTableProps = {
   onPreviousPage: () => void
   onDelete: (user: SuperadminUser) => void
   onBan: (user: SuperadminUser) => void
+  onUnban: (user: SuperadminUser) => void
 }
 
 export function UsersTable({
@@ -41,6 +42,7 @@ export function UsersTable({
   onPreviousPage,
   onDelete,
   onBan,
+  onUnban,
 }: UsersTableProps) {
   return (
     <div className={s.tableScroll} aria-busy={loading}>
@@ -160,11 +162,11 @@ export function UsersTable({
                         </DropdownMenu.Item>
                         <DropdownMenu.Item
                           className={s.menuItem}
-                          disabled={disabled || user.state === "BLOCKED"}
-                          onSelect={() => onBan(user)}
+                          disabled={disabled}
+                          onSelect={() => (user.state === "BLOCKED" ? onUnban(user) : onBan(user))}
                         >
                           <Icon name="Block" />
-                          Ban in the system
+                          {user.state === "BLOCKED" ? "Un-ban" : "Ban in the system"}
                         </DropdownMenu.Item>
                         <DropdownMenu.Item asChild className={s.menuItem}>
                           <Link href={`/superadmin/users/${encodeURIComponent(user.userId)}`} prefetch={false}>
