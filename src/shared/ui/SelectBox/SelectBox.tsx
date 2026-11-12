@@ -19,6 +19,7 @@ export const SelectBox = (props: Props) => {
     width,
     height,
     className,
+    contentClassName,
     triggerClassName,
     iconClassName,
     optionVisualClassName,
@@ -88,7 +89,7 @@ export const SelectBox = (props: Props) => {
         </Select.Trigger>
 
         <Select.Portal>
-          <Select.Content className={s.content} sideOffset={-1} position="popper">
+          <Select.Content className={clsx(s.content, contentClassName)} sideOffset={-1} position="popper">
             <Select.Viewport className={s.viewport}>
               {options.map((option) => (
                 <Select.Item key={option.value} value={option.value} className={s.item}>

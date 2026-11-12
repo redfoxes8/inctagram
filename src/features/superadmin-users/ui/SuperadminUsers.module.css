@@ -182,6 +182,38 @@
   padding: 16px 24px;
 }
 
+.banDialog {
+  box-shadow: 0 0 0 100vmax rgb(0 0 0 / 60%);
+}
+
+.banContent {
+  gap: 18px;
+  padding: 30px 24px 32px;
+}
+
+.banContent > * {
+  text-align: left;
+}
+
+.banReasonTrigger {
+  background: transparent;
+}
+
+.banReasonMenu {
+  z-index: 1100;
+}
+
+.banFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 24px 36px;
+}
+
+.banFooter button {
+  width: 130px;
+}
+
 .deleteError {
   color: var(--danger-100);
   overflow-wrap: anywhere;

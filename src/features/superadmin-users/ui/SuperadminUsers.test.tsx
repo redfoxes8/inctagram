@@ -6,6 +6,7 @@ import { SuperadminUsers } from "@/features/superadmin-users/ui/SuperadminUsers"
 import { UsersToolbar } from "@/features/superadmin-users/ui/UsersToolbar"
 import { UsersTable } from "@/features/superadmin-users/ui/UsersTable"
 import { DeleteUserDialog } from "@/features/superadmin-users/ui/DeleteUserDialog"
+import { BanUserDialog } from "@/features/superadmin-users/ui/BanUserDialog"
 
 // Exercise parent handlers with a deterministic hook harness; no DOM or network.
 const harness = vi.hoisted(() => ({
@@ -15,6 +16,7 @@ const harness = vi.hoisted(() => ({
   refIndex: 0,
   input: undefined as unknown,
   deleteUser: vi.fn(),
+  banUser: vi.fn(),
   refetch: vi.fn(),
 }))
 
@@ -38,6 +40,7 @@ vi.mock("react", async (original) => ({
 vi.mock("@/features/superadmin-users/api/delete-user-api", () => ({
   useDeleteSuperadminUser: () => harness.deleteUser,
 }))
+vi.mock("@/features/superadmin-users/api/ban-user-api", () => ({ useBanSuperadminUser: () => harness.banUser }))
 vi.mock("@/features/superadmin-users/api/users-api", async (original) => ({
   ...(await original<typeof import("@/features/superadmin-users/api/users-api")>()),
   useSuperadminUsers: (input: UsersInput) => {
@@ -82,6 +85,7 @@ function props<T>(tree: ReactNode, type: unknown): T {
   return found
 }
 const dialog = () => props<ComponentProps<typeof DeleteUserDialog>>(render(), DeleteUserDialog)
+const banDialog = () => props<ComponentProps<typeof BanUserDialog>>(render(), BanUserDialog)
 const table = () => props<ComponentProps<typeof UsersTable>>(render(), UsersTable)
 const toolbar = () => props<ComponentProps<typeof UsersToolbar>>(render(), UsersToolbar)
 const pagination = () => props<ComponentProps<typeof Pagination>>(render(), Pagination)
@@ -93,9 +97,106 @@ beforeEach(() => {
   harness.states = []
   harness.refs = []
   harness.deleteUser.mockReset()
+  harness.banUser.mockReset()
   harness.refetch
     .mockReset()
     .mockImplementation(async () => ({ data: { superadminUsers: page(harness.input as UsersInput) } }))
+})
+
+describe("UC-1 ban confirmation and refreshed catalog", () => {
+  it.each(["No", "close"])("%s cancels without a mutation or refetch", (action) => {
+    table().onBan(user)
+    const modal = BanUserDialog(banDialog())
+    if (action === "close") modal.props.onClose()
+    else {
+      const footer = modal.props.footer
+      if (!isValidElement<{ children: ReactNode }>(footer)) throw new Error("Footer missing")
+      const no = Children.toArray(footer.props.children)[0]
+      if (!isValidElement<{ onClick: () => void }>(no)) throw new Error("No button missing")
+      no.props.onClick()
+    }
+    expect(() => banDialog()).toThrow("Component missing")
+    expect(harness.banUser).not.toHaveBeenCalled()
+    expect(harness.refetch).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    { code: "BAD_BEHAVIOR" as const },
+    { code: "ADVERTISING_PLACEMENT" as const },
+    { code: "ANOTHER_REASON" as const, text: "Mock reason" },
+  ])("confirms $code once and refreshes without resetting list parameters", async (reason) => {
+    toolbar().onSearchChange("mock")
+    toolbar().onSearchClick()
+    toolbar().onBanFilterChange("NOT_BLOCKED")
+    table().onSort("username")
+    pagination().onPageSizeChange(4)
+    pagination().onPageChange(2)
+    table().onBan(user)
+    let complete!: (value: { userId: string; outcome: string }) => void
+    harness.banUser.mockReturnValue(
+      new Promise((resolve) => {
+        complete = resolve
+      }),
+    )
+    const confirm = banDialog().onConfirm
+    confirm(reason)
+    confirm(reason)
+    banDialog().onClose()
+    expect(harness.banUser).toHaveBeenCalledExactlyOnceWith(user.userId, reason)
+    expect(banDialog().pending).toBe(true)
+    expect(pagination().disabled).toBe(true)
+    complete({ userId: user.userId, outcome: "BLOCKED" })
+    await settle()
+    expect(() => banDialog()).toThrow("Component missing")
+    expect(harness.refetch).toHaveBeenCalledTimes(1)
+    expect(harness.input).toEqual({
+      page: 2,
+      pageSize: 4,
+      searchUsername: "mock",
+      sort: "USERNAME_ASC",
+      banFilter: "NOT_BLOCKED",
+    })
+  })
+
+  it("keeps the dialog and original row after a mutation error", async () => {
+    harness.banUser.mockRejectedValue(new Error("Mock failure"))
+    table().onBan(user)
+    banDialog().onConfirm({ code: "BAD_BEHAVIOR" })
+    await settle()
+    expect(banDialog().pending).toBe(false)
+    expect(banDialog().error).toContain("Unable to ban user.")
+    expect(table().page?.items).toEqual([user])
+    expect(harness.refetch).not.toHaveBeenCalled()
+  })
+
+  it.each(["NOT_FOUND", "USER_DELETED"])("does not pretend success for %s", async (outcome) => {
+    harness.banUser.mockResolvedValue({ userId: user.userId, outcome })
+    table().onBan(user)
+    banDialog().onConfirm({ code: "BAD_BEHAVIOR" })
+    await settle()
+    expect(banDialog().error).not.toBe("")
+    expect(harness.refetch).toHaveBeenCalledTimes(1)
+  })
+
+  it("accepts ALREADY_BLOCKED and corrects a page emptied by the NOT_BLOCKED filter", async () => {
+    toolbar().onBanFilterChange("NOT_BLOCKED")
+    pagination().onPageChange(3)
+    table().onBan(user)
+    harness.banUser.mockResolvedValue({ userId: user.userId, outcome: "ALREADY_BLOCKED" })
+    harness.refetch.mockResolvedValue({ data: { superadminUsers: page(harness.input as UsersInput, 16) } })
+    banDialog().onConfirm({ code: "BAD_BEHAVIOR" })
+    await settle()
+    render()
+    expect((harness.input as UsersInput).page).toBe(2)
+    expect((harness.input as UsersInput).banFilter).toBe("NOT_BLOCKED")
+    expect(() => banDialog()).toThrow("Component missing")
+  })
+
+  it("does not offer another ban for a row already marked BLOCKED", () => {
+    table().onBan({ ...user, state: "BLOCKED" })
+    expect(() => banDialog()).toThrow("Component missing")
+    expect(harness.banUser).not.toHaveBeenCalled()
+  })
 })
 
 describe("UC-3 confirmation and list state", () => {

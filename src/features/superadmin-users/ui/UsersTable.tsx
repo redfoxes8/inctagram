@@ -25,6 +25,7 @@ type UsersTableProps = {
   onRetry: () => void
   onPreviousPage: () => void
   onDelete: (user: SuperadminUser) => void
+  onBan: (user: SuperadminUser) => void
 }
 
 export function UsersTable({
@@ -39,6 +40,7 @@ export function UsersTable({
   onRetry,
   onPreviousPage,
   onDelete,
+  onBan,
 }: UsersTableProps) {
   return (
     <div className={s.tableScroll} aria-busy={loading}>
@@ -152,15 +154,23 @@ export function UsersTable({
                     </DropdownMenu.Trigger>
                     <DropdownMenu.Portal>
                       <DropdownMenu.Content className={s.menu} align="end" sideOffset={4}>
+                        <DropdownMenu.Item className={s.menuItem} disabled={disabled} onSelect={() => onDelete(user)}>
+                          <Icon name="person-remove-outline" />
+                          Delete
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Item
+                          className={s.menuItem}
+                          disabled={disabled || user.state === "BLOCKED"}
+                          onSelect={() => onBan(user)}
+                        >
+                          <Icon name="Block" />
+                          Ban in the system
+                        </DropdownMenu.Item>
                         <DropdownMenu.Item asChild className={s.menuItem}>
                           <Link href={`/superadmin/users/${encodeURIComponent(user.userId)}`} prefetch={false}>
                             <Icon name="more-horizontal" />
                             More information
                           </Link>
-                        </DropdownMenu.Item>
-                        <DropdownMenu.Item className={s.menuItem} disabled={disabled} onSelect={() => onDelete(user)}>
-                          <Icon name="person-remove-outline" />
-                          Delete
                         </DropdownMenu.Item>
                       </DropdownMenu.Content>
                     </DropdownMenu.Portal>

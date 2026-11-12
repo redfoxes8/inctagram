@@ -1,7 +1,8 @@
 # UC-3: Delete user
 
 Route: `/superadmin/users`, row menu **⋯ → Delete**. **More information** is
-preserved; Ban/Unban are not implemented in the UI.
+preserved; Ban with reasons is documented in `SUPERADMIN_USER_BAN_UC1.md`.
+Unban is not implemented in the UI.
 
 ## Confirmed contract
 
