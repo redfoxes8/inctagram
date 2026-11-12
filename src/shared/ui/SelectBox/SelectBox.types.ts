@@ -19,6 +19,7 @@ export type Props = Omit<RadixRootProps, "onValueChange"> & {
   width?: string
   height?: string
   className?: string
+  contentClassName?: string
   triggerClassName?: string
   iconClassName?: string
   optionVisualClassName?: string
