@@ -13,6 +13,7 @@ export type PaginationProps = {
   pageSize: number
   disabled?: boolean
   showWhenEmpty?: boolean
+  fixedPageSize?: boolean
   pageSizeOptions?: number[]
   onPageChange: (page: number) => void
   onPageSizeChange: (pageSize: number) => void
@@ -42,6 +43,7 @@ export const Pagination = ({
   pageSize,
   disabled = false,
   showWhenEmpty = false,
+  fixedPageSize = false,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   onPageChange,
   onPageSizeChange,
@@ -101,16 +103,20 @@ export const Pagination = ({
 
       <div className={s.size}>
         <span>Show</span>
-        <SelectBox
-          value={String(pageSize)}
-          options={options}
-          onChange={(value) => onPageSizeChange(Number(value))}
-          width="52px"
-          height="24px"
-          className={s.pageSizeSelect}
-          triggerClassName={s.pageSizeTrigger}
-          iconClassName={s.pageSizeIcon}
-        />
+        {!fixedPageSize ? (
+          <SelectBox
+            value={String(pageSize)}
+            options={options}
+            onChange={(value) => onPageSizeChange(Number(value))}
+            width="52px"
+            height="24px"
+            className={s.pageSizeSelect}
+            triggerClassName={s.pageSizeTrigger}
+            iconClassName={s.pageSizeIcon}
+          />
+        ) : (
+          <span>{pageSize}</span>
+        )}
         <span>on page</span>
       </div>
     </div>

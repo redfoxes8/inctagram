@@ -12,7 +12,7 @@ type NavigationItem = {
 const navigation: NavigationItem[] = [
   { label: "Users list", icon: "person", href: "/superadmin/users" },
   { label: "Statistics", icon: "trending-up" },
-  { label: "Payments list", icon: "credit-card-outline" },
+  { label: "Payments list", icon: "credit-card-outline", href: "/superadmin/payments" },
   { label: "Posts list", icon: "image-outline" },
 ]
 
