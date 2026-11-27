@@ -1,6 +1,7 @@
-import { HttpLink } from "@apollo/client"
+import { ApolloLink, HttpLink } from "@apollo/client"
 import { ApolloClient, InMemoryCache } from "@apollo/client-integration-nextjs"
 import { createSuperadminTransport } from "@/shared/api/apollo/transport"
+import { createSuperadminSubscriptionLink } from "@/shared/api/apollo/subscription-link"
 
 function getEndpoint() {
   const endpoint = process.env.NEXT_PUBLIC_SUPERADMIN_GRAPHQL_URL?.trim()
@@ -29,14 +30,18 @@ export function makeApolloClient() {
 
   return new ApolloClient({
     cache: new InMemoryCache(),
-    link: new HttpLink({
-      // Resolve lazily: mounting the provider does not require an endpoint or send requests.
-      uri: getEndpoint,
-      credentials: "include",
-      useGETForQueries: false,
-      fetchOptions: { method: "POST", cache: "no-store" },
-      fetch: transportFetch,
-    }),
+    link: ApolloLink.split(
+      ({ operationType }) => operationType === "subscription",
+      createSuperadminSubscriptionLink(getEndpoint),
+      new HttpLink({
+        // Resolve lazily: mounting the provider does not require an endpoint or send requests.
+        uri: getEndpoint,
+        credentials: "include",
+        useGETForQueries: false,
+        fetchOptions: { method: "POST", cache: "no-store" },
+        fetch: transportFetch,
+      }),
+    ),
     defaultOptions: {
       query: { fetchPolicy: "no-cache", errorPolicy: "all" },
       watchQuery: { fetchPolicy: "no-cache", errorPolicy: "all" },
