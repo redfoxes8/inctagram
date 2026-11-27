@@ -45,6 +45,7 @@
     "embla-carousel": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "graphql": "^17.0.2",
+    "graphql-ws": "^6.0.6",
     "next": "16.2.3",
     "openapi-fetch": "^0.17.0",
     "react": "19.2.4",

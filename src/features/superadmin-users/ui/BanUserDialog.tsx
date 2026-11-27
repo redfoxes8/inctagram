@@ -10,7 +10,7 @@ import { getBanReason, type BanReasonInput } from "@/features/superadmin-users/m
 import s from "./SuperadminUsers.module.css"
 
 type Props = {
-  user: SuperadminUser
+  user: Pick<SuperadminUser, "userId" | "username"> & Partial<SuperadminUser>
   pending: boolean
   error: string
   onClose: () => void
